@@ -1,4 +1,4 @@
-package AI::TensorFlow;
+package AI::Libtensorflow;
 # ABSTRACT: Bindings for TensorFlow deep learning library
 
 use strict;
@@ -62,7 +62,7 @@ $ffi->load_custom_type('::Enum', 'TF_Code',
 #}}}
 # enum TF_DataType {{{
 $ffi->load_custom_type('::Enum', 'TF_DataType',
-	{ rev => 'int', package => 'AI::TensorFlow::DType' },
+	{ rev => 'int', package => 'AI::Libtensorflow::DType' },
 	# from tensorflow/c/tf_datatype.h
 	[ FLOAT      => 1 ],
 	[ DOUBLE     => 2 ],
@@ -90,14 +90,14 @@ $ffi->load_custom_type('::Enum', 'TF_DataType',
 	[ UINT64     => 23 ],
 );
 
-package AI::TensorFlow::DType {
+package AI::Libtensorflow::DType {
 
 }#}}}
 
 
 FFI::C->ffi($ffi);
 
-package AI::TensorFlow::Buffer {#{{{
+package AI::Libtensorflow::Buffer {#{{{
 	use FFI::Platypus::Buffer;
 	use FFI::Platypus::Memory;
 
@@ -142,7 +142,7 @@ package AI::TensorFlow::Buffer {#{{{
 
 	$ffi->attach( [ 'DeleteBuffer' => '_Delete' ] => [ 'TF_Buffer' ], 'void' );
 }#}}}
-package AI::TensorFlow::Graph {#{{{
+package AI::Libtensorflow::Graph {#{{{
 	FFI::C->struct( 'TF_Graph' => [
 	]);
 
@@ -150,7 +150,7 @@ package AI::TensorFlow::Graph {#{{{
 
 	$ffi->attach( [ 'DeleteGraph' => '_Delete' ] => [ 'TF_Graph' ], 'void' );
 }#}}}
-package AI::TensorFlow::Status {#{{{
+package AI::Libtensorflow::Status {#{{{
 	FFI::C->struct( 'TF_Status' => [
 	]);
 
@@ -160,7 +160,7 @@ package AI::TensorFlow::Status {#{{{
 	
 	$ffi->attach( [ 'DeleteStatus' => '_Delete' ] => [ 'TF_Status' ], 'void' );
 }#}}}
-package AI::TensorFlow::ImportGraphDefOptions {#{{{
+package AI::Libtensorflow::ImportGraphDefOptions {#{{{
 	FFI::C->struct( 'TF_ImportGraphDefOptions' => [
 	]);
 
@@ -168,7 +168,7 @@ package AI::TensorFlow::ImportGraphDefOptions {#{{{
 
 	$ffi->attach( [ 'DeleteImportGraphDefOptions' => '_Delete' ] => [] => 'TF_ImportGraphDefOptions' );
 }#}}}
-package AI::TensorFlow::Tensor {#{{{
+package AI::Libtensorflow::Tensor {#{{{
 	FFI::C->struct( 'TF_Tensor' => [
 	]);
 
@@ -249,7 +249,7 @@ package AI::TensorFlow::Tensor {#{{{
 }
 #}}}
 
-$ffi->attach( [ GraphImportGraphDef => 'AI::TensorFlow::Graph::ImportGraphDef' ],
+$ffi->attach( [ GraphImportGraphDef => 'AI::Libtensorflow::Graph::ImportGraphDef' ],
 	[ 'TF_Graph', 'TF_Buffer', 'TF_ImportGraphDefOptions', 'TF_Status' ],
 	=> 'void',
 );
@@ -258,7 +258,7 @@ $ffi->attach( [ GraphImportGraphDef => 'AI::TensorFlow::Graph::ImportGraphDef' ]
 __END__
 
 # ::Status {{{
-package AI::TensorFlow::Status {
+package AI::Libtensorflow::Status {
 }
 #}}}
 
