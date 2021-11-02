@@ -5,7 +5,7 @@ use warnings;
 
 use Test::More tests => 1;
 
-use AI::Libtensorflow;
+use AI::TensorFlow::Libtensorflow;
 use Path::Tiny;
 
 use lib 't/lib';
@@ -15,12 +15,12 @@ subtest "Load graph" => sub {
 	my $ffi = FFI::Platypus->new( api => 1 );
 
 	my $data = $model_file->slurp_raw;
-	my $buf = AI::Libtensorflow::Buffer->NewFromData($data);
+	my $buf = AI::TensorFlow::Libtensorflow::Buffer->NewFromData($data);
 	ok $buf;
 
-	my $graph = AI::Libtensorflow::Graph->_New;
-	my $status = AI::Libtensorflow::Status->_New;
-	my $opts = AI::Libtensorflow::ImportGraphDefOptions->_New;
+	my $graph = AI::TensorFlow::Libtensorflow::Graph->_New;
+	my $status = AI::TensorFlow::Libtensorflow::Status->_New;
+	my $opts = AI::TensorFlow::Libtensorflow::ImportGraphDefOptions->_New;
 
 	$graph->ImportGraphDef( $buf, $opts, $status );
 

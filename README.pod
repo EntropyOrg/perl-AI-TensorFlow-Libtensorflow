@@ -4,7 +4,7 @@
 
 =head1 NAME
 
-AI::Libtensorflow - Bindings for TensorFlow deep learning library
+AI::TensorFlow::Libtensorflow - Bindings for TensorFlow deep learning library
 
 =head1 VERSION
 
