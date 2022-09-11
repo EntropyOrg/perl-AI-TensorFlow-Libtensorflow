@@ -20,8 +20,13 @@ sub lib {
 		alien => ['Alien::Libtensorflow'] );
 }
 
-my $ffi = FFI::Platypus->new( api => 1 );
+my $ffi = FFI::Platypus->new( api => 2 );
+FFI::C->ffi($ffi);
 $ffi->lib( __PACKAGE__->lib );
+$ffi->type('opaque', 'TF_Operation');
+#$ffi->type('object(AI::TensorFlow::Libtensorflow::Operation)', 'TF_Operation');
+$ffi->load_custom_type('::PtrObject', 'TF_Tensor', 'AI::TensorFlow::Libtensorflow::Tensor');
+
 $ffi->mangler(sub {
 	my($name) = @_;
 	"TF_$name";
@@ -95,7 +100,36 @@ package AI::TensorFlow::Libtensorflow::DType {
 }#}}}
 
 
-FFI::C->ffi($ffi);
+
+package AI::TensorFlow::Libtensorflow::Status {#{{{
+	FFI::C->struct( 'TF_Status' => [
+	]);
+
+	$ffi->attach( [ 'NewStatus' => '_New' ] => [] => 'TF_Status' );
+
+	$ffi->attach( 'GetCode' => [ 'TF_Status' ], 'TF_Code' );
+	
+	$ffi->attach( [ 'DeleteStatus' => '_Delete' ] => [ 'TF_Status' ], 'void' );
+}#}}}
+package AI::TensorFlow::Libtensorflow::ImportGraphDefOptions {#{{{
+	FFI::C->struct( 'TF_ImportGraphDefOptions' => [
+	]);
+
+	$ffi->attach( [ 'NewImportGraphDefOptions' => '_New' ] => [] => 'TF_ImportGraphDefOptions' );
+
+	$ffi->attach( [ 'DeleteImportGraphDefOptions' => '_Delete' ] => [] => 'TF_ImportGraphDefOptions' );
+}#}}}
+package AI::TensorFlow::Libtensorflow::Output {#{{{
+	FFI::C->struct( 'TF_Output' => [
+		oper  => 'TF_Operation',
+		index => 'int',
+	]);
+}
+#}}}
+package AI::TensorFlow::Libtensorflow::Output_Array {#{{{
+	FFI::C->array('TF_Output_array', [ 'TF_Output' ]);
+}
+#}}}
 
 package AI::TensorFlow::Libtensorflow::Buffer {#{{{
 	use FFI::Platypus::Buffer;
@@ -104,7 +138,9 @@ package AI::TensorFlow::Libtensorflow::Buffer {#{{{
 	FFI::C->struct( 'TF_Buffer' => [
 		data => 'opaque',
 		length => 'size_t',
-		_data_deallocator => 'opaque', # data_deallocator_t
+		#_data_deallocator => 'opaque', # data_deallocator_t
+		# this does not work?
+		_data_deallocator => 'data_deallocator_t',
 	]);
 
 	sub data_deallocator {
@@ -149,28 +185,11 @@ package AI::TensorFlow::Libtensorflow::Graph {#{{{
 	$ffi->attach( [ 'NewGraph' => '_New' ] => [] => 'TF_Graph' );
 
 	$ffi->attach( [ 'DeleteGraph' => '_Delete' ] => [ 'TF_Graph' ], 'void' );
-}#}}}
-package AI::TensorFlow::Libtensorflow::Status {#{{{
-	FFI::C->struct( 'TF_Status' => [
-	]);
 
-	$ffi->attach( [ 'NewStatus' => '_New' ] => [] => 'TF_Status' );
-
-  $ffi->attach( 'GetCode' => [ 'TF_Status' ], 'TF_Code' );
-	
-	$ffi->attach( [ 'DeleteStatus' => '_Delete' ] => [ 'TF_Status' ], 'void' );
-}#}}}
-package AI::TensorFlow::Libtensorflow::ImportGraphDefOptions {#{{{
-	FFI::C->struct( 'TF_ImportGraphDefOptions' => [
-	]);
-
-	$ffi->attach( [ 'NewImportGraphDefOptions' => '_New' ] => [] => 'TF_ImportGraphDefOptions' );
-
-	$ffi->attach( [ 'DeleteImportGraphDefOptions' => '_Delete' ] => [] => 'TF_ImportGraphDefOptions' );
+	$ffi->attach( [ 'GraphImportGraphDef'  => 'ImportGraphDef'  ] => [ 'TF_Graph', 'TF_Buffer', 'TF_ImportGraphDefOptions', 'TF_Status' ], 'void' );
+	$ffi->attach( [ 'GraphOperationByName' => 'OperationByName' ] => [ 'TF_Graph', 'string' ], 'TF_Operation' );
 }#}}}
 package AI::TensorFlow::Libtensorflow::Tensor {#{{{
-	FFI::C->struct( 'TF_Tensor' => [
-	]);
 
 	# C: TF_NewTensor
 	#
@@ -247,20 +266,47 @@ package AI::TensorFlow::Libtensorflow::Tensor {#{{{
 		=> 'int',
 	);
 }
+
+
 #}}}
 
-$ffi->attach( [ GraphImportGraphDef => 'AI::TensorFlow::Libtensorflow::Graph::ImportGraphDef' ],
-	[ 'TF_Graph', 'TF_Buffer', 'TF_ImportGraphDefOptions', 'TF_Status' ],
-	=> 'void',
-);
+package AI::TensorFlow::Libtensorflow::SessionOptions {#{{{
+	FFI::C->struct( 'TF_SessionOptions' => [
+	]);
 
-
-__END__
-
-# ::Status {{{
-package AI::TensorFlow::Libtensorflow::Status {
+	$ffi->attach( [ 'NewSessionOptions' => '_New' ] =>
+		[ ], => 'TF_SessionOptions' );
 }
 #}}}
+package AI::TensorFlow::Libtensorflow::Session {#{{{
+	FFI::C->struct( 'TF_Session' => [
+	]);
+
+	$ffi->attach( [ 'NewSession' => '_New' ] =>
+		[ 'TF_Graph', 'TF_SessionOptions', 'TF_Status' ],
+		=> 'TF_Session' => sub {
+			my ($xs, $class, @rest) = @_;
+			return $xs->(@rest);
+		});
+	$ffi->attach( [ 'SessionRun' => 'Run' ] =>
+		[ 'TF_Session',
+		'TF_Buffer',
+		'TF_Output', 'TF_Tensor', 'int',
+		'TF_Output', 'TF_Tensor', 'int',
+		'opaque', 'int',
+		'opaque',
+		'TF_Status',
+		],
+		=> 'void' );
+	$ffi->attach( [ 'CloseSession' => 'Close' ] =>
+		[ 'TF_Session',
+		'TF_Status',
+		],
+		=> 'void' );
+}
+#}}}
+
+__END__
 
 1;
 # vim:fdm=marker
