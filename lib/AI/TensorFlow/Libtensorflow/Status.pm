@@ -5,10 +5,7 @@ use AI::TensorFlow::Libtensorflow::Lib;
 use FFI::C;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
-$ffi->mangler(sub {
-	my($name) = @_;
-	"TF_$name";
-});
+$ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 
 # enum TF_Code {{{
 # From <tensorflow/c/tf_status.h>
@@ -32,8 +29,78 @@ $ffi->load_custom_type('::Enum', 'TF_Code',
 	DATA_LOSS           => 15,
 );#}}}
 
-$ffi->attach( [ 'NewStatus' => '_New' ] => [] => 'TF_Status' );
+=begin TF_CAPI_EXPORT
+
+TF_CAPI_EXPORT extern TF_Status* TF_NewStatus(void);
+
+=end TF_CAPI_EXPORT
+
+=cut
+
+$ffi->attach( [ 'NewStatus' => 'New' ] => [] => 'TF_Status' );
+
+=begin TF_CAPI_EXPORT
+
+TF_CAPI_EXPORT extern void TF_DeleteStatus(TF_Status*);
+
+=end TF_CAPI_EXPORT
+
+=cut
+
+$ffi->attach( [ 'DeleteStatus' => 'DESTROY' ] => [ 'TF_Status' ], 'void' );
+
+=begin TF_CAPI_EXPORT
+
+TF_CAPI_EXPORT extern void TF_SetStatus(TF_Status* s, TF_Code code,
+                                        const char* msg);
+
+=end TF_CAPI_EXPORT
+
+=cut
+
+$ffi->attach( 'SetStatus' =>
+	[ 'TF_Status', 'TF_Code', 'string' ],
+	'void' );
+
+=begin TF_CAPI_EXPORT
+
+TF_CAPI_EXPORT void TF_SetPayload(TF_Status* s, const char* key,
+                                  const char* value);
+=end TF_CAPI_EXPORT
+
+=cut
+
+$ffi->attach( 'SetPayload' => [ 'TF_Status', 'string', 'string' ],
+	'void' );
+
+=begin TF_CAPI_EXPORT
+
+TF_CAPI_EXPORT extern void TF_SetStatusFromIOError(TF_Status* s, int error_code,
+                                                   const char* context);
+=end TF_CAPI_EXPORT
+
+=cut
+
+$ffi->attach( 'SetStatusFromIOError' => [ 'TF_Status', 'int', 'string' ],
+	'void' );
+
+=begin TF_CAPI_EXPORT
+
+TF_CAPI_EXPORT extern TF_Code TF_GetCode(const TF_Status* s);
+
+=end TF_CAPI_EXPORT
+
+=cut
+
 $ffi->attach( 'GetCode' => [ 'TF_Status' ], 'TF_Code' );
-$ffi->attach( [ 'DeleteStatus' => '_Delete' ] => [ 'TF_Status' ], 'void' );
+
+=begin TF_CAPI_EXPORT
+
+TF_CAPI_EXPORT extern const char* TF_Message(const TF_Status* s);
+
+=end TF_CAPI_EXPORT
+
+=cut
+$ffi->attach( 'Message' => [ 'TF_Status' ], 'string' );
 
 1;

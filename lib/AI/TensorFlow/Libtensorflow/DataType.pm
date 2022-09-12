@@ -4,10 +4,7 @@ package AI::TensorFlow::Libtensorflow::DataType;
 use AI::TensorFlow::Libtensorflow::Lib;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
-$ffi->mangler(sub {
-	my($name) = @_;
-	"TF_DataType$name";
-});
+$ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_for_object('DataType'));
 
 # enum TF_DataType
 # From <tensorflow/c/tf_datatype.h>

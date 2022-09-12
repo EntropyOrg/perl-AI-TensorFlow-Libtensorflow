@@ -36,4 +36,24 @@ sub ffi {
 	};
 }
 
+sub mangler_default {
+	sub {
+		my ($name) = @_;
+		"TF_$name";
+	}
+}
+
+sub mangler_for_object {
+	my ($class, $object_name) = @_;
+	sub {
+		my ($name) = @_;
+
+		# constructor and destructors
+		return "TF_New${object_name}" if $name eq 'New';
+		return "TF_Delete${object_name}" if $name eq 'Delete';
+
+		return "TF_${object_name}$name";
+	};
+}
+
 1;

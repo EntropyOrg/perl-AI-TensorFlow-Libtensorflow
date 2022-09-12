@@ -25,7 +25,7 @@ sub LoadGraph {
 	my ($path, $checkpoint_prefix, $status) = @_;
 	my $buffer = ReadBufferFromFile( $path );
 
-	$status //= AI::TensorFlow::Libtensorflow::Status->_New;
+	$status //= AI::TensorFlow::Libtensorflow::Status->New;
 
 	my $graph = AI::TensorFlow::Libtensorflow::Graph->_New;
 	my $opts  = AI::TensorFlow::Libtensorflow::ImportGraphDefOptions->_New;

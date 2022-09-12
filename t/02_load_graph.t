@@ -19,7 +19,7 @@ subtest "Load graph" => sub {
 	ok $buf;
 
 	my $graph = AI::TensorFlow::Libtensorflow::Graph->_New;
-	my $status = AI::TensorFlow::Libtensorflow::Status->_New;
+	my $status = AI::TensorFlow::Libtensorflow::Status->New;
 	my $opts = AI::TensorFlow::Libtensorflow::ImportGraphDefOptions->_New;
 
 	$graph->ImportGraphDef( $buf, $opts, $status );

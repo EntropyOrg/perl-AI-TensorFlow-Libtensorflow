@@ -35,7 +35,7 @@ subtest "Session run" => sub {
 	my $output_op = AI::TensorFlow::Libtensorflow::Output->new( { oper => $graph->OperationByName( 'output_node0') , index => 0 } );
 	die "Can not init output op" unless $output_op;
 
-	my $status = AI::TensorFlow::Libtensorflow::Status->_New;
+	my $status = AI::TensorFlow::Libtensorflow::Status->New;
 	my $options = AI::TensorFlow::Libtensorflow::SessionOptions->_New;
 	my $session = AI::TensorFlow::Libtensorflow::Session->_New($graph, $options, $status);
 	die "Could not create session" unless $status->GetCode eq 'OK';
