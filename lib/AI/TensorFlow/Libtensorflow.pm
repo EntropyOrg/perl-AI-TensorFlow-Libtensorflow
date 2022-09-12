@@ -4,36 +4,17 @@ package AI::TensorFlow::Libtensorflow;
 use strict;
 use warnings;
 
-use FFI::CheckLib 0.28 qw( find_lib_or_die );
-use Alien::Libtensorflow;
-use Capture::Tiny;
-use Path::Tiny;
-
-use List::Util qw(first);
-use FFI::Platypus;
+use AI::TensorFlow::Libtensorflow::Lib;
 use FFI::C;
 
-sub lib {
-	find_lib_or_die(
-		lib => 'tensorflow',
-		symbol => ['TF_Version'],
-		alien => ['Alien::Libtensorflow'] );
-}
-
-my $ffi = FFI::Platypus->new( api => 2 );
+my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 FFI::C->ffi($ffi);
-$ffi->lib( __PACKAGE__->lib );
-$ffi->type('opaque', 'TF_Operation');
-#$ffi->type('object(AI::TensorFlow::Libtensorflow::Operation)', 'TF_Operation');
-$ffi->load_custom_type('::PtrObject', 'TF_Tensor', 'AI::TensorFlow::Libtensorflow::Tensor');
 
 $ffi->mangler(sub {
 	my($name) = @_;
 	"TF_$name";
 });
 
-$ffi->type('(opaque,size_t)->void', 'data_deallocator_t');
-$ffi->type('(opaque,size_t,opaque)->void', 'tensor_deallocator_t');
 
 # ::TensorFlow {{{
 sub new {
