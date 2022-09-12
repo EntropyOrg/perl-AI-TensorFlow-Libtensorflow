@@ -20,7 +20,7 @@ subtest "Allocate a tensor" => sub {
 	my $ndims = scalar @dims;
 	my $data_size_bytes = howbig(float) * reduce { $a * $b } (1, @dims);
 	my $tensor = AI::TensorFlow::Libtensorflow::Tensor->_Allocate(
-		AI::TensorFlow::Libtensorflow::DType::FLOAT,
+		AI::TensorFlow::Libtensorflow::DataType::FLOAT,
 		\@dims, $ndims,
 		$data_size_bytes,
 	);
@@ -32,7 +32,7 @@ subtest "Allocate a tensor" => sub {
 
 	memcpy $tensor->Data, $pdl_ptr, List::Util::min( $data_size_bytes, $tensor->ByteSize );
 
-	is $tensor->Type, AI::TensorFlow::Libtensorflow::DType::FLOAT, 'Check Type is FLOAT';
+	is $tensor->Type, AI::TensorFlow::Libtensorflow::DataType::FLOAT, 'Check Type is FLOAT';
 	is $tensor->NumDims, $ndims, 'Check NumDims';
 };
 
