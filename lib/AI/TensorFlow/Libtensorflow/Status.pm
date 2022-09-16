@@ -36,7 +36,6 @@ TF_CAPI_EXPORT extern TF_Status* TF_NewStatus(void);
 =end TF_CAPI_EXPORT
 
 =cut
-
 $ffi->attach( [ 'NewStatus' => 'New' ] => [] => 'TF_Status' );
 
 =begin TF_CAPI_EXPORT
@@ -46,7 +45,6 @@ TF_CAPI_EXPORT extern void TF_DeleteStatus(TF_Status*);
 =end TF_CAPI_EXPORT
 
 =cut
-
 $ffi->attach( [ 'DeleteStatus' => 'DESTROY' ] => [ 'TF_Status' ], 'void' );
 
 =begin TF_CAPI_EXPORT
@@ -57,10 +55,7 @@ TF_CAPI_EXPORT extern void TF_SetStatus(TF_Status* s, TF_Code code,
 =end TF_CAPI_EXPORT
 
 =cut
-
-$ffi->attach( 'SetStatus' =>
-	[ 'TF_Status', 'TF_Code', 'string' ],
-	'void' );
+$ffi->attach( 'SetStatus' => [ 'TF_Status', 'TF_Code', 'string' ], 'void' );
 
 =begin TF_CAPI_EXPORT
 
@@ -69,9 +64,7 @@ TF_CAPI_EXPORT void TF_SetPayload(TF_Status* s, const char* key,
 =end TF_CAPI_EXPORT
 
 =cut
-
-$ffi->attach( 'SetPayload' => [ 'TF_Status', 'string', 'string' ],
-	'void' );
+$ffi->attach( 'SetPayload' => [ 'TF_Status', 'string', 'string' ], 'void' );
 
 =begin TF_CAPI_EXPORT
 
@@ -80,7 +73,6 @@ TF_CAPI_EXPORT extern void TF_SetStatusFromIOError(TF_Status* s, int error_code,
 =end TF_CAPI_EXPORT
 
 =cut
-
 $ffi->attach( 'SetStatusFromIOError' => [ 'TF_Status', 'int', 'string' ],
 	'void' );
 
@@ -91,7 +83,6 @@ TF_CAPI_EXPORT extern TF_Code TF_GetCode(const TF_Status* s);
 =end TF_CAPI_EXPORT
 
 =cut
-
 $ffi->attach( 'GetCode' => [ 'TF_Status' ], 'TF_Code' );
 
 =begin TF_CAPI_EXPORT

@@ -6,30 +6,14 @@ use strict;
 use warnings;
 
 use lib 't/lib';
+use TF_Utils;
 
 use AI::TensorFlow::Libtensorflow;
 use PDL;
-use PDL::Core ':Internal';
-
-use FFI::Platypus::Buffer;
 
 subtest "Create a tensor" => sub {
-	my $ffi = FFI::Platypus->new( api => 1 );
-	my $pdl_closure = $ffi->closure( sub {
-		my ($pointer, $size, $pdl_addr) = @_;
-		# noop
-	});
-
 	my $p_data = sequence(float, 1, 5, 12);
-	my $p_dataref = $p_data->get_dataref;
-	my ($p_pointer, $p_size) = scalar_to_buffer $$p_dataref;
-	my $tensor = AI::TensorFlow::Libtensorflow::Tensor->_New(
-		AI::TensorFlow::Libtensorflow::DataType::FLOAT,
-		[ $p_data->dims ], $p_data->ndims,
-		$p_pointer, $p_size,
-		$pdl_closure, \$p_data,
-	);
-
+	my $tensor = TF_Utils::FloatPDLToTensor($p_data);
 	pass;
 };
 

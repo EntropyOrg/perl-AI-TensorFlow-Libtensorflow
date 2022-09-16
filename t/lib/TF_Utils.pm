@@ -1,7 +1,14 @@
 package TF_Utils;
 
 use AI::TensorFlow::Libtensorflow;
+use AI::TensorFlow::Libtensorflow::Lib;
 use Path::Tiny;
+
+use PDL::Core ':Internal';
+
+use FFI::Platypus::Buffer;
+
+my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 
 sub ScalarStringTensor {
 	my ($str, $status) = @_;
@@ -43,6 +50,23 @@ sub LoadGraph {
 	if( ! defined $checkpoint_prefix ) {
 		return $graph;
 	}
+}
+
+sub FloatPDLToTensor {
+	my ($p) = @_;
+	my $pdl_closure = $ffi->closure( sub {
+		my ($pointer, $size, $pdl_addr) = @_;
+		# noop
+	});
+
+	my $p_dataref = $p->get_dataref;
+	my ($p_pointer, $p_size) = scalar_to_buffer $$p_dataref;
+	my $tensor = AI::TensorFlow::Libtensorflow::Tensor->_New(
+		AI::TensorFlow::Libtensorflow::DataType::FLOAT,
+		[ $p->dims ], $p->ndims,
+		$p_pointer, $p_size,
+		$pdl_closure, \$p,
+	);
 }
 
 1;
