@@ -86,8 +86,7 @@ package TF::CAPI::Extract {
 		\@sorted;
 	};
 
-	lazy fdecl_data => method() {
-		my $re = $self->fdecl_re;
+	method _process_re($re) {
 		my @data;
 		my @sorted = $self->sorted_header_paths->@*;
 		for my $file (@sorted) {
@@ -101,6 +100,11 @@ package TF::CAPI::Extract {
 			}
 		}
 		\@data;
+	}
+
+	lazy fdecl_data => method() {
+		my $re = $self->fdecl_re;
+		$self->_process_re($re);
 	};
 
 	method generate_capi_funcs() {
