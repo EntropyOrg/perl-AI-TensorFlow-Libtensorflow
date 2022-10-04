@@ -50,9 +50,20 @@ package TF::CAPI::Extract {
 			->in( $self->capi_path ) ];
 	};
 
-	method run() {
-		my $pod = '';
+	lazy header_order => method() {
+		my @order = (
+			qr{/c/c_api.h$},
+			qr{/c/tf_[^.]+\.h$},
+			qr{/c/(ops|env|logging)\.h},
+			qr{kernels},
+			qr{/eager/},
+			qr{/experimental/},
+			qr{.*},
+		);
+		\@order;
+	};
 
+	lazy fdecl_re => method() {
 		my $re = qr{
 			(?>
 				(?<comment>
@@ -63,22 +74,22 @@ package TF::CAPI::Extract {
 				^ TF_CAPI_EXPORT [^;]+ ;
 			)
 		}xm;
+	};
 
-		my @data;
-		my @order = (
-			qr{/c/c_api.h$},
-			qr{/c/tf_[^.]+\.h$},
-			qr{/c/(ops|env|logging)\.h},
-			qr{kernels},
-			qr{/eager/},
-			qr{/experimental/},
-			qr{.*},
-		);
+	lazy sorted_header_paths => method() {
+		my @order = $self->header_order->@*;
 		my @sorted = iikeysort {
 				my $item = $_;
 				my $first = firstidx { $item =~ $_ } @order;
 				($first, length $_);
 			} $self->header_paths->@*;
+		\@sorted;
+	};
+
+	lazy fdecl_data => method() {
+		my $re = $self->fdecl_re;
+		my @data;
+		my @sorted = $self->sorted_header_paths->@*;
 		for my $file (@sorted) {
 			my $txt = $file->slurp_utf8;
 			while( $txt =~ /$re/g ) {
@@ -89,7 +100,13 @@ package TF::CAPI::Extract {
 				};
 			}
 		}
+		\@data;
+	};
 
+	method generate_capi_funcs() {
+		my $pod = '';
+
+		my @data = $self->fdecl_data->@*;
 		# Used for defensive assertion:
 		# These are mostly constructors that return a value
 		# (i.e., not void) but also take a function pointer as a
@@ -191,6 +208,10 @@ package TF::CAPI::Extract {
 		my $output = $self->lib_path->child(module_notional_filename($doc_name) =~ s/\.pm$/.pod/r );
 		$output->parent->mkpath;
 		$output->spew_utf8($pod);
+	}
+
+	method run() {
+		$self->generate_capi_funcs;
 	}
 }
 
