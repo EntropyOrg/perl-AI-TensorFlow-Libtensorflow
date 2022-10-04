@@ -4,6 +4,7 @@
 
 package TF::CAPI::Extract {
 	use FindBin;
+	use lib "$FindBin::Bin/../lib";
 
 	use Mu;
 	use CLI::Osprey;
@@ -17,7 +18,8 @@ package TF::CAPI::Extract {
 	use File::Find::Rule;
 
 	use Sort::Key::Multi qw(iikeysort);
-	use List::SomeUtils qw(firstidx);
+	use List::Util qw(uniq);
+	use List::SomeUtils qw(firstidx part);
 
 	use Module::Runtime qw(module_notional_filename);
 
@@ -240,8 +242,19 @@ package TF::CAPI::Extract {
 		$self->_process_re($re);
 	};
 
+	method check_types() {
+		my @data = $self->typedef_struct_data->@*;
+		require AI::TensorFlow::Libtensorflow;
+		require AI::TensorFlow::Libtensorflow::Lib;
+		my %types = map { $_ => 1 } AI::TensorFlow::Libtensorflow::Lib->ffi->types;
+		my %part;
+		@part{qw(todo done)} = part { exists $types{$_} } uniq map { $_->{name} } @data;
+		use DDP; p %part;
+	}
+
 	method run() {
 		$self->generate_capi_funcs;
+		$self->check_types;
 	}
 }
 
