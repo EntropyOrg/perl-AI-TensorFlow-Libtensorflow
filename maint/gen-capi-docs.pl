@@ -214,6 +214,32 @@ package TF::CAPI::Extract {
 		$output->spew_utf8($pod);
 	}
 
+	lazy typedef_struct_data => method() {
+		my $re = qr{
+			(?<opaque>
+				^
+				typedef      \s+
+				struct       \s+
+				(?<name>\w+) \s+
+				\k<name>     \s*
+				;
+			)
+			|
+			(?<transparent>
+				^
+				typedef      \s+
+				struct       \s+
+				(?<name>\w+) \s+
+				\{
+				[^\}]+
+				\}           \s+
+				\k<name>     \s*
+				;
+			)
+		}xm;
+		$self->_process_re($re);
+	};
+
 	method run() {
 		$self->generate_capi_funcs;
 	}
