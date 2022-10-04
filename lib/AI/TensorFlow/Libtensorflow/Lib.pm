@@ -38,6 +38,8 @@ typedef struct TF_SessionOptions TF_SessionOptions;
 
 =head3 TF_Graph
 
+L<AI::TensorFlow::Libtensorflow::Graph>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_Graph TF_Graph;
@@ -318,6 +320,8 @@ typedef struct TF_Shape TF_Shape;
 =cut
 
 =head3 TF_Status
+
+L<AI::TensorFlow::Libtensorflow::Status>
 
 =begin TF_CAPI_DEF
 
