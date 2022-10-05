@@ -2,12 +2,17 @@
 # PODNAME: gen-capi-docs
 # ABSTRACT: Generates POD for C API docs
 
-package TF::CAPI::Extract {
-	use FindBin;
-	use lib "$FindBin::Bin/../lib";
+use strict;
+use warnings;
 
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use Sub::Uplevel; # place early to override caller()
+
+package TF::CAPI::Extract {
 	use Mu;
 	use CLI::Osprey;
+	use AI::TensorFlow::Libtensorflow::Lib;
 
 	use feature qw(say postderef);
 	use Syntax::Construct qw(heredoc-indent);
@@ -18,10 +23,11 @@ package TF::CAPI::Extract {
 	use File::Find::Rule;
 
 	use Sort::Key::Multi qw(iikeysort);
-	use List::Util qw(uniq);
+	use List::Util qw(uniq first);
 	use List::SomeUtils qw(firstidx part);
 
 	use Module::Runtime qw(module_notional_filename);
+	use Module::Load qw(load);
 
 	option 'root_path' => (
 		is => 'ro',
@@ -106,13 +112,8 @@ package TF::CAPI::Extract {
 
 	lazy fdecl_data => method() {
 		my $re = $self->fdecl_re;
-		$self->_process_re($re);
-	};
+		my $data = $self->_process_re($re);
 
-	method generate_capi_funcs() {
-		my $pod = '';
-
-		my @data = $self->fdecl_data->@*;
 		# Used for defensive assertion:
 		# These are mostly constructors that return a value
 		# (i.e., not void) but also take a function pointer as a
@@ -123,20 +124,7 @@ package TF::CAPI::Extract {
 			TF_NewKernelBuilder
 			TFE_NewTensorHandleFromDeviceMemory
 		);
-
-		for my $data (@data) {
-			if( $data->{fdecl} =~ /TF_Version/ ) {
-				$data->{comment} =~ s,^// -+$,,m;
-			}
-
-			my @tags;
-			push @tags, 'experimental' if( $data->{file} =~ /experimental/ );
-			push @tags, 'eager' if( $data->{file} =~ /\beager\b/ );
-
-			my $text_decomment = $data->{comment} =~ s,^//(?: |$),,mgr;
-			$text_decomment =~ s,\A\n+,,sg;
-			$text_decomment =~ s,\n+\Z,,sg;
-
+		for my $data (@$data) {
 			my ($func_name) = $data->{fdecl} =~ m/ \A [^(]*? (\w+) \s* \( (?!\s*\*) /xs;
 			die "Could not extract function name" unless $func_name;
 
@@ -151,6 +139,30 @@ package TF::CAPI::Extract {
 						exists $TF_func_ptr{$func_name}
 					)
 				);
+
+			$data->{func_name} = $func_name;
+		}
+
+		$data;
+	};
+
+	method generate_capi_funcs() {
+		my $pod = '';
+
+		my @data = $self->fdecl_data->@*;
+
+		for my $data (@data) {
+			if( $data->{fdecl} =~ /TF_Version/ ) {
+				$data->{comment} =~ s,^// -+$,,m;
+			}
+
+			my @tags;
+			push @tags, 'experimental' if( $data->{file} =~ /experimental/ );
+			push @tags, 'eager' if( $data->{file} =~ /\beager\b/ );
+
+			my $text_decomment = $data->{comment} =~ s,^//(?: |$),,mgr;
+			$text_decomment =~ s,\A\n+,,sg;
+			$text_decomment =~ s,\n+\Z,,sg;
 
 			my $comment_pod = <<~EOF;
 			=over 2
@@ -168,7 +180,7 @@ package TF::CAPI::Extract {
 
 			my $func_pod = <<~EOF;
 
-			=head2 @{[ $func_name ]}
+			=head2 @{[ $data->{func_name} ]}
 
 			$comment_pod
 
@@ -244,17 +256,59 @@ package TF::CAPI::Extract {
 
 	method check_types() {
 		my @data = $self->typedef_struct_data->@*;
-		require AI::TensorFlow::Libtensorflow;
-		require AI::TensorFlow::Libtensorflow::Lib;
 		my %types = map { $_ => 1 } AI::TensorFlow::Libtensorflow::Lib->ffi->types;
 		my %part;
 		@part{qw(todo done)} = part { exists $types{$_} } uniq map { $_->{name} } @data;
 		use DDP; p %part;
 	}
 
+	method check_functions() {
+		my $functions = AI::TensorFlow::Libtensorflow::Lib->ffi->_attached_functions;
+		my @dupes = map { $_->[0]{c} }
+			grep { @$_ != 1 } values $functions->%*;
+		die "Duplicated functions @dupes" if @dupes;
+
+		my @data = $self->fdecl_data->@*;
+		my $first_missing_function = first {
+			! exists $functions->{$_->{func_name}}
+		} @data;
+		use DDP; p $first_missing_function;
+	}
+
 	method run() {
-		$self->generate_capi_funcs;
-		$self->check_types;
+		#$self->generate_capi_funcs;
+		#$self->check_types;
+		$self->check_functions;
+	}
+
+	sub BUILD {
+		Moo::Role->apply_roles_to_object(
+			AI::TensorFlow::Libtensorflow::Lib->ffi
+			=> qw(AttachedFunctionTrackable));
+		load 'AI::TensorFlow::Libtensorflow';
+	}
+
+}
+
+package AttachedFunctionTrackable {
+	use Mu::Role;
+	use Sub::Uplevel qw(uplevel);
+	use Hook::LexWrap;
+
+	ro _attached_functions => ( default => sub { {} } );
+
+	around attach => sub {
+	    my ($orig, $self, $name) = @_;
+	    my $real_name;
+	    wrap 'FFI::Platypus::DL::dlsym',
+		post => sub { $real_name = $_[1] if $_[-1] };
+	    my $ret = uplevel 3, $orig, @_[1..$#_];
+	    push $self->_attached_functions->{$real_name}->@*, {
+		    c => $real_name,
+		    package => (caller(2))[0],
+		    perl    => ref($name) ? $name->[1] : $name,
+	    };
+	    $ret;
 	}
 }
 
