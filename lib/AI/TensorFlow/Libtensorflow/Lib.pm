@@ -10,7 +10,7 @@ use Alien::Libtensorflow;
 use FFI::Platypus;
 
 use base 'Exporter::Tiny';
-our @EXPORT = qw(arg);
+our @EXPORT_OK = qw(arg);
 
 sub lib {
 	find_lib_or_die(
