@@ -12,13 +12,14 @@ version 0.001
 
 =head1 AUTHOR
 
-EntropyOrg <zmughal@cpan.org>
+Zakariyya Mughal <zmughal@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2021 by Zakariyya Mughal.
+This software is Copyright (c) 2021 by EntropyOrg.
 
-This is free software; you can redistribute it and/or modify it under
-the same terms as the Perl 5 programming language system itself.
+This is free software, licensed under:
+
+  The Apache License, Version 2.0, January 2004
 
 =cut
