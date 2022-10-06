@@ -1,4 +1,4 @@
-package PreloadPodWeaver;
+package inc::PreloadPodWeaver;
 
 use Moose;
 extends 'Dist::Zilla::Plugin';
