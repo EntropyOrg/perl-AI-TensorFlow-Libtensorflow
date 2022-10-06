@@ -11,9 +11,9 @@ use FFI::Platypus::Memory;
 FFI::C->struct( 'TF_Buffer' => [
 	data => 'opaque',
 	length => 'size_t',
-	#_data_deallocator => 'opaque', # data_deallocator_t
+	_data_deallocator => 'opaque', # data_deallocator_t
 	# this does not work?
-	_data_deallocator => 'data_deallocator_t',
+	#_data_deallocator => 'data_deallocator_t',
 ]);
 
 sub data_deallocator {
