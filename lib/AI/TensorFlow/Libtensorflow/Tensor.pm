@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Tensor;
 
-use AI::TensorFlow::Libtensorflow::Lib;
+use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 
@@ -15,16 +15,16 @@ TODO
 
 =cut
 $ffi->attach( [ 'NewTensor' => '_New' ] =>
-	[ 'TF_DataType', # dtype
+	[
+		arg 'TF_DataType' => 'dtype',
+		arg 'int64_t[]'   => 'dims',
+		arg 'int'         => 'num_dims',
 
-		'int64_t[]',   # (dims)
-		'int',         # (num_dims)
+		arg 'opaque'      => 'data',
+		arg 'size_t'      => 'len',
 
-		'opaque',      # (data)
-		'size_t',      # (len)
-
-		'opaque',      # tensor_deallocator_t (deallocator)
-		'opaque',      # (deallocator_arg)
+		arg 'opaque'      => 'deallocator',  # tensor_deallocator_t (deallocator)
+		arg 'opaque'      => 'deallocator_arg',
 	],
 	=> 'TF_Tensor' => sub {
 		my ($xs, $class,
@@ -95,7 +95,7 @@ $ffi->attach( [ 'TensorByteSize' => 'ByteSize' ],
 
 =cut
 $ffi->attach( [ 'TensorType' => 'Type' ],
-	[ 'TF_Tensor' ],
+	[ arg 'TF_Tensor' => 't' ],
 	=> 'TF_DataType',
 );
 

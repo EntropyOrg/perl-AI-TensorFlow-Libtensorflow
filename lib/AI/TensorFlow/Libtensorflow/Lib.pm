@@ -9,6 +9,9 @@ use FFI::CheckLib 0.28 qw( find_lib_or_die );
 use Alien::Libtensorflow;
 use FFI::Platypus;
 
+use base 'Exporter::Tiny';
+our @EXPORT = qw(arg);
+
 sub lib {
 	find_lib_or_die(
 		lib => 'tensorflow',
@@ -377,5 +380,33 @@ sub mangler_for_object {
 		return "TF_${object_name}$name";
 	};
 }
+
+sub arg :prototype(@) {
+	my $arg = AI::TensorFlow::Libtensorflow::Lib::_Arg->new(
+		type => shift,
+		id => shift,
+	);
+	return $arg, @_;
+}
+
+package # hide from PAUSE
+  AI::TensorFlow::Libtensorflow::Lib::_Arg {
+
+use Class::Tiny qw(type id);
+
+use overload
+	q{""} => 'stringify',
+	eq => 'eq';
+
+sub stringify { $_[0]->type }
+
+sub eq {
+	my ($self, $other, $swap) = @_;
+	"$self" eq "$other";
+}
+
+}
+
+
 
 1;
