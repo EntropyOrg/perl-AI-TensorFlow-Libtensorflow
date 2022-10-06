@@ -304,9 +304,11 @@ package AttachedFunctionTrackable {
 		post => sub { $real_name = $_[1] if $_[-1] };
 	    my $ret = uplevel 3, $orig, @_[1..$#_];
 	    push $self->_attached_functions->{$real_name}->@*, {
-		    c => $real_name,
-		    package => (caller(2))[0],
-		    perl    => ref($name) ? $name->[1] : $name,
+		    c        => $real_name,
+		    package  => (caller(2))[0],
+		    perl     => ref($name) ? $name->[1] : $name,
+		    args     => $_[3],
+		    return   => $_[4],
 	    };
 	    $ret;
 	}
