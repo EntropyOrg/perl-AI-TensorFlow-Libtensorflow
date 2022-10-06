@@ -7,6 +7,13 @@ $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 # C: TF_NewTensor
 #
 # Constructor
+=construct New
+
+TODO
+
+=tf_capi TF_NewTensor
+
+=cut
 $ffi->attach( [ 'NewTensor' => '_New' ] =>
 	[ 'TF_DataType', # dtype
 
@@ -43,6 +50,13 @@ $ffi->attach( [ 'NewTensor' => '_New' ] =>
 # C: TF_AllocateTensor
 #
 # Constructor
+=construct Allocate
+
+TODO
+
+=tf_capi TF_AllocateTensor
+
+=cut
 $ffi->attach( [ 'AllocateTensor', '_Allocate' ],
 	[ 'TF_DataType', # dtype'
 		'int64_t[]',   # (dims)
@@ -55,25 +69,41 @@ $ffi->attach( [ 'AllocateTensor', '_Allocate' ],
 	}
 );
 
-# C: TF_TensorData
+=attr Data
+
+=tf_capi TF_TensorData
+
+=cut
 $ffi->attach( [ 'TensorData' => 'Data' ],
 	[ 'TF_Tensor' ],
 	=> 'opaque'
 );
 
-# C: TF_TensorByteSize
+=attr ByteSize
+
+=tf_capi TF_TensorByteSize
+
+=cut
 $ffi->attach( [ 'TensorByteSize' => 'ByteSize' ],
 	[ 'TF_Tensor' ],
 	=> 'size_t'
 );
 
-# C: TF_TensorType
+=attr Type
+
+=tf_capi TF_TensorType
+
+=cut
 $ffi->attach( [ 'TensorType' => 'Type' ],
 	[ 'TF_Tensor' ],
 	=> 'TF_DataType',
 );
 
-# C: TF_NumDims
+=attr NumDims
+
+=tf_capi TF_NumDims
+
+=cut
 $ffi->attach( [ 'NumDims' => 'NumDims' ],
 	[ 'TF_Tensor' ],
 	=> 'int',
