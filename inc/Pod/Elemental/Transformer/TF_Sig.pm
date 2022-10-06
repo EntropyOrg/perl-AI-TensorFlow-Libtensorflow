@@ -57,14 +57,28 @@ around __paras_for_def_marker => sub {
   my ($orig, $self, $rest) = @_;
 
   my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
+  my $type_library = 'AI::TensorFlow::Libtensorflow::Lib::Types';
   my @types = ($rest);
-  for my $type (@types) {
-    if( my $which = eval { t($type); 'TT' } || eval { $ffi->type_meta($type); 'FFI' } ) {
-      #print STDERR "Found $type via $which\n";
+  my $process_type = sub {
+    my ($type) = @_;
+    my $new_type_text = $type;
+    my $info;
+    if( eval { $info->{TT} = t($type); 1 }
+      || eval { $info->{FFI} = $ffi->type_meta($type); 1 } ) {
+      if( $info->{TT} && $info->{TT}->library eq $type_library ) {
+        $new_type_text = "L<$type | $type_library/$type>";
+      }
     } else {
       die "Could not find type constraint or FFI::Platypus type $type";
     }
-  }
+
+    $new_type_text;
+  };
+
+  my $type_re = qr{
+    \A (?<ws>\s*) (?<type> \w+)
+  }xm;
+  $rest =~ s[$type_re]{$+{ws} . $process_type->($+{type}) }ge;
 
   my @replacements = $orig->($self, $rest);
 
