@@ -14,7 +14,19 @@ version 0.001
 
 =head2 Version
 
-L<< C<TF_Version> | AI::TensorFlow::Libtensorflow::Manual::CAPI/TF_Version >>
+  my $version = $class->Version();
+
+B<Returns>
+
+=over 4
+
+=item Str
+
+Version number for the C<libtensorflow> library.
+
+=back
+
+B<C API>: L<< C<TF_Version> | AI::TensorFlow::Libtensorflow::Manual::CAPI/TF_Version >>
 
 =head1 AUTHOR
 

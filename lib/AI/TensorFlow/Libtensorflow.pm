@@ -31,6 +31,12 @@ sub new {
 
 =classmethod Version
 
+  my $version = $class->Version();
+
+=for :returns
+= Str
+Version number for the C<libtensorflow> library.
+
 =tf_capi TF_Version
 
 =cut

@@ -11,6 +11,10 @@ $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 
 TODO
 
+=for :returns
+= TFTensor
+A new tensor with the given data and specification.
+
 =tf_capi TF_NewTensor
 
 =cut

@@ -37,6 +37,16 @@ $ffi->load_custom_type('::Enum', 'TF_DataType',
 	[ UINT64     => 23 ],
 );
 
+=method Size
+
+  my $size = $dtype->Size();
+
+=for :returns
+= size_t
+
+=tf_capi TF_DataTypeSize
+
+=cut
 $ffi->attach( 'Size' => ['TF_DataType'] => 'size_t' );
 
 1;
