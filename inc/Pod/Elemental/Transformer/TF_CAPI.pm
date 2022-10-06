@@ -44,10 +44,11 @@ sub _expand {
 
   my @ids = split /,\s*/, $content;
   my $doc_name = 'AI::TensorFlow::Libtensorflow::Manual::CAPI';
-  my $new_content = join ", ", map {
-    die "$_ does not look like a TensorFlow identifier" unless /^TF[E]?_\w+$/;
-    "L<< C<$_> | $doc_name/$_ >>"
-  } @ids;
+  my $new_content = "B<C API>: "
+    . join ", ", map {
+      die "$_ does not look like a TensorFlow identifier" unless /^TF[E]?_\w+$/;
+      "L<< C<$_> | $doc_name/$_ >>"
+    } @ids;
 
   push @replacements, Pod::Elemental::Element::Pod5::Ordinary->new(
     content => $new_content,
