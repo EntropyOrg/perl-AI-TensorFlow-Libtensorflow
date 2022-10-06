@@ -7,8 +7,8 @@ use lib 't/lib';
 use AI::TensorFlow::Libtensorflow;
 
 subtest "Get version of Tensorflow" => sub {
-	my $tf = AI::TensorFlow::Libtensorflow->new;
-	note $tf->version;
+	my $version = AI::TensorFlow::Libtensorflow->Version;
+	note $version;
 	pass;
 };
 

@@ -10,6 +10,12 @@ AI::TensorFlow::Libtensorflow - Bindings for TensorFlow deep learning library
 
 version 0.001
 
+=head1 CLASS METHODS
+
+=head2 Version
+
+L<< C<TF_Version> | AI::TensorFlow::Libtensorflow::Manual::CAPI/TF_Version >>
+
 =head1 AUTHOR
 
 Zakariyya Mughal <zmughal@cpan.org>

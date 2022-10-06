@@ -29,7 +29,12 @@ sub new {
 	bless {}, $class;
 }
 
-$ffi->attach( [ Version => 'version' ] => [], 'string' );#}}}
+=classmethod Version
+
+=tf_capi TF_Version
+
+=cut
+$ffi->attach( 'Version' => [], 'string' );#}}}
 
 
 package AI::TensorFlow::Libtensorflow::Output_Array {#{{{
