@@ -1,5 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Output;
 
+use namespace::autoclean;
 use FFI::C;
 
 use AI::TensorFlow::Libtensorflow::Lib;

@@ -1,5 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Session;
 
+use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow;
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);

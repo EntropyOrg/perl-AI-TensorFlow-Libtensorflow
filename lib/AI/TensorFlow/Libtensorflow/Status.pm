@@ -1,6 +1,7 @@
 package AI::TensorFlow::Libtensorflow::Status;
 # ABSTRACT: Status
 
+use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib;
 use FFI::C;
 

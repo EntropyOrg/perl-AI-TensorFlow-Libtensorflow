@@ -1,6 +1,7 @@
 package AI::TensorFlow::Libtensorflow::DataType;
 # ABSTRACT: Datatype enum
 
+use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;

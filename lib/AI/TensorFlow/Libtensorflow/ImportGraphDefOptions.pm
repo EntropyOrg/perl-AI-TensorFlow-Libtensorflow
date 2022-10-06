@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::ImportGraphDefOptions;
 
+use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib;
+
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 
