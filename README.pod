@@ -34,7 +34,7 @@ Zakariyya Mughal <zmughal@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2021 by EntropyOrg.
+This software is Copyright (c) 2021 by Zakariyya Mughal.
 
 This is free software, licensed under:
 
