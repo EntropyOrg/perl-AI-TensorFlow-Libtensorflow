@@ -80,6 +80,16 @@ use overload
 	'==' => '_op_num_equals',
 	'eq'  => '_op_eq',
 	'""'  => '_op_stringify';
+
+=operator C<< == >>
+
+Numeric equality of the underlying enum integer value.
+
+  use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
+  cmp_ok FLOAT, '==', FLOAT, 'Compare FLOAT objects numerically';
+  cmp_ok FLOAT, '==', 1    , 'FLOAT enumeration is internally 1';
+
+=cut
 sub _op_num_equals {
 	my ($a, $b, $swap) = @_;
 	my $int_a = ref $a ? 0+$$a : 0+$a;
@@ -92,6 +102,15 @@ sub _op_num_equals {
 		? $int_a == $int_b
 		: $int_b == $int_b
 }
+
+=operator C<< eq >>
+
+Compare string equality against type name.
+
+  use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
+  cmp_ok FLOAT, 'eq', 'FLOAT', 'Compare FLOAT object to string';
+
+=cut
 sub _op_eq {
 	my ($a, $b, $swap) = @_;
 	my $str_a = "$a";
@@ -104,6 +123,15 @@ sub _op_eq {
 		?  $str_a eq $str_b
 		:  $str_b eq $str_a;
 }
+
+=operator C<< "" >>
+
+Stringification to the name of the enumerated type name (e.g., FLOAT, DOUBLE).
+
+  use AI::TensorFlow::Libtensorflow::DataType qw(DOUBLE);
+  is "@{[ DOUBLE ]}", 'DOUBLE', 'Stringifies';
+
+=cut
 sub _op_stringify { $_REV_ENUM_DTYPE{ 0 + ${$_[0]}} }
 
 1;
@@ -123,32 +151,5 @@ __END__
 
 Enum representing native data types used inside of containers such as
 C<TFTensor|AI::TensorFlow::Libtensorflow::Lib::Types/TFTensor>.
-
-=head1 OPERATORS
-
-=begin :list
-
-= C<< == >>
-
-Numeric equality of the underlying enum integer value.
-
-  use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
-  cmp_ok FLOAT, '==', FLOAT, 'Compare FLOAT objects numerically';
-  cmp_ok FLOAT, '==', 1    , 'FLOAT enumeration is internally 1';
-
-= C<< eq >>
-Compare string equality against type name.
-
-  use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
-  cmp_ok FLOAT, 'eq', 'FLOAT', 'Compare FLOAT object to string';
-
-= C<< "" >>
-
-Stringification to the name of the enumerated type name (e.g., FLOAT, DOUBLE).
-
-  use AI::TensorFlow::Libtensorflow::DataType qw(DOUBLE);
-  is "@{[ DOUBLE ]}", 'DOUBLE', 'Stringifies';
-
-=end :list
 
 =cut
