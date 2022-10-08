@@ -40,6 +40,7 @@ my %_ENUM_DTYPE = (
 	UINT64     => 23,
 );
 my %_REV_ENUM_DTYPE = reverse %_ENUM_DTYPE;
+if( STRICT ) { die "Duplicate values for \%_ENUM_DTYPE" unless keys %_ENUM_DTYPE == keys %_REV_ENUM_DTYPE }
 
 my %_DTYPES;
 Const::Exporter->import(
