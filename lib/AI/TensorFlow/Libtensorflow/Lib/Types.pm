@@ -5,6 +5,7 @@ use Type::Library 0.008 -base,
 	-declare => [qw(
 		TFTensor
 		TFGraph
+		TFDataType
 	)];
 use Type::Utils -all;
 
@@ -21,5 +22,12 @@ Type for class L<AI::TensorFlow::Libtensorflow::Graph>.
 
 =cut
 class_type TFGraph => { class => 'AI::TensorFlow::Libtensorflow::Graph' };
+
+=type TFDataType
+
+Type for class L<AI::TensorFlow::Libtensorflow::DataType>
+
+=cut
+class_type TFDataType => { class => 'AI::TensorFlow::Libtensorflow::DataType' };
 
 1;
