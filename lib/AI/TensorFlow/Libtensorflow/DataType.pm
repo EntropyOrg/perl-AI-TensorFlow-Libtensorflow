@@ -40,7 +40,9 @@ my %_ENUM_DTYPE = (
 	UINT64     => 23,
 );
 my %_REV_ENUM_DTYPE = reverse %_ENUM_DTYPE;
-if( STRICT ) { die "Duplicate values for \%_ENUM_DTYPE" unless keys %_ENUM_DTYPE == keys %_REV_ENUM_DTYPE }
+if( STRICT ) { # ASSERT
+	die "Duplicate values for \%_ENUM_DTYPE" unless keys %_ENUM_DTYPE == keys %_REV_ENUM_DTYPE
+}
 
 my %_DTYPES;
 Const::Exporter->import(
@@ -95,7 +97,7 @@ sub _op_num_equals {
 	my ($a, $b, $swap) = @_;
 	my $int_a = ref $a ? 0+$$a : 0+$a;
 	my $int_b = ref $b ? 0+$$b : 0+$b;
-	if( STRICT ) {
+	if( STRICT ) { # ASSERT
 		Int->assert_valid($int_a);
 		Int->assert_valid($int_b);
 	}
@@ -116,7 +118,7 @@ sub _op_eq {
 	my ($a, $b, $swap) = @_;
 	my $str_a = "$a";
 	my $str_b = "$b";
-	if( STRICT ) {
+	if( STRICT ) { # ASSERT
 		Str->assert_valid($str_a);
 		Str->assert_valid($str_b);
 	}
