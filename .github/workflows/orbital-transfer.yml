@@ -36,9 +36,9 @@ jobs:
             ~/.orbital/extlib
             ~/.orbital/_orbital/author-local
             ~/.orbital/local
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.coverage }}-${{ github.sha }}
+          key: v0-${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.coverage }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.coverage }}-
+            v0-${{ runner.os }}-build-${{ env.cache-name }}-${{ matrix.coverage }}-
 
       - name: Set up Orbital Transfer
         shell: bash
