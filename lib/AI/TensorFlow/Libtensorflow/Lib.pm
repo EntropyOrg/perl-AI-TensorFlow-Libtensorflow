@@ -13,7 +13,8 @@ use base 'Exporter::Tiny';
 our @EXPORT_OK = qw(arg);
 
 sub lib {
-	find_lib_or_die(
+	$ENV{AI_TENSORFLOW_LIBTENSORFLOW_LIB_DLL}
+	// find_lib_or_die(
 		lib => 'tensorflow',
 		symbol => ['TF_Version'],
 		alien => ['Alien::Libtensorflow'] );
