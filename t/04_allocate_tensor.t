@@ -6,6 +6,7 @@ use strict;
 use warnings;
 
 use AI::TensorFlow::Libtensorflow;
+use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
 use List::Util qw(reduce);
 use PDL;
 use PDL::Core ':Internal';
@@ -19,18 +20,17 @@ subtest "Allocate a tensor" => sub {
 	my @dims = ( 1, 5, 12 );
 	my $ndims = scalar @dims;
 	my $data_size_bytes = howbig(float) * reduce { $a * $b } (1, @dims);
-	my $tensor = AI::TensorFlow::Libtensorflow::Tensor->_Allocate(
-		AI::TensorFlow::Libtensorflow::DataType::FLOAT,
-		\@dims, $ndims,
-		$data_size_bytes,
+	my $tensor = AI::TensorFlow::Libtensorflow::Tensor->Allocate(
+		FLOAT, \@dims, $data_size_bytes,
 	);
 
 	ok $tensor && $tensor->Data, 'Allocated tensor';
 
 	my $pdl = sequence(float, @dims );
-	my $pdl_ptr = scalar_to_pointer ${ $pdl->get_dataref };
 
-	memcpy $tensor->Data, $pdl_ptr, List::Util::min( $data_size_bytes, $tensor->ByteSize );
+	memcpy scalar_to_pointer($tensor->Data),
+		scalar_to_pointer(${ $pdl->get_dataref }),
+		List::Util::min( $data_size_bytes, $tensor->ByteSize );
 
 	is $tensor->Type, AI::TensorFlow::Libtensorflow::DataType::FLOAT, 'Check Type is FLOAT';
 	is $tensor->NumDims, $ndims, 'Check NumDims';

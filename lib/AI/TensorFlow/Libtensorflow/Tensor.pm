@@ -3,6 +3,8 @@ package AI::TensorFlow::Libtensorflow::Tensor;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use FFI::Platypus::Closure;
+use FFI::Platypus::Buffer qw(buffer_to_scalar);
+use List::Util qw(product);
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
@@ -89,14 +91,18 @@ TODO
 =tf_capi TF_AllocateTensor
 
 =cut
-$ffi->attach( [ 'AllocateTensor', '_Allocate' ],
-	[ 'TF_DataType', # dtype'
-		'int64_t[]',   # (dims)
-		'int',         # (num_dims)
-		'size_t',      # (len)
+$ffi->attach( [ 'AllocateTensor', 'Allocate' ],
+	[
+		arg 'TF_DataType'     => 'dtype',
+		arg 'tf_dims_buffer'  => [ qw(dims num_dims) ],
+		arg 'size_t'          => 'len',
 	],
 	=> 'TF_Tensor' => sub {
 		my ($xs, $class, @rest) = @_;
+		my ($dtype, $dims, $len) = @rest;
+		if( ! defined $len ) {
+			$len = $dtype->Size * product(@$dims);
+		}
 		my $obj = $xs->(@rest);
 	}
 );
@@ -122,12 +128,20 @@ $ffi->attach( [ 'DeleteTensor' => 'DESTROY' ],
 
 =attr Data
 
+TODO
+
 =tf_capi TF_TensorData
 
 =cut
 $ffi->attach( [ 'TensorData' => 'Data' ],
 	[ 'TF_Tensor' ],
 	=> 'opaque'
+	=> sub {
+		my ($xs, @rest) = @_;
+		my ($self) = @rest;
+		my $data_p = $xs->(@rest);
+		my $buffer = buffer_to_scalar($data_p, $self->ByteSize);
+	}
 );
 
 =attr ByteSize
