@@ -152,11 +152,28 @@ $ffi->attach( [ 'TensorType' => 'Type' ],
 
 =attr NumDims
 
+TODO
+
 =tf_capi TF_NumDims
 
 =cut
 $ffi->attach( [ 'NumDims' => 'NumDims' ],
 	[ 'TF_Tensor' ],
+	=> 'int',
+);
+
+=method Dim
+
+TODO
+
+=tf_capi TF_Dim
+
+=cut
+$ffi->attach( [ 'Dim' => 'Dim' ],
+	[
+		arg 'TF_Tensor' => 't',
+		arg 'int'       => 'dim_index',
+	],
 	=> 'int',
 );
 
