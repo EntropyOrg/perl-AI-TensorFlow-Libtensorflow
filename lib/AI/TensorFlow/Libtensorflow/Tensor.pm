@@ -2,14 +2,37 @@ package AI::TensorFlow::Libtensorflow::Tensor;
 
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
+use FFI::Platypus::Closure;
+
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
+
+$ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeScalarRef'
+	=> 'tf_tensor_buffer'
+);
+$ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFDimsBuffer'
+	=> 'tf_dims_buffer'
+);
 
 # C: TF_NewTensor
 #
 # Constructor
 =construct New
 
+=for :signature
+  #my $tensor = AI::TensorFlow::Libtensorflow::Tensor->New();
+  #TODO
+
+=for :param
+= TFDataType $dtype
+TODO
+= Dims $dims
+TODO
+= ScalarRef[Bytes] $data
+TODO
+= CodeRef $deallocator
+TODO
+= Ref $deallocator_arg
 TODO
 
 =for :returns
@@ -19,34 +42,38 @@ A new tensor with the given data and specification.
 =tf_capi TF_NewTensor
 
 =cut
-$ffi->attach( [ 'NewTensor' => '_New' ] =>
+$ffi->attach( [ 'NewTensor' => 'New' ] =>
 	[
 		arg 'TF_DataType' => 'dtype',
-		arg 'int64_t[]'   => 'dims',
-		arg 'int'         => 'num_dims',
 
-		arg 'opaque'      => 'data',
-		arg 'size_t'      => 'len',
+		# const int64_t* dims, int num_dims
+		arg 'tf_dims_buffer'   => [ qw(dims num_dims) ],
+
+		# void* data, size_t len
+		arg 'tf_tensor_buffer' => [ qw(data len) ],
 
 		arg 'opaque'      => 'deallocator',  # tensor_deallocator_t (deallocator)
 		arg 'opaque'      => 'deallocator_arg',
 	],
 	=> 'TF_Tensor' => sub {
 		my ($xs, $class,
-			$dtype,
-			$dims, $num_dims,
-			$data, $len,
+			$dtype, $dims, $data,
 			$deallocator, $deallocator_arg,
 		) = @_;
-		my $deallocator_ptr = $ffi->cast( 'tensor_deallocator_t', 'opaque', $deallocator);
+		my $deallocator_closure = $ffi->closure( $deallocator );
+		$deallocator_closure->sticky;
+		my $deallocator_ptr = $ffi->cast(
+			'tensor_deallocator_t', 'opaque',
+			$deallocator_closure );
+
 		my $obj = $xs->(
 			$dtype,
-			$dims, $num_dims,
-			$data, $len,
+			$dims,
+			$data,
 			$deallocator_ptr, $deallocator_arg,
 		);
 
-		$obj->{PDL} = $$deallocator_arg;
+		$obj->{_deallocator_closure} = $deallocator_closure;
 
 		$obj;
 	});
@@ -71,6 +98,25 @@ $ffi->attach( [ 'AllocateTensor', '_Allocate' ],
 	=> 'TF_Tensor' => sub {
 		my ($xs, $class, @rest) = @_;
 		my $obj = $xs->(@rest);
+	}
+);
+
+=method DESTROY
+
+TODO
+
+=tf_capi TF_DeleteTensor
+
+=cut
+$ffi->attach( [ 'DeleteTensor' => 'DESTROY' ],
+	[ arg 'TF_Tensor' => 't' ]
+	=> 'void'
+	=> sub {
+		my ($xs, $t) = @_;
+		$xs->($t);
+		if( exists $self->{_deallocator_closure} ) {
+			$self->{_deallocator_closure}->unstick;
+		}
 	}
 );
 
