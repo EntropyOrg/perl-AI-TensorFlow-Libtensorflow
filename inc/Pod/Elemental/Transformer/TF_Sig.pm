@@ -7,7 +7,8 @@ extends 'Pod::Elemental::Transformer::List';
 use lib 'lib';
 use AI::TensorFlow::Libtensorflow::Lib;
 use AI::TensorFlow::Libtensorflow::Lib::Types qw(-all);
-use Types::Standard qw(Maybe Str);
+use Types::Standard qw(Maybe Str Int ArrayRef CodeRef ScalarRef Ref);
+use Types::Encodings qw(Bytes);
 use Type::Registry qw(t);
 
 use namespace::autoclean;

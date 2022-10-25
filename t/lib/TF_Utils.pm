@@ -2,6 +2,7 @@ package TF_Utils;
 
 use AI::TensorFlow::Libtensorflow;
 use AI::TensorFlow::Libtensorflow::Lib;
+use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
 use Path::Tiny;
 
 use PDL::Core ':Internal';
@@ -54,19 +55,17 @@ sub LoadGraph {
 
 sub FloatPDLToTensor {
 	my ($p) = @_;
-	my $pdl_closure = $ffi->closure( sub {
+	my $pdl_closure = sub {
 		my ($pointer, $size, $pdl_addr) = @_;
 		# noop
-	});
+	};
 
 	my $p_dataref = $p->get_dataref;
-	my ($p_pointer, $p_size) = scalar_to_buffer $$p_dataref;
-	my $tensor = AI::TensorFlow::Libtensorflow::Tensor->_New(
-		AI::TensorFlow::Libtensorflow::DataType::FLOAT,
-		[ $p->dims ], $p->ndims,
-		$p_pointer, $p_size,
-		$pdl_closure, \$p,
+	my $tensor = AI::TensorFlow::Libtensorflow::Tensor->New(
+		FLOAT, [ $p->dims ], $p_dataref, $pdl_closure
 	);
+
+	$tensor;
 }
 
 1;
