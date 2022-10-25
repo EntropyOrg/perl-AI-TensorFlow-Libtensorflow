@@ -2,9 +2,13 @@ package AI::TensorFlow::Libtensorflow::Lib::_Alloc;
 # ABSTRACT: [private] Allocation utilities
 
 use AI::TensorFlow::Libtensorflow::Lib;
+use AI::TensorFlow::Libtensorflow::Tensor;
+use AI::TensorFlow::Libtensorflow::DataType qw(INT8);
 use FFI::Platypus::Memory qw(malloc free strcpy);
-use FFI::Platypus::Buffer qw(buffer_to_scalar);
+use FFI::Platypus::Buffer qw(buffer_to_scalar window);
 use Sub::Quote qw(quote_sub);
+
+use Feature::Compat::Defer;
 
 my $ffi = FFI::Platypus->new;
 $ffi->lib(undef);
@@ -44,8 +48,51 @@ use Const::Fast;
 const our $EIGEN_MAX_ALIGN_BYTES => do { _tf_alignment(); };
 
 sub _tf_alignment {
-	warn "TODO";
-	return 64;
+	# Bytes of alignment sorted in descending order:
+	# NOTE Alignment can not currently be larger than 128-bytes as the pure
+	# Perl implementation of _aligned_alloc() only supports alignment of up
+	# to 255 bytes (which means 128 bytes is the maximum power-of-two
+	# alignment).
+	my @alignments = map 2**$_, reverse 0..7;
+
+	# 1-byte element
+	my $el = INT8;
+	my $el_size = $el->Size;
+
+	my $max_alignment = $alignments[0];
+	my $req_size = 2 * $max_alignment + $el_size;
+	# All data that is sent to TF_NewTensor here is within the the block of
+	# memory allocated at $ptr_base.
+	my $ptr_base = malloc($req_size);
+	defer { free($ptr_base); }
+
+	# start at offset that is aligned with $max_alignment
+	my $ptr = $ptr_base + ( $max_alignment - $ptr_base % $max_alignment );
+
+	my $create_tensor_at_alignment = sub {
+		my ($n, $dealloc_called) = @_;
+		my $offset = $n - $ptr % $n;
+		my $ptr_offset = $ptr + $offset;
+		my $space_for_data = $req_size - $offset;
+
+		my $data; window($data, $ptr_offset, $space_for_data);
+
+		return AI::TensorFlow::Libtensorflow::Tensor->New(
+			$el, [int($space_for_data/$el_size)], \$data, sub {
+				$$dealloc_called = 1
+			}
+		);
+	};
+
+	for my $a_idx (0..@alignments-2) {
+		my @dealloc = (0, 0);
+		my @t = map {
+			$create_tensor_at_alignment->($alignments[$a_idx + $_], \$dealloc[$_]);
+		} (0..1);
+		return $alignments[$a_idx] if $dealloc[0] == 0 && $dealloc[1] == 1;
+	}
+
+	return 1;
 }
 
 sub _tf_aligned_alloc {
