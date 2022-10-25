@@ -101,7 +101,7 @@ $ffi->attach( [ 'AllocateTensor', 'Allocate' ],
 		my ($xs, $class, @rest) = @_;
 		my ($dtype, $dims, $len) = @rest;
 		if( ! defined $len ) {
-			$len = $dtype->Size * product(@$dims);
+			$len = product($dtype->Size, @$dims);
 		}
 		my $obj = $xs->(@rest);
 	}

@@ -7,7 +7,7 @@ use warnings;
 
 use AI::TensorFlow::Libtensorflow;
 use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
-use List::Util qw(reduce);
+use List::Util qw(product);
 use PDL;
 use PDL::Core ':Internal';
 
@@ -19,7 +19,7 @@ subtest "Allocate a tensor" => sub {
 
 	my @dims = ( 1, 5, 12 );
 	my $ndims = scalar @dims;
-	my $data_size_bytes = howbig(float) * reduce { $a * $b } (1, @dims);
+	my $data_size_bytes = product(howbig(float), @dims);
 	my $tensor = AI::TensorFlow::Libtensorflow::Tensor->Allocate(
 		FLOAT, \@dims, $data_size_bytes,
 	);
@@ -30,7 +30,7 @@ subtest "Allocate a tensor" => sub {
 
 	memcpy scalar_to_pointer($tensor->Data),
 		scalar_to_pointer(${ $pdl->get_dataref }),
-		List::Util::min( $data_size_bytes, $tensor->ByteSize );
+		List::Util::min( $tensor->ByteSize, $data_size_bytes );
 
 	is $tensor->Type, AI::TensorFlow::Libtensorflow::DataType::FLOAT, 'Check Type is FLOAT';
 	is $tensor->NumDims, $ndims, 'Check NumDims';
