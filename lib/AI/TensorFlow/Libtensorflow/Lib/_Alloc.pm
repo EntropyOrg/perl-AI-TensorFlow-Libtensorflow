@@ -10,6 +10,10 @@ use Sub::Quote qw(quote_sub);
 
 use Feature::Compat::Defer;
 
+# If _aligned_alloc() implementation needs the size to be a multiple of the
+# alignment.
+our $_ALIGNED_ALLOC_ALIGNMENT_MULTIPLE = 0;
+
 my $ffi = FFI::Platypus->new;
 $ffi->lib(undef);
 if( $ffi->find_symbol('aligned_alloc') ) {
@@ -19,6 +23,7 @@ if( $ffi->find_symbol('aligned_alloc') ) {
 	$ffi->attach( [ 'aligned_alloc' => '_aligned_alloc' ] =>
 		[ 'size_t', 'size_t' ] => 'opaque' );
 	*_aligned_free = *free;
+	$_ALIGNED_ALLOC_ALIGNMENT_MULTIPLE = 1;
 } else {
 	# Pure Perl _aligned_alloc()
 	quote_sub '_aligned_alloc', q{
@@ -41,10 +46,12 @@ if( $ffi->find_symbol('aligned_alloc') ) {
 		my $offset = ord(buffer_to_scalar($aligned - 1, 1));
 		free( $aligned - $offset );
 	};
+	$_ALIGNED_ALLOC_ALIGNMENT_MULTIPLE = 0;
 }
 
 use Const::Fast;
 # See <https://github.com/tensorflow/tensorflow/issues/58112>.
+# This is a power-of-two.
 const our $EIGEN_MAX_ALIGN_BYTES => do { _tf_alignment(); };
 
 sub _tf_alignment {
@@ -97,7 +104,13 @@ sub _tf_alignment {
 
 sub _tf_aligned_alloc {
 	my ($class, $size) = @_;
-	return _aligned_alloc($EIGEN_MAX_ALIGN_BYTES, $size);
+	return _aligned_alloc($EIGEN_MAX_ALIGN_BYTES,
+		$_ALIGNED_ALLOC_ALIGNMENT_MULTIPLE
+		# since $EIGEN_MAX_ALIGN_BYTES is a power-of-two, use
+		# two's complement bit arithmetic
+		?  ($size + $EIGEN_MAX_ALIGN_BYTES - 1 ) & -$EIGEN_MAX_ALIGN_BYTES
+		: $size
+	);
 }
 
 sub _tf_aligned_free {
