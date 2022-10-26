@@ -13,7 +13,7 @@ subtest "(CAPI, Tensor)" => sub {
 	my $n = 6;
 	my $num_bytes = $n * FLOAT->Size;
 	my $values_ptr = AI::TensorFlow::Libtensorflow::Lib::_Alloc->_tf_aligned_alloc($num_bytes);
-	my $values; window( $values, $values_ptr, $num_bytes );
+	window( my $values, $values_ptr, $num_bytes );
 	my @dims = (2, 3);
 
 	note "Creating tensor";

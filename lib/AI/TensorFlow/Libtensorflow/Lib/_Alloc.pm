@@ -82,7 +82,7 @@ sub _tf_alignment {
 		my $ptr_offset = $ptr + $offset;
 		my $space_for_data = $req_size - $offset;
 
-		my $data; window($data, $ptr_offset, $space_for_data);
+		window(my $data, $ptr_offset, $space_for_data);
 
 		return AI::TensorFlow::Libtensorflow::Tensor->New(
 			$el, [int($space_for_data/$el_size)], \$data, sub {
