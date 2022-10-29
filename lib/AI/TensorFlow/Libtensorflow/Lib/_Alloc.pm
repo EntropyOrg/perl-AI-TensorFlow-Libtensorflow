@@ -68,7 +68,7 @@ sub _tf_alignment {
 
 	my $max_alignment = $alignments[0];
 	my $req_size = 2 * $max_alignment + $el_size;
-	# All data that is sent to TF_NewTensor here is within the the block of
+	# All data that is sent to TF_NewTensor here is within the block of
 	# memory allocated at $ptr_base.
 	my $ptr_base = malloc($req_size);
 	defer { free($ptr_base); }
