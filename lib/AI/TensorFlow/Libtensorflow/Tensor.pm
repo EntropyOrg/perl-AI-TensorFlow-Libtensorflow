@@ -1,4 +1,5 @@
 package AI::TensorFlow::Libtensorflow::Tensor;
+# ABSTRACT: A multi-dimensional array of elements of a single data type
 
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
@@ -15,6 +16,51 @@ $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeSc
 $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFDimsBuffer'
 	=> 'tf_dims_buffer'
 );
+
+=head1 SYNOPSIS
+
+  use aliased 'AI::TensorFlow::Libtensorflow::Tensor';
+  use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
+  use List::Util qw(product);
+
+  my $dims = [3, 3];
+
+  # Allocate a 3 by 3 ndarray of type FLOAT
+  my $t = Tensor->Allocate(FLOAT, $dims);
+  ok $t->TensorByteSize, product(FLOAT->Size, @$dims);
+
+=head1 DESCRIPTION
+
+A TensorFlow C<Tensor> is an object that contains values of a
+single type arranged in an n-dimensional array.
+
+For types other than L<STRING|AI::TensorFlow::Libtensorflow::DataType/STRING>,
+the data buffer is stored in L<row major order|https://en.wikipedia.org/wiki/Row-_and_column-major_order>.
+
+Of note, this is different from the definition of tensor used in
+mathematics and physics which can also be represented as a
+multi-dimensional array in some cases, but are defined not by the
+representation but by how they transform. For more on this see
+
+=over 4
+
+Lim, L.-H. (2021). L<Tensors in computations|https://galton.uchicago.edu/~lekheng/work/acta.pdf>.
+Acta Numerica, 30, 555–764. Cambridge University Press.
+DOI: L<https://doi.org/10.1017/S0962492921000076>.
+
+=back
+
+=head1 SEE ALSO
+
+=begin :list
+
+= L<PDL>
+Also provides ndarrays for access from Perl
+
+=end :list
+
+=cut
+
 
 # C: TF_NewTensor
 #
