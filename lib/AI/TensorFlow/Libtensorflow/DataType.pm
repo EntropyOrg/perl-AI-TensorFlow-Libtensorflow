@@ -153,6 +153,100 @@ __END__
 =head1 DESCRIPTION
 
 Enum representing native data types used inside of containers such as
-C<TFTensor|AI::TensorFlow::Libtensorflow::Lib::Types/TFTensor>.
+L<TFTensor|AI::TensorFlow::Libtensorflow::Lib::Types/TFTensor>.
+
+=cut
+
+=constant STRING
+
+String.
+
+=constant BOOL
+
+Boolean.
+
+=constant HALF
+
+16-bit half-precision floating-point (C<float16>).
+
+=constant FLOAT
+
+32-bit single-precision floating-point (C<float32>).
+
+=constant DOUBLE
+
+64-bit double-precision floating-point (C<float64>).
+
+=constant BFLOAT16
+
+16-bit truncated floating-point.
+
+=constant COMPLEX64
+
+32-bit single-precision complex floating-point.
+
+=constant COMPLEX128
+
+64-bit double-precision complex floating-point.
+
+=constant INT8
+
+8-bit signed integer.
+
+=constant INT16
+
+16-bit signed integer.
+
+=constant INT32
+
+32-bit signed integer.
+
+=constant INT64
+
+64-bit signed integer.
+
+=constant UINT8
+
+8-bit unsigned integer.
+
+=constant UINT16
+
+16-bit unsigned integer.
+
+=constant UINT32
+
+32-bit unsigned integer.
+
+=constant UINT64
+
+64-bit unsigned integer.
+
+=constant QINT8
+
+8-bit quantized signed integer.
+
+=constant QINT16
+
+16-bit quantized signed integer.
+
+=constant QINT32
+
+32-bit quantized signed integer.
+
+=constant QUINT8
+
+8-bit quantized unsigned integer.
+
+=constant QUINT16
+
+16-bit quantized unsigned integer.
+
+=constant RESOURCE
+
+Handle to a mutable resource.
+
+=constant VARIANT
+
+Variant.
 
 =cut
