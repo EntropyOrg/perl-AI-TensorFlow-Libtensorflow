@@ -6,10 +6,6 @@
 
 AI::TensorFlow::Libtensorflow - Bindings for TensorFlow deep learning library
 
-=head1 VERSION
-
-version 0.001
-
 =head1 CLASS METHODS
 
 =head2 Version
