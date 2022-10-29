@@ -75,6 +75,10 @@ $ffi->attach( [ 'NewTensor' => 'New' ] =>
 			$deallocator_ptr, $deallocator_arg,
 		);
 
+		# Return early if no TF_Tensor created
+		# TODO should this throw an exception instead?
+		return unless $obj;
+
 		$obj->{_deallocator_closure} = $deallocator_closure;
 
 		$obj;
