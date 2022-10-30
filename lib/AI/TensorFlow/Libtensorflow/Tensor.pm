@@ -4,7 +4,7 @@ package AI::TensorFlow::Libtensorflow::Tensor;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use FFI::Platypus::Closure;
-use FFI::Platypus::Buffer qw(buffer_to_scalar);
+use FFI::Platypus::Buffer qw(window);
 use List::Util qw(product);
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
@@ -19,7 +19,7 @@ $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFDimsBuffe
 
 =head1 SYNOPSIS
 
-  use aliased 'AI::TensorFlow::Libtensorflow::Tensor';
+  use aliased 'AI::TensorFlow::Libtensorflow::Tensor' => 'Tensor';
   use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
   use List::Util qw(product);
 
@@ -31,13 +31,13 @@ $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFDimsBuffe
 
 =head1 DESCRIPTION
 
-A TensorFlow C<Tensor> is an object that contains values of a
+A C<TFTensor> is an object that contains values of a
 single type arranged in an n-dimensional array.
 
 For types other than L<STRING|AI::TensorFlow::Libtensorflow::DataType/STRING>,
 the data buffer is stored in L<row major order|https://en.wikipedia.org/wiki/Row-_and_column-major_order>.
 
-Of note, this is different from the definition of tensor used in
+Of note, this is different from the definition of I<tensor> used in
 mathematics and physics which can also be represented as a
 multi-dimensional array in some cases, but are defined not by the
 representation but by how they transform. For more on this see
@@ -68,24 +68,50 @@ Also provides ndarrays for access from Perl
 =construct New
 
 =for :signature
-  #my $tensor = AI::TensorFlow::Libtensorflow::Tensor->New();
-  #TODO
+New( $dtype, $dims, $data, $deallocator, $deallocator_arg )
+
+Creates a C<TFTensor> from a data buffer C<$data> with the given specification
+of data type C<$dtype> and dimensions C<$dims>.
+
+  # Create a buffer containing 0 through 8 single-precision
+  # floating-point data.
+  my $data = pack("f*",  0..8);
+
+  $t = Tensor->New(
+    FLOAT, [3,3], \$data, sub { undef $data }, undef
+  );
+
+  ok $t, 'Created 3-by-3 float TFTensor';
+
+Implementation note: if C<$dtype> is not a
+L<STRING|AI::TensorFlow::Libtensorflow::DataType/STRING>
+or
+L<RESOURCE|AI::TensorFlow::Libtensorflow::DataType/RESOURCE>,
+then the pointer for C<$data> is checked to see if meets the
+TensorFlow's alignment preferences. If it does not, the
+contents of C<$data> are copied into a new buffer and
+C<$deallocator> is called during construction.
+Otherwise the contents of C<$data> are not owned by the returned
+C<TFTensor>.
 
 =for :param
 = TFDataType $dtype
-TODO
+DataType for the C<TFTensor>.
 = Dims $dims
-TODO
+An C<ArrayRef> of the size of each dimension.
 = ScalarRef[Bytes] $data
-TODO
+Data buffer for the contents of the C<TFTensor>.
 = CodeRef $deallocator
-TODO
-= Ref $deallocator_arg
-TODO
+A callback used to deallocate C<$data> which is passed the
+parameters C<<
+  $deallocator->( opaque $pointer, size_t $size, opaque $deallocator_arg)
+>>.
+= Ref $deallocator_arg [optional, default: C<undef>]
+Argument that is passed to the C<$deallocator> callback.
 
 =for :returns
 = TFTensor
-A new tensor with the given data and specification.
+A new C<TFTensor> with the given data and specification.
 
 =tf_capi TF_NewTensor
 
@@ -136,7 +162,30 @@ $ffi->attach( [ 'NewTensor' => 'New' ] =>
 # Constructor
 =construct Allocate
 
-TODO
+This constructs a C<TFTensor> with the memory for the C<TFTensor>
+allocated and owned by the C<TFTensor> itself. Unlike with L</New>
+the allocated memory satisfies TensorFlow's alignment preferences.
+
+See L</Data> for how to write to the data buffer.
+
+  use AI::TensorFlow::Libtensorflow::DataType qw(DOUBLE);
+
+  # Allocate a 2-by-2 ndarray of type DOUBLE
+  $dims = [2,2];
+  $t = Tensor->Allocate(DOUBLE, $dims, product(DOUBLE->Size, @$dims));
+
+=for :param
+= TFDataType $dtype
+DataType for the C<TFTensor>.
+= Dims $dims
+An C<ArrayRef> of the size of each dimension.
+= size_t $len [optional]
+Number of bytes for the data buffer. If a value is not given,
+this is calculated from C<$dtype> and C<$dims>.
+
+=for :returns
+= TFTensor
+A C<TFTensor> with memory allocated for data buffer.
 
 =tf_capi TF_AllocateTensor
 
@@ -159,7 +208,7 @@ $ffi->attach( [ 'AllocateTensor', 'Allocate' ],
 
 =method DESTROY
 
-TODO
+Default destructor.
 
 =tf_capi TF_DeleteTensor
 
@@ -178,7 +227,30 @@ $ffi->attach( [ 'DeleteTensor' => 'DESTROY' ],
 
 =attr Data
 
-TODO
+Provides a way to access the data buffer for the C<TFTensor>. The
+C<ScalarRef> that it returns is read-only, but the underlying
+pointer can be access as long as one is careful when handling the
+data.
+
+  use AI::TensorFlow::Libtensorflow::DataType qw(DOUBLE);
+  use FFI::Platypus::Buffer qw(scalar_to_pointer);
+  use FFI::Platypus::Memory qw(memcpy);
+
+  $t = Tensor->Allocate(DOUBLE, [2,2]);
+
+  # [2,2] identity matrix
+  my $eye_data = pack 'd*', (1, 0, 0, 1);
+
+  memcpy scalar_to_pointer(${ $t->Data }),
+         scalar_to_pointer($eye_data),
+         $t->ByteSize;
+
+  ok ${ $t->Data } eq $eye_data, 'contents are the same';
+
+=for :returns
+= ScalarRef[Bytes]
+Returns a B<read-only> ScalarRef for the C<TFTensor>'s data
+buffer.
 
 =tf_capi TF_TensorData
 
@@ -190,11 +262,16 @@ $ffi->attach( [ 'TensorData' => 'Data' ],
 		my ($xs, @rest) = @_;
 		my ($self) = @rest;
 		my $data_p = $xs->(@rest);
-		my $buffer = buffer_to_scalar($data_p, $self->ByteSize);
+		window(my $buffer, $data_p, $self->ByteSize);
+		\$buffer;
 	}
 );
 
 =attr ByteSize
+
+=for :returns
+= size_t
+Returns the number of bytes for the C<TFTensor>'s data buffer.
 
 =tf_capi TF_TensorByteSize
 
@@ -206,6 +283,10 @@ $ffi->attach( [ 'TensorByteSize' => 'ByteSize' ],
 
 =attr Type
 
+=for :returns
+= TFDataType
+The C<TFTensor>'s data type.
+
 =tf_capi TF_TensorType
 
 =cut
@@ -216,7 +297,9 @@ $ffi->attach( [ 'TensorType' => 'Type' ],
 
 =attr NumDims
 
-TODO
+=for :returns
+= Int
+The number of dimensions for the C<TFTensor>.
 
 =tf_capi TF_NumDims
 
@@ -228,7 +311,16 @@ $ffi->attach( [ 'NumDims' => 'NumDims' ],
 
 =method Dim
 
-TODO
+=for :signature
+Dim( $dim_index )
+
+=for :param
+= Int $dim_index
+The zero-based index for a given dimension.
+
+=for :returns
+= Int
+The extent of the given dimension.
 
 =tf_capi TF_Dim
 
@@ -238,7 +330,7 @@ $ffi->attach( [ 'Dim' => 'Dim' ],
 		arg 'TF_Tensor' => 't',
 		arg 'int'       => 'dim_index',
 	],
-	=> 'int',
+	=> 'int64_t',
 );
 
 1;

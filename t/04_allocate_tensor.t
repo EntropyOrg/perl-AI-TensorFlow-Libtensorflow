@@ -28,7 +28,7 @@ subtest "Allocate a tensor" => sub {
 
 	my $pdl = sequence(float, @dims );
 
-	memcpy scalar_to_pointer($tensor->Data),
+	memcpy scalar_to_pointer(${ $tensor->Data }),
 		scalar_to_pointer(${ $pdl->get_dataref }),
 		List::Util::min( $tensor->ByteSize, $data_size_bytes );
 

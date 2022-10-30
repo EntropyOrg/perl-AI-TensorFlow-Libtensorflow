@@ -5,7 +5,7 @@ use aliased 'AI::TensorFlow::Libtensorflow' => 'tf';
 use aliased 'AI::TensorFlow::Libtensorflow::Lib';
 use aliased 'AI::TensorFlow::Libtensorflow::Tensor';
 use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
-use FFI::Platypus::Buffer qw(window);
+use FFI::Platypus::Buffer qw(window scalar_to_pointer);
 use FFI::Platypus::Memory qw(memset free);
 use AI::TensorFlow::Libtensorflow::Lib::_Alloc;
 
@@ -35,7 +35,8 @@ subtest "(CAPI, Tensor)" => sub {
 	is $t->Dim(0), $dims[0], 'dim 0';
 	is $t->Dim(1), $dims[1], 'dim 1';
 	is $t->ByteSize, $num_bytes, 'bytes';
-	is $t->Data, $values, 'data at same pointer address';
+	is scalar_to_pointer(${$t->Data}), scalar_to_pointer($values),
+		'data at same pointer address';
 	undef $t;
 	ok $deallocator_called, 'deallocated';
 };
