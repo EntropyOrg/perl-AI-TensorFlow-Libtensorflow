@@ -229,8 +229,8 @@ $ffi->attach( [ 'DeleteTensor' => 'DESTROY' ],
 
 Provides a way to access the data buffer for the C<TFTensor>. The
 C<ScalarRef> that it returns is read-only, but the underlying
-pointer can be access as long as one is careful when handling the
-data.
+pointer can be accessed as long as one is careful when handling the
+data (do not write to memory outside the size of the buffer).
 
   use AI::TensorFlow::Libtensorflow::DataType qw(DOUBLE);
   use FFI::Platypus::Buffer qw(scalar_to_pointer);
@@ -256,7 +256,7 @@ buffer.
 
 =cut
 $ffi->attach( [ 'TensorData' => 'Data' ],
-	[ 'TF_Tensor' ],
+	[ arg 'TF_Tensor' => 'self' ],
 	=> 'opaque'
 	=> sub {
 		my ($xs, @rest) = @_;
@@ -277,7 +277,7 @@ Returns the number of bytes for the C<TFTensor>'s data buffer.
 
 =cut
 $ffi->attach( [ 'TensorByteSize' => 'ByteSize' ],
-	[ 'TF_Tensor' ],
+	[ arg 'TF_Tensor' => 'self' ],
 	=> 'size_t'
 );
 
@@ -291,8 +291,8 @@ The C<TFTensor>'s data type.
 
 =cut
 $ffi->attach( [ 'TensorType' => 'Type' ],
-	[ arg 'TF_Tensor' => 't' ],
-	=> 'TF_DataType',
+	[ arg 'TF_Tensor' => 'self' ],
+	=> 'TF_DataType'
 );
 
 =attr NumDims
@@ -305,8 +305,22 @@ The number of dimensions for the C<TFTensor>.
 
 =cut
 $ffi->attach( [ 'NumDims' => 'NumDims' ],
-	[ 'TF_Tensor' ],
+	[ arg 'TF_Tensor' => 'self' ],
 	=> 'int',
+);
+
+=attr ElementCount
+
+=for :returns
+= int64_t
+Number of elements in the C<TFTensor>.
+
+=tf_capi TF_TensorElementCount
+
+=cut
+$ffi->attach( [ 'TensorElementCount' => 'ElementCount' ] =>
+	[ arg 'TF_Tensor' => 'self' ]
+	=> 'int64_t'
 );
 
 =method Dim
