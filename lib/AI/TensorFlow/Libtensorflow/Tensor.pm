@@ -206,7 +206,7 @@ $ffi->attach( [ 'AllocateTensor', 'Allocate' ],
 	}
 );
 
-=method DESTROY
+=destruct DESTROY
 
 Default destructor.
 
