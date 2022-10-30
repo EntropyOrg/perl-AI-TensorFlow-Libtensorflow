@@ -162,6 +162,9 @@ $ffi->attach( [ 'NewTensor' => 'New' ] =>
 # Constructor
 =construct Allocate
 
+=for :signature
+Allocate($dtype, $dims, $len = )
+
 This constructs a C<TFTensor> with the memory for the C<TFTensor>
 allocated and owned by the C<TFTensor> itself. Unlike with L</New>
 the allocated memory satisfies TensorFlow's alignment preferences.
