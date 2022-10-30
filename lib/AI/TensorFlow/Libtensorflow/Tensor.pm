@@ -347,4 +347,20 @@ $ffi->attach( [ 'Dim' => 'Dim' ],
 	=> 'int64_t',
 );
 
+=method MaybeMove
+
+=for :returns
+= Maybe[TFTensor]
+Deletes the C<TFTensor> and returns a new C<TFTensor> with the
+same content if possible. Returns C<undef> and leaves the
+C<TFTensor> untouched if not.
+
+=tf_capi TF_TensorMaybeMove
+
+=cut
+$ffi->attach(  [ 'TensorMaybeMove' => 'MaybeMove' ] =>
+	[ arg 'TF_Tensor' => 'self' ],
+	=> 'TF_Tensor',
+);
+
 1;
