@@ -53,7 +53,7 @@ sub LoadGraph {
 	}
 }
 
-sub FloatPDLToTensor {
+sub FloatPDLToTFTensor {
 	my ($p) = @_;
 	my $pdl_closure = sub {
 		my ($pointer, $size, $pdl_addr) = @_;
