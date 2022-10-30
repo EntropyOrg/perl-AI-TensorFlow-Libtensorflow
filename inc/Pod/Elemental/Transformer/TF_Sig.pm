@@ -4,6 +4,7 @@ package Pod::Elemental::Transformer::TF_Sig;
 use Moose;
 extends 'Pod::Elemental::Transformer::List';
 
+use feature qw{ postderef };
 use lib 'lib';
 use AI::TensorFlow::Libtensorflow::Lib;
 use AI::TensorFlow::Libtensorflow::Lib::Types qw(-all);
@@ -17,7 +18,7 @@ sub __is_xformable {
   my ($self, $para) = @_;
 
   return unless $para->isa('Pod::Elemental::Element::Pod5::Region')
-         and $para->format_name =~ /^(?:param|returns)$/;
+         and $para->format_name =~ /^(?:param|returns|signature)$/;
 
   confess("list regions must be pod (=begin :" . $self->format_name . ")")
     unless $para->is_pod;
@@ -26,15 +27,20 @@ sub __is_xformable {
 }
 
 my %region_types = (
-  'param'   => 'Parameters',
-  'returns' => 'Returns',
+  'signature' => 'Signature',
+  'param'     => 'Parameters',
+  'returns'   => 'Returns',
 );
 
 around _expand_list_paras => sub {
   my ($orig, $self, $para) = @_;
 
-  die "Need description list for @{[ $para->as_pod_string ]}"
-    unless $para->children->[0]->content =~ /^=/;
+  my $is_list_type = $para->format_name =~ /^(?:param|returns)$/;
+
+  if( $is_list_type ) {
+    die "Need description list for @{[ $para->as_pod_string ]}"
+      unless $para->children->[0]->content =~ /^=/;
+  }
   my $prefix;
   if( $para->isa('Pod::Elemental::Element::Pod5::Region')
     && exists $region_types{$para->format_name}
@@ -44,7 +50,22 @@ around _expand_list_paras => sub {
     });
   }
 
-  my @replacements = $orig->($self, $para);
+  my @replacements;
+  if( $is_list_type ) {
+    @replacements = $orig->($self, $para);
+  } else {
+    undef $prefix;
+    push @replacements, Pod::Elemental::Element::Pod5::Ordinary
+      ->new( { content => do { my $v = <<EOF; chomp $v; $v } });
+=over 2
+
+C<<<
+@{[ join("\n", map { $_->content } $para->children->@*) ]}
+>>>
+
+=back
+EOF
+  }
 
   unshift @replacements, $prefix if defined $prefix;
 
