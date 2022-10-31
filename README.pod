@@ -4,7 +4,12 @@
 
 =head1 NAME
 
-AI::TensorFlow::Libtensorflow - Bindings for TensorFlow deep learning library
+AI::TensorFlow::Libtensorflow - Bindings for Libtensorflow deep learning library
+
+=head1 DESCRIPTION
+
+The C<libtensorflow> library provides low-level C bindings
+for TensorFlow with a stable ABI.
 
 =head1 CLASS METHODS
 
