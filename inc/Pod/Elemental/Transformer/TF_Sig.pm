@@ -88,7 +88,7 @@ around __paras_for_def_marker => sub {
     if( eval { $info->{TT} = t($type); 1 }
       || eval { $info->{FFI} = $ffi->type_meta($type); 1 } ) {
       if( $info->{TT} && $info->{TT}->library eq $type_library ) {
-        $new_type_text = "L<$type | $type_library/$type>";
+        $new_type_text = "L<$type|$type_library/$type>";
       }
     } else {
       die "Could not find type constraint or FFI::Platypus type $type";
