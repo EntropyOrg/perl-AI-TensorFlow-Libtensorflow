@@ -47,7 +47,7 @@ sub _expand {
   my $new_content = "B<C API>: "
     . join ", ", map {
       die "$_ does not look like a TensorFlow identifier" unless /^TF[E]?_\w+$/;
-      "L<<C<$_>|$doc_name/$_>>"
+      "L<< C<$_>|$doc_name/$_ >>"
     } @ids;
 
   push @replacements, Pod::Elemental::Element::Pod5::Ordinary->new(

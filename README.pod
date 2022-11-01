@@ -27,7 +27,7 @@ Version number for the C<libtensorflow> library.
 
 =back
 
-B<C API>: L<<C<TF_Version>|AI::TensorFlow::Libtensorflow::Manual::CAPI/TF_Version>>
+B<C API>: L<< C<TF_Version>|AI::TensorFlow::Libtensorflow::Manual::CAPI/TF_Version >>
 
 =head1 AUTHOR
 
