@@ -32,6 +32,12 @@ sub data_deallocator {
 	$self->_data_deallocator( $opaque );
 }
 
+
+=construct New
+
+=tf_capi TF_NewBuffer
+
+=cut
 $ffi->attach( [ 'NewBuffer' => '_New' ] => [] => 'TF_Buffer' );
 
 sub NewFromData { # TODO look at Python high-level API
