@@ -39,8 +39,9 @@ the data buffer is stored in L<row major order|https://en.wikipedia.org/wiki/Row
 
 Of note, this is different from the definition of I<tensor> used in
 mathematics and physics which can also be represented as a
-multi-dimensional array in some cases, but are defined not by the
-representation but by how they transform. For more on this see
+multi-dimensional array in some cases, but these tensors are
+defined not by the representation but by how they transform. For
+more on this see
 
 =over 4
 
@@ -55,7 +56,7 @@ DOI: L<https://doi.org/10.1017/S0962492921000076>.
 =begin :list
 
 = L<PDL>
-Also provides ndarrays for access from Perl
+Provides ndarrays for access from Perl.
 
 =end :list
 
