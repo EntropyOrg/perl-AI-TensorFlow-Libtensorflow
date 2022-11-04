@@ -9,8 +9,26 @@ $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 FFI::C->ffi($ffi);
 
 FFI::C->struct( 'TF_Output' => [
-	oper  => 'TF_Operation',
-	index => 'int',
+	_oper  => 'opaque',
+	_index => 'int',
 ]);
+
+sub New {
+	my ($class, $args) = @_;
+	my $struct = $class->new({
+		_oper => $ffi->cast( 'TF_Operation', 'opaque', delete $args->{oper} ),
+		_index => delete $args->{index},
+	});
+}
+
+sub oper  { $ffi->cast('opaque', 'TF_Operation', $_[0]->_oper ) }
+sub index { $_[0]->_index }
+
+use FFI::C::ArrayDef;
+my $adef = FFI::C::ArrayDef->new($ffi,
+	name => 'TF_Output_array',
+	members => [ 'TF_Output' ]
+);
+sub _adef { $adef; }
 
 1;

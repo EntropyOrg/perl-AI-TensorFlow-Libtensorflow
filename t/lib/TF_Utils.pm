@@ -40,8 +40,8 @@ sub LoadGraph {
 
 	$graph->ImportGraphDef( $buffer, $opts, $status );
 
-	$opts->_Delete;
-	$buffer->_Delete;
+	#$opts->_Delete;
+	#$buffer->_Delete;
 
 	if( $status->GetCode ne 'OK' ) {
 		$graph->_Delete;

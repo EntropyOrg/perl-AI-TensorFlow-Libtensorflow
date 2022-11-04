@@ -70,8 +70,7 @@ typedef struct TF_Operation TF_Operation;
 
 =end TF_CAPI_DEF
 =cut
-		$ffi->type('opaque' => 'TF_Operation');
-		#$ffi->type('object(AI::TensorFlow::Libtensorflow::Operation)' => 'TF_Operation');
+		$ffi->load_custom_type('::PtrObject', 'TF_Operation' => 'AI::TensorFlow::Libtensorflow::Operation');
 
 =head3 TF_Function
 

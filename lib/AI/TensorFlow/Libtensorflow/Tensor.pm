@@ -367,4 +367,21 @@ $ffi->attach(  [ 'TensorMaybeMove' => 'MaybeMove' ] =>
 	=> 'TF_Tensor',
 );
 
+use FFI::C::ArrayDef;
+my $adef = FFI::C::ArrayDef->new(
+	$ffi,
+	name => 'TF_Tensor_array',
+	members => [
+		FFI::C::StructDef->new(
+			$ffi,
+			members => [
+				p => 'opaque'
+			]
+		)
+	],
+);
+sub _adef {
+	$adef;
+}
+
 1;
