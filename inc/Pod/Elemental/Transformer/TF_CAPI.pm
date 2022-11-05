@@ -12,7 +12,6 @@ use namespace::autoclean;
 has command_name => (
   is  => 'ro',
   init_arg => undef,
-  default => 'tf_capi',
 );
 
 sub transform_node {
@@ -26,16 +25,42 @@ sub transform_node {
   }
 }
 
+my $command_dispatch = {
+  'tf_capi'     => \&_expand_capi,
+  'tf_version'  => \&_expand_version,
+};
+
 sub __is_xformable {
   my ($self, $para) = @_;
 
   return unless $para->isa('Pod::Elemental::Element::Pod5::Command')
-         and $para->command eq $self->command_name;
+         and exists $command_dispatch->{ $para->command };
 
   return 1;
 }
 
 sub _expand {
+  my ($self, $parent) = @_;
+  $command_dispatch->{ $parent->command }->( @_ );
+};
+
+sub _expand_version {
+  my ($self, $parent) = @_;
+  my @replacements;
+
+  my $content = $parent->content;
+
+  die "Not a version string: $content"
+    unless $content =~ /\A v [0-9.]+ \Z/x;
+
+  push @replacements, Pod::Elemental::Element::Pod5::Ordinary->new(
+    content => 'C<libtensorflow> version: ' . $content
+  );
+
+  return @replacements;
+}
+
+sub _expand_capi {
   my ($self, $parent) = @_;
   my @replacements;
 
