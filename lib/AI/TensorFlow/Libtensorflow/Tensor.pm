@@ -367,6 +367,31 @@ $ffi->attach(  [ 'TensorMaybeMove' => 'MaybeMove' ] =>
 	=> 'TF_Tensor',
 );
 
+=method SetShape
+
+=for :signature
+SetShape( $dims )
+
+Set a new shape for the C<TFTensor>.
+
+=for :param
+= Dims $dims
+
+=tf_capi TF_SetShape
+
+=tf_version v2.10.0
+
+=cut
+eval {
+$ffi->attach(  [ 'SetShape' => 'SetShape' ] =>
+	[
+		arg 'TF_Tensor' => 'self',
+		arg 'tf_dims_buffer'   => [ qw(dims num_dims) ],
+	]
+	=> 'void'
+);
+};
+
 use FFI::C::ArrayDef;
 my $adef = FFI::C::ArrayDef->new(
 	$ffi,
