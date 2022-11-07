@@ -9,6 +9,9 @@ use PDL::Core;
 use AI::TensorFlow::Libtensorflow;
 use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
 
+use aliased 'AI::TensorFlow::Libtensorflow::Output';
+use aliased 'AI::TensorFlow::Libtensorflow::Tensor';
+
 use FFI::Platypus::Buffer qw(scalar_to_pointer);
 use FFI::Platypus::Memory qw(memcpy);
 
@@ -16,7 +19,7 @@ subtest "Session run" => sub {
 	my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 	my $graph = TF_Utils::LoadGraph('t/models/graph.pb');
 	ok $graph, 'graph';
-	my $input_op = AI::TensorFlow::Libtensorflow::Output->New({
+	my $input_op = Output->New({
 		oper => $graph->OperationByName( 'input_4' ),
 		index => 0 });
 	die "Can not init input op" unless $input_op;
@@ -37,7 +40,7 @@ subtest "Session run" => sub {
 	);
 
 
-	my $output_op = AI::TensorFlow::Libtensorflow::Output->New({
+	my $output_op = Output->New({
 		oper => $graph->OperationByName( 'output_node0'),
 		index => 0 } );
 	die "Can not init output op" unless $output_op;
@@ -47,28 +50,10 @@ subtest "Session run" => sub {
 	my $session = AI::TensorFlow::Libtensorflow::Session->New($graph, $options, $status);
 	die "Could not create session" unless $status->GetCode eq 'OK';
 
-	my $make_output_array = sub {
-		my $output = AI::TensorFlow::Libtensorflow::Output->_adef->create(0 + @_);
-		for my $idx (0..@_-1) {
-			next unless defined $_[$idx];
-			$output->[$idx]->_oper ($_[$idx]->_oper);
-			$output->[$idx]->_index($_[$idx]->_index);
-		}
-		$output;
-	};
-	my $make_tensor_array = sub {
-		my $array = AI::TensorFlow::Libtensorflow::Tensor->_adef->create(0 + @_);
-		for my $idx (0..@_-1) {
-			next unless defined $_[$idx];
-			$array->[$idx]->p($ffi->cast('TF_Tensor', 'opaque', $_[$idx]));
-		}
-		$array;
-	};
-
-	my $in_op_a  = $make_output_array->($input_op);
-	my $in_tr_a  = $make_tensor_array->($input_tensor);
-	my $out_op_a = $make_output_array->($output_op);
-	my $out_tr_a = $make_tensor_array->(undef);
+	my $in_op_a  = Output->_as_array($input_op);
+	my $in_tr_a  = Tensor->_as_array($input_tensor);
+	my $out_op_a = Output->_as_array($output_op);
+	my $out_tr_a = Tensor->_as_array(undef);
 
 	my $target_op_a = undef;
 	$session->Run(

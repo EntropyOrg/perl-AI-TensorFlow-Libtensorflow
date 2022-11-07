@@ -30,5 +30,15 @@ my $adef = FFI::C::ArrayDef->new($ffi,
 	members => [ 'TF_Output' ]
 );
 sub _adef { $adef; }
+sub _as_array {
+	my $class = shift;
+	my $output = $class->_adef->create(0 + @_);
+	for my $idx (0..@_-1) {
+		next unless defined $_[$idx];
+		$output->[$idx]->_oper ($_[$idx]->_oper);
+		$output->[$idx]->_index($_[$idx]->_index);
+	}
+	$output;
+}
 
 1;
