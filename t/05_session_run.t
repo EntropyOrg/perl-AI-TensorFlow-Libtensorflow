@@ -50,25 +50,20 @@ subtest "Session run" => sub {
 	my $session = AI::TensorFlow::Libtensorflow::Session->New($graph, $options, $status);
 	die "Could not create session" unless $status->GetCode eq 'OK';
 
-	my $in_op_a  = Output->_as_array($input_op);
-	my $in_tr_a  = Tensor->_as_array($input_tensor);
-	my $out_op_a = Output->_as_array($output_op);
-	my $out_tr_a = Tensor->_as_array(undef);
-
+	my @output_values;
 	my $target_op_a = undef;
 	$session->Run(
 		undef,
-		$in_op_a  , $in_tr_a,  $in_op_a->count,
-		$out_op_a , $out_tr_a, $out_op_a->count,
-		undef, 0,
+		[$input_op ], [$input_tensor],
+		[$output_op], \@output_values,
+		undef,
 		undef,
 		$status
 	);
 
 	die "run failed" unless $status->GetCode eq 'OK';
 
-	my $output_tensor = $ffi->cast( 'opaque', 'TF_Tensor', $out_tr_a->[0]->p );
-
+	my $output_tensor = $output_values[0];
 	my $output_pdl = zeros(float,( map $output_tensor->Dim($_), 0..$output_tensor->NumDims-1) );
 
 	memcpy scalar_to_pointer( $output_pdl->get_dataref->$* ),

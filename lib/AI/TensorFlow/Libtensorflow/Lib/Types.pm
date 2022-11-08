@@ -54,6 +54,20 @@ Type for class L<AI::TensorFlow::Libtensorflow::Status>
 =cut
 class_type TFStatus => { class => 'AI::TensorFlow::Libtensorflow::Status' };
 
+=type TFBuffer
+
+Type for class L<AI::TensorFlow::Libtensorflow::Buffer>
+
+=cut
+class_type TFBuffer => { class => 'AI::TensorFlow::Libtensorflow::Buffer' };
+
+=type TFOperation
+
+Type for class L<AI::TensorFlow::Libtensorflow::Operation>
+
+=cut
+class_type TFOperation => { class => 'AI::TensorFlow::Libtensorflow::Operation' };
+
 
 =type Dims
 

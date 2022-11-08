@@ -23,5 +23,14 @@ my $adef = FFI::C::ArrayDef->new(
 sub _adef {
 	$adef;
 }
+sub _as_array {
+	my $class = shift;
+	my $array = $class->_adef->create(0 + @_);
+	for my $idx (0..@_-1) {
+		next unless defined $_[$idx];
+		$array->[$idx]->p($ffi->cast('TF_Operation', 'opaque', $_[$idx]));
+	}
+	$array;
+}
 
 1;
