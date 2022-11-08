@@ -5,16 +5,24 @@ use strict;
 use warnings;
 
 use AI::TensorFlow::Libtensorflow::Lib;
-use AI::TensorFlow::Libtensorflow::Output;
+
 use AI::TensorFlow::Libtensorflow::DataType;
 use AI::TensorFlow::Libtensorflow::Status;
 
+
 use AI::TensorFlow::Libtensorflow::Buffer;
 use AI::TensorFlow::Libtensorflow::Tensor;
+
+use AI::TensorFlow::Libtensorflow::Operation;
+
 use AI::TensorFlow::Libtensorflow::ImportGraphDefOptions;
 use AI::TensorFlow::Libtensorflow::Graph;
+
+use AI::TensorFlow::Libtensorflow::Output;
+
 use AI::TensorFlow::Libtensorflow::SessionOptions;
 use AI::TensorFlow::Libtensorflow::Session;
+
 use FFI::C;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;

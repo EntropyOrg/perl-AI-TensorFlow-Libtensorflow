@@ -263,7 +263,7 @@ package TF::CAPI::Extract {
 		use DDP; p %part;
 	}
 
-	method check_functions() {
+	method check_functions($first_arg = undef) {
 		my $functions = AI::TensorFlow::Libtensorflow::Lib->ffi->_attached_functions;
 		my @dupes = map { $_->[0]{c} }
 			grep { @$_ != 1 } values $functions->%*;
@@ -272,6 +272,11 @@ package TF::CAPI::Extract {
 		my @data = $self->fdecl_data->@*;
 		my $first_missing_function = first {
 			! exists $functions->{$_->{func_name}}
+			&&
+			(
+				! defined $first_arg ||
+				$_->{fdecl} =~ /\(\s*\Q$first_arg\E\s*\*/
+			)
 		} @data;
 		use DDP; p $first_missing_function;
 	}
@@ -281,6 +286,18 @@ package TF::CAPI::Extract {
 		#$self->check_types;
 		$self->check_functions;
 	}
+
+	subcommand 'generate-capi-docs' => method(@) {
+		$self->generate_capi_funcs;
+	};
+
+	subcommand 'check-types' => method(@) {
+		$self->check_types;
+	};
+
+	subcommand 'check-functions' => method(@) {
+		$self->check_functions(shift @_);
+	};
 
 	sub BUILD {
 		Moo::Role->apply_roles_to_object(

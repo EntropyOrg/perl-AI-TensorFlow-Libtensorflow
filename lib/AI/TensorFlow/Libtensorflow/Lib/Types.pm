@@ -33,6 +33,42 @@ Type for class L<AI::TensorFlow::Libtensorflow::DataType>
 =cut
 class_type TFDataType => { class => 'AI::TensorFlow::Libtensorflow::DataType' };
 
+=type TFSession
+
+Type for class L<AI::TensorFlow::Libtensorflow::Session>
+
+=cut
+class_type TFSession => { class => 'AI::TensorFlow::Libtensorflow::Session' };
+
+=type TFSessionOptions
+
+Type for class L<AI::TensorFlow::Libtensorflow::SessionOptions>
+
+=cut
+class_type TFSessionOptions => { class => 'AI::TensorFlow::Libtensorflow::SessionOptions' };
+
+=type TFStatus
+
+Type for class L<AI::TensorFlow::Libtensorflow::Status>
+
+=cut
+class_type TFStatus => { class => 'AI::TensorFlow::Libtensorflow::Status' };
+
+=type TFBuffer
+
+Type for class L<AI::TensorFlow::Libtensorflow::Buffer>
+
+=cut
+class_type TFBuffer => { class => 'AI::TensorFlow::Libtensorflow::Buffer' };
+
+=type TFOperation
+
+Type for class L<AI::TensorFlow::Libtensorflow::Operation>
+
+=cut
+class_type TFOperation => { class => 'AI::TensorFlow::Libtensorflow::Operation' };
+
+
 =type Dims
 
 C<ArrayRef> of C<Int>

@@ -39,8 +39,9 @@ the data buffer is stored in L<row major order|https://en.wikipedia.org/wiki/Row
 
 Of note, this is different from the definition of I<tensor> used in
 mathematics and physics which can also be represented as a
-multi-dimensional array in some cases, but are defined not by the
-representation but by how they transform. For more on this see
+multi-dimensional array in some cases, but these tensors are
+defined not by the representation but by how they transform. For
+more on this see
 
 =over 4
 
@@ -55,7 +56,7 @@ DOI: L<https://doi.org/10.1017/S0962492921000076>.
 =begin :list
 
 = L<PDL>
-Also provides ndarrays for access from Perl
+Provides ndarrays for access from Perl.
 
 =end :list
 
@@ -365,5 +366,56 @@ $ffi->attach(  [ 'TensorMaybeMove' => 'MaybeMove' ] =>
 	[ arg 'TF_Tensor' => 'self' ],
 	=> 'TF_Tensor',
 );
+
+=method SetShape
+
+=for :signature
+SetShape( $dims )
+
+Set a new shape for the C<TFTensor>.
+
+=for :param
+= Dims $dims
+
+=tf_capi TF_SetShape
+
+=tf_version v2.10.0
+
+=cut
+eval {
+$ffi->attach(  [ 'SetShape' => 'SetShape' ] =>
+	[
+		arg 'TF_Tensor' => 'self',
+		arg 'tf_dims_buffer'   => [ qw(dims num_dims) ],
+	]
+	=> 'void'
+);
+};
+
+use FFI::C::ArrayDef;
+my $adef = FFI::C::ArrayDef->new(
+	$ffi,
+	name => 'TF_Tensor_array',
+	members => [
+		FFI::C::StructDef->new(
+			$ffi,
+			members => [
+				p => 'opaque'
+			]
+		)
+	],
+);
+sub _adef {
+	$adef;
+}
+sub _as_array {
+	my $class = shift;
+	my $array = $class->_adef->create(0 + @_);
+	for my $idx (0..@_-1) {
+		next unless defined $_[$idx];
+		$array->[$idx]->p($ffi->cast('TF_Tensor', 'opaque', $_[$idx]));
+	}
+	$array;
+}
 
 1;
