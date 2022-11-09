@@ -382,7 +382,7 @@ Set a new shape for the C<TFTensor>.
 =tf_version v2.10.0
 
 =cut
-eval {
+eval {# TF v2.10.0
 $ffi->attach(  [ 'SetShape' => 'SetShape' ] =>
 	[
 		arg 'TF_Tensor' => 'self',
