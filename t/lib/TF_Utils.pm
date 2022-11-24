@@ -35,8 +35,8 @@ sub LoadGraph {
 
 	$status //= AI::TensorFlow::Libtensorflow::Status->New;
 
-	my $graph = AI::TensorFlow::Libtensorflow::Graph->_New;
-	my $opts  = AI::TensorFlow::Libtensorflow::ImportGraphDefOptions->_New;
+	my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
+	my $opts  = AI::TensorFlow::Libtensorflow::ImportGraphDefOptions->New;
 
 	$graph->ImportGraphDef( $buffer, $opts, $status );
 

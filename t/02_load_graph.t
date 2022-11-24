@@ -18,14 +18,11 @@ subtest "Load graph" => sub {
 	my $buf = AI::TensorFlow::Libtensorflow::Buffer->NewFromData($data);
 	ok $buf;
 
-	my $graph = AI::TensorFlow::Libtensorflow::Graph->_New;
+	my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
 	my $status = AI::TensorFlow::Libtensorflow::Status->New;
-	my $opts = AI::TensorFlow::Libtensorflow::ImportGraphDefOptions->_New;
+	my $opts = AI::TensorFlow::Libtensorflow::ImportGraphDefOptions->New;
 
 	$graph->ImportGraphDef( $buf, $opts, $status );
-
-	#$opts->_Delete;
-	#$buf->_Delete;
 
 	if( $status->GetCode eq 'OK' ) {
 		print "Load graph success\n";
@@ -34,8 +31,6 @@ subtest "Load graph" => sub {
 		fail;
 	}
 
-	#$status->_Delete;
-	#$graph->_Delete;
 	pass;
 };
 

@@ -26,6 +26,10 @@ sub ffi {
 		my $ffi = FFI::Platypus->new( api => 2 );
 		$ffi->lib( __PACKAGE__->lib );
 
+		$ffi->load_custom_type('::PointerSizeBuffer' => 'tf_config_proto_buffer');
+		$ffi->load_custom_type('::PointerSizeBuffer' => 'tf_tensor_shape_proto_buffer');
+		$ffi->load_custom_type('::PointerSizeBuffer' => 'tf_attr_value_proto_buffer');
+
 =head2 C<tensorflow/c/c_api.h>
 =cut
 

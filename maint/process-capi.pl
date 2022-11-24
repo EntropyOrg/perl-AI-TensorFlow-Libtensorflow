@@ -304,6 +304,7 @@ package TF::CAPI::Extract {
 			AI::TensorFlow::Libtensorflow::Lib->ffi
 			=> qw(AttachedFunctionTrackable));
 		load 'AI::TensorFlow::Libtensorflow';
+		load 'AI::TensorFlow::Libtensorflow::_Misc';
 	}
 
 }

@@ -392,6 +392,7 @@ $ffi->attach(  [ 'SetShape' => 'SetShape' ] =>
 );
 };
 
+#### Array helpers ####
 use FFI::C::ArrayDef;
 my $adef = FFI::C::ArrayDef->new(
 	$ffi,

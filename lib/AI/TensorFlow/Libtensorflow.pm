@@ -14,11 +14,12 @@ use AI::TensorFlow::Libtensorflow::Buffer;
 use AI::TensorFlow::Libtensorflow::Tensor;
 
 use AI::TensorFlow::Libtensorflow::Operation;
+use AI::TensorFlow::Libtensorflow::Output;
 
 use AI::TensorFlow::Libtensorflow::ImportGraphDefOptions;
 use AI::TensorFlow::Libtensorflow::Graph;
 
-use AI::TensorFlow::Libtensorflow::Output;
+use AI::TensorFlow::Libtensorflow::OperationDescription;
 
 use AI::TensorFlow::Libtensorflow::SessionOptions;
 use AI::TensorFlow::Libtensorflow::Session;

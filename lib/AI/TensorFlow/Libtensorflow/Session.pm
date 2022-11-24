@@ -104,7 +104,7 @@ $ffi->attach( [ 'SessionRun' => 'Run' ] =>
 			$run_metadata,
 			$status ) = @_;
 
-		die "Mismatch in number of inputs and input values" unless $#inputs == $#input_values;
+		die "Mismatch in number of inputs and input values" unless $#$inputs == $#$input_values;
 		my $input_a    = AI::TensorFlow::Libtensorflow::Output->_as_array(@$inputs);
 		my $input_v_a  = AI::TensorFlow::Libtensorflow::Tensor->_as_array(@$input_values);
 		my $output_a   = AI::TensorFlow::Libtensorflow::Output->_as_array(@$outputs);
