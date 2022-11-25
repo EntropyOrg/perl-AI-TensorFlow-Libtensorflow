@@ -296,6 +296,10 @@ package TF::CAPI::Extract {
 	};
 
 	subcommand 'check-functions' => method(@) {
+		if( $_[0] eq '--help' ) {
+			print STDERR "$0 check-functions [TYPE]\n";
+			exit;
+		}
 		$self->check_functions(shift @_);
 	};
 
