@@ -1,5 +1,5 @@
 package AI::TensorFlow::Libtensorflow::Session;
-$AI::TensorFlow::Libtensorflow::Session::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Session::VERSION = '0.0.2';
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);;
@@ -91,7 +91,7 @@ $ffi->attach( [ 'SessionRun' => 'Run' ] =>
 			$status
 		);
 
-		$output_values->@* =
+		@{$output_values} =
 			map {
 				$ffi->cast(
 					'opaque',

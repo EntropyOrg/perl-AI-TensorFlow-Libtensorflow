@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Lib::FFIType::TFInt64SizeArrayRef;
 # ABSTRACT: Type to hold int64_t array and number of elements
-$AI::TensorFlow::Libtensorflow::Lib::FFIType::TFInt64SizeArrayRef::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Lib::FFIType::TFInt64SizeArrayRef::VERSION = '0.0.2';
 use FFI::Platypus::Buffer qw(scalar_to_buffer);
 use FFI::Platypus::API qw( arguments_set_pointer arguments_set_sint32 );
 

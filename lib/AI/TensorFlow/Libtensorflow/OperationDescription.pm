@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::OperationDescription;
 # ABSTRACT: Operation being built
-$AI::TensorFlow::Libtensorflow::OperationDescription::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::OperationDescription::VERSION = '0.0.2';
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 

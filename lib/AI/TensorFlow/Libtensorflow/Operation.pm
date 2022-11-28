@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Operation;
 # ABSTRACT: An operation
-$AI::TensorFlow::Libtensorflow::Operation::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Operation::VERSION = '0.0.2';
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 

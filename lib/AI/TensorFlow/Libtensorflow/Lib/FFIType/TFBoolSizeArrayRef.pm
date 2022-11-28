@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Lib::FFIType::TFBoolSizeArrayRef;
 # ABSTRACT: Type to hold boolean list as unsigned char** , int
-$AI::TensorFlow::Libtensorflow::Lib::FFIType::TFBoolSizeArrayRef::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Lib::FFIType::TFBoolSizeArrayRef::VERSION = '0.0.2';
 # TODO implement this
 
 sub perl_to_native {

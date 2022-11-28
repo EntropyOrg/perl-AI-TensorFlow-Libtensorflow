@@ -1,5 +1,5 @@
 package AI::TensorFlow::Libtensorflow::Buffer;
-$AI::TensorFlow::Libtensorflow::Buffer::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Buffer::VERSION = '0.0.2';
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib;
 

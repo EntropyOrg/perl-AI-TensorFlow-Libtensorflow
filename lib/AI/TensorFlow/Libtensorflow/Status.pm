@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Status;
 # ABSTRACT: Status
-$AI::TensorFlow::Libtensorflow::Status::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Status::VERSION = '0.0.2';
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib;
 use FFI::C;

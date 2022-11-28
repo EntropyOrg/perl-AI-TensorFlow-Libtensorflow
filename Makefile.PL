@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use 5.020000;
+use 5.014;
 
 use ExtUtils::MakeMaker;
 
@@ -14,7 +14,7 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "AI-TensorFlow-Libtensorflow",
   "LICENSE" => "apache",
-  "MIN_PERL_VERSION" => "5.020000",
+  "MIN_PERL_VERSION" => "5.014",
   "NAME" => "AI::TensorFlow::Libtensorflow",
   "PREREQ_PM" => {
     "Alien::Libtensorflow" => 0,
@@ -61,7 +61,7 @@ my %WriteMakefileArgs = (
     "aliased" => 0,
     "lib" => 0
   },
-  "VERSION" => "0.0.1",
+  "VERSION" => "0.0.2",
   "test" => {
     "TESTS" => "t/*.t t/AI/TensorFlow/*.t t/upstream/CAPI/*.t"
   }

@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Lib::FFIType::TFFloat32SizeArrayRef;
 # ABSTRACT: Type to hold float list as float* + int
-$AI::TensorFlow::Libtensorflow::Lib::FFIType::TFFloat32SizeArrayRef::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Lib::FFIType::TFFloat32SizeArrayRef::VERSION = '0.0.2';
 # TODO implement this
 
 sub perl_to_native {

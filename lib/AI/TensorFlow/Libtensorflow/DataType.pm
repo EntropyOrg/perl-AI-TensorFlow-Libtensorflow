@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::DataType;
 # ABSTRACT: Datatype enum
-$AI::TensorFlow::Libtensorflow::DataType::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::DataType::VERSION = '0.0.2';
 use AI::TensorFlow::Libtensorflow::Lib;
 use Scalar::Util qw(dualvar);
 use Const::Exporter;

@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Lib;
 # ABSTRACT: Private class for AI::TensorFlow::Libtensorflow
-$AI::TensorFlow::Libtensorflow::Lib::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Lib::VERSION = '0.0.2';
 use strict;
 use warnings;
 
@@ -130,7 +130,7 @@ sub mangler_for_object {
 	};
 }
 
-sub arg :prototype(@) {
+sub arg(@) {
 	my $arg = AI::TensorFlow::Libtensorflow::Lib::_Arg->new(
 		type => shift,
 		id => shift,

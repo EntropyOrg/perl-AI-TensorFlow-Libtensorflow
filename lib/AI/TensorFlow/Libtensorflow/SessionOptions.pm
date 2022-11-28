@@ -1,5 +1,5 @@
 package AI::TensorFlow::Libtensorflow::SessionOptions;
-$AI::TensorFlow::Libtensorflow::SessionOptions::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::SessionOptions::VERSION = '0.0.2';
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);;
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;

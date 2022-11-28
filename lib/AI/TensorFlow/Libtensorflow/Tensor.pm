@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Tensor;
 # ABSTRACT: A multi-dimensional array of elements of a single data type
-$AI::TensorFlow::Libtensorflow::Tensor::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Tensor::VERSION = '0.0.2';
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use FFI::Platypus::Closure;

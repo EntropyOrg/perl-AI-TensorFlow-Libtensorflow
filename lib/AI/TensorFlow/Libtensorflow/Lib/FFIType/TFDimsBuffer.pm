@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Lib::FFIType::TFDimsBuffer;
 # ABSTRACT: Type to hold dimensions array and number of dimensions
-$AI::TensorFlow::Libtensorflow::Lib::FFIType::TFDimsBuffer::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Lib::FFIType::TFDimsBuffer::VERSION = '0.0.2';
 use parent 'AI::TensorFlow::Libtensorflow::Lib::FFIType::TFInt64SizeArrayRef';
 # Dims: int64_t[] + int
 

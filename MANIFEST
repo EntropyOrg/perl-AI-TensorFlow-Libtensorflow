@@ -9,9 +9,6 @@ META.yml
 Makefile.PL
 README
 dist.ini
-inc/Pod/Elemental/Transformer/TF_CAPI.pm
-inc/Pod/Elemental/Transformer/TF_Sig.pm
-inc/PreloadPodWeaver.pm
 lib/AI/TensorFlow/Libtensorflow.pm
 lib/AI/TensorFlow/Libtensorflow/Buffer.pm
 lib/AI/TensorFlow/Libtensorflow/DataType.pm
@@ -37,6 +34,9 @@ lib/AI/TensorFlow/Libtensorflow/Tensor.pm
 lib/AI/TensorFlow/Libtensorflow/_Misc.pm
 maint/cpanfile-git
 maint/devops.yml
+maint/inc/Pod/Elemental/Transformer/TF_CAPI.pm
+maint/inc/Pod/Elemental/Transformer/TF_Sig.pm
+maint/inc/PreloadPodWeaver.pm
 maint/process-capi.pl
 t/01_hello_tf.t
 t/02_load_graph.t

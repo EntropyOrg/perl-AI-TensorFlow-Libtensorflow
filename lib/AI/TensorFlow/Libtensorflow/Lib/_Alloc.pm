@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Lib::_Alloc;
 # ABSTRACT: [private] Allocation utilities
-$AI::TensorFlow::Libtensorflow::Lib::_Alloc::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Lib::_Alloc::VERSION = '0.0.2';
 use AI::TensorFlow::Libtensorflow::Lib;
 use AI::TensorFlow::Libtensorflow::Tensor;
 use AI::TensorFlow::Libtensorflow::DataType qw(INT8);

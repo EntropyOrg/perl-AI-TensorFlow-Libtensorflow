@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Lib::Types;
 # ABSTRACT: Type library
-$AI::TensorFlow::Libtensorflow::Lib::Types::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Lib::Types::VERSION = '0.0.2';
 use Type::Library 0.008 -base,
 	-declare => [qw(
 		TFTensor

@@ -1,5 +1,5 @@
 package AI::TensorFlow::Libtensorflow::Output;
-$AI::TensorFlow::Libtensorflow::Output::VERSION = '0.0.1';
+$AI::TensorFlow::Libtensorflow::Output::VERSION = '0.0.2';
 use namespace::autoclean;
 use FFI::C;
 
