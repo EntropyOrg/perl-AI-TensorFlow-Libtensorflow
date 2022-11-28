@@ -134,7 +134,7 @@ $ffi->attach( [ 'SessionRun' => 'Run' ] =>
 			$status
 		);
 
-		$output_values->@* =
+		@{$output_values} =
 			map {
 				$ffi->cast(
 					'opaque',

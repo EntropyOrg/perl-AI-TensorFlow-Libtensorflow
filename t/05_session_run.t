@@ -66,8 +66,8 @@ subtest "Session run" => sub {
 	my $output_tensor = $output_values[0];
 	my $output_pdl = zeros(float,( map $output_tensor->Dim($_), 0..$output_tensor->NumDims-1) );
 
-	memcpy scalar_to_pointer( $output_pdl->get_dataref->$* ),
-		scalar_to_pointer( $output_tensor->Data->$* ),
+	memcpy scalar_to_pointer( ${$output_pdl->get_dataref} ),
+		scalar_to_pointer( ${$output_tensor->Data} ),
 		$output_tensor->ByteSize;
 	$output_pdl->upd_data;
 
