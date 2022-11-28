@@ -385,7 +385,7 @@ sub mangler_for_object {
 	};
 }
 
-sub arg :prototype(@) {
+sub arg(@) {
 	my $arg = AI::TensorFlow::Libtensorflow::Lib::_Arg->new(
 		type => shift,
 		id => shift,
