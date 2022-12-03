@@ -3,6 +3,7 @@ package AI::TensorFlow::Libtensorflow::OperationDescription;
 
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
+use AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableArrayRef;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
@@ -12,13 +13,13 @@ $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeSc
 $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrPtrLenSizeArrayRefScalar'
         => 'tf_attr_string_list'
 );
-$ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFInt64SizeArrayRef'
+$ffi->load_custom_type(PackableArrayRef('Int64ArrayRef', pack_type => 'q')
         => 'tf_attr_int_list'
 );
-$ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFFloat32SizeArrayRef'
+$ffi->load_custom_type(PackableArrayRef('Float32ArrayRef', pack_type => 'f')
 	=> 'tf_attr_float_list'
 );
-$ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFBoolSizeArrayRef'
+$ffi->load_custom_type(PackableArrayRef('BoolArrayRef', pack_type => 'C')
 	=> 'tf_attr_bool_list',
 );
 
