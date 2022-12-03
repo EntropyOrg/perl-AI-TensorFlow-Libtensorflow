@@ -17,7 +17,6 @@ sub make_variant {
 
 	my $perl_to_native = install perl_to_native => sub {
 		my ($value, $i) = @_;
-		# q = signed 64-bit int (quad)
 		my $data = pack  $arguments{pack_type} . '*', @$value;
 		my $n    = scalar @$value;
 		my ($pointer, $size) = scalar_to_buffer($data);
