@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
 
 use Test2::V0;
+use lib 't/lib';
+use TF_TestQuiet;
 use aliased 'AI::TensorFlow::Libtensorflow' => 'tf';
 use aliased 'AI::TensorFlow::Libtensorflow::Lib';
 use aliased 'AI::TensorFlow::Libtensorflow::Tensor';
