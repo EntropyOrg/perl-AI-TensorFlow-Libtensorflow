@@ -7,6 +7,8 @@ use Test::Pod::Snippets;
 
 my @modules = qw/
 	AI::TensorFlow::Libtensorflow::DataType
+	AI::TensorFlow::Libtensorflow::Tensor
+	AI::TensorFlow::Libtensorflow::Buffer
 /;
 
 plan tests => 0 + @modules;
