@@ -31,13 +31,12 @@ package # hide from PAUSE
 	}
 }
 
-my $parser = My::Test::Pod::Snippets::Parser->new;
-my $tps = Test::Pod::Snippets->new(
-	parser => $parser,
-);
-$parser->{tps} = $tps;
-
 for (@modules) {
+	my $parser = My::Test::Pod::Snippets::Parser->new;
+	my $tps = Test::Pod::Snippets->new(
+		parser => $parser,
+	);
+	$parser->{tps} = $tps;
 	subtest "Testing module $_ snippets" => sub {
 		$tps->runtest( module => $_, testgroup => 0 );
 	};
