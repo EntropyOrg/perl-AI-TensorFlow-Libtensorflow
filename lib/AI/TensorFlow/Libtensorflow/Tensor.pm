@@ -13,10 +13,6 @@ $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeScalarRef'
 	=> 'tf_tensor_buffer'
 );
-use AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableArrayRef;
-$ffi->load_custom_type( PackableArrayRef( 'DimsBuffer', pack_type => 'q' )
-	=> 'tf_dims_buffer'
-);
 
 =head1 SYNOPSIS
 
