@@ -1,4 +1,5 @@
 package AI::TensorFlow::Libtensorflow::Output;
+# ABSTRACT: Operation and index pair
 
 use namespace::autoclean;
 use FFI::C;

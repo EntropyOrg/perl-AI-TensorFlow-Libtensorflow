@@ -1,4 +1,5 @@
 package AI::TensorFlow::Libtensorflow::SessionOptions;
+# ABSTRACT: Holds options that can be passed during session creation
 
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);;

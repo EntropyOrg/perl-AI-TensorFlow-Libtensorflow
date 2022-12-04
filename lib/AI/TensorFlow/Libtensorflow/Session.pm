@@ -1,4 +1,5 @@
 package AI::TensorFlow::Libtensorflow::Session;
+# ABSTRACT: Session for driving ::Graph execution
 
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow;
