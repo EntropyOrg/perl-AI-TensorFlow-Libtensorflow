@@ -6,7 +6,7 @@ use TF_TestQuiet;
 use aliased 'AI::TensorFlow::Libtensorflow' => 'tf';
 
 subtest "(CAPI, LibraryLoadFunctions)" => sub {
-	my $todo = todo 'Test not implemented at this time';
+	my $todo = todo 'Test not implemented at this time. No library built to load.';
 	pass;
 };
 
