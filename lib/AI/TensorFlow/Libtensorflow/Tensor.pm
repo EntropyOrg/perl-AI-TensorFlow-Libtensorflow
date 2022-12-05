@@ -60,9 +60,6 @@ Provides ndarrays for access from Perl.
 =cut
 
 
-# C: TF_NewTensor
-#
-# Constructor
 =construct New
 
 =for :signature

@@ -3,7 +3,7 @@
 use Test2::V0;
 use lib 't/lib';
 use TF_TestQuiet;
-use aliased 'AI::TensorFlow::Libtensorflow' => 'tf';
+use aliased 'AI::TensorFlow::Libtensorflow';
 use aliased 'AI::TensorFlow::Libtensorflow::Status';
 
 subtest "(CAPI, Status)" => sub {
