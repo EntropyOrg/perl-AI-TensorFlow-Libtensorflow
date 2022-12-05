@@ -6,6 +6,10 @@
 
 AI::TensorFlow::Libtensorflow - Bindings for Libtensorflow deep learning library
 
+=head1 SYNOPSIS
+
+  use aliased 'AI::TensorFlow::Libtensorflow' => 'Libtensorflow';
+
 =head1 DESCRIPTION
 
 The C<libtensorflow> library provides low-level C bindings
@@ -15,7 +19,8 @@ for TensorFlow with a stable ABI.
 
 =head2 Version
 
-  my $version = $class->Version();
+  my $version = Libtensorflow->Version();
+  like $version, qr/(\d|\.)+/, 'Got version';
 
 B<Returns>
 
@@ -28,6 +33,31 @@ Version number for the C<libtensorflow> library.
 =back
 
 B<C API>: L<< C<TF_Version>|AI::TensorFlow::Libtensorflow::Manual::CAPI/TF_Version >>
+
+=head2 GetAllOpList
+
+=over 2
+
+C<<<
+GetAllOpList()
+>>>
+
+=back
+
+  my $buf = Libtensorflow->GetAllOpList();
+  cmp_ok $buf->length, '>', 0, 'Non-empty buffer';
+
+B<Returns>
+
+=over 4
+
+=item L<TFBuffer|AI::TensorFlow::Libtensorflow::Lib::Types/TFBuffer>
+
+Contains a serialized OpList proto for ops registered in this address space.
+
+=back
+
+B<C API>: L<< C<TF_GetAllOpList>|AI::TensorFlow::Libtensorflow::Manual::CAPI/TF_GetAllOpList >>
 
 =head1 AUTHOR
 

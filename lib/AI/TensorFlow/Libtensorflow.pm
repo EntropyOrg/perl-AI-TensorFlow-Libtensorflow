@@ -38,7 +38,8 @@ sub new {
 
 =classmethod Version
 
-  my $version = $class->Version();
+  my $version = Libtensorflow->Version();
+  like $version, qr/(\d|\.)+/, 'Got version';
 
 =for :returns
 = Str
@@ -49,7 +50,28 @@ Version number for the C<libtensorflow> library.
 =cut
 $ffi->attach( 'Version' => [], 'string' );#}}}
 
+=classmethod GetAllOpList
+
+=for :signature
+GetAllOpList()
+
+  my $buf = Libtensorflow->GetAllOpList();
+  cmp_ok $buf->length, '>', 0, 'Non-empty buffer';
+
+=for :returns
+= TFBuffer
+Contains a serialized OpList proto for ops registered in this address space.
+
+=tf_capi TF_GetAllOpList
+
+=cut
+$ffi->attach( 'GetAllOpList' => [], 'TF_Buffer' );
+
 1;
+
+=head1 SYNOPSIS
+
+  use aliased 'AI::TensorFlow::Libtensorflow' => 'Libtensorflow';
 
 =head1 DESCRIPTION
 
