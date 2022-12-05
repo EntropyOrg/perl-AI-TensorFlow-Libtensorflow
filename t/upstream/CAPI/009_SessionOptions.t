@@ -7,7 +7,8 @@ use aliased 'AI::TensorFlow::Libtensorflow';
 use aliased 'AI::TensorFlow::Libtensorflow::SessionOptions';
 
 subtest "(CAPI, SessionOptions)" => sub {
-	pass;
+	my $opt = SessionOptions->New;
+	ok $opt, 'created session options';
 };
 
 done_testing;

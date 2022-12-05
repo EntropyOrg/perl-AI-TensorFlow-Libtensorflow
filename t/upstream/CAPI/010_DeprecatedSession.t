@@ -6,6 +6,7 @@ use TF_TestQuiet;
 use aliased 'AI::TensorFlow::Libtensorflow';
 
 subtest "(CAPI, DeprecatedSession)" => sub {
+	my $todo = todo 'DeprecatedSession not implemented.';
 	pass;
 };
 

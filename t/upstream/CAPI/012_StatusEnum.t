@@ -6,6 +6,7 @@ use TF_TestQuiet;
 use aliased 'AI::TensorFlow::Libtensorflow';
 
 subtest "(CAPI, StatusEnum)" => sub {
+	my $todo = todo 'Test not implemented. Casting between C++ and C Status enum is not needed.';
 	pass;
 };
 
