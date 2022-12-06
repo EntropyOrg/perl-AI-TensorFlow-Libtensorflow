@@ -8,6 +8,8 @@ use feature qw(state);
 use FFI::CheckLib 0.28 qw( find_lib_or_die );
 use Alien::Libtensorflow;
 use FFI::Platypus;
+use AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableArrayRef;
+use AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeScalar;
 
 use base 'Exporter::Tiny';
 our @EXPORT_OK = qw(arg);
@@ -29,6 +31,13 @@ sub ffi {
 		$ffi->load_custom_type('::PointerSizeBuffer' => 'tf_config_proto_buffer');
 		$ffi->load_custom_type('::PointerSizeBuffer' => 'tf_tensor_shape_proto_buffer');
 		$ffi->load_custom_type('::PointerSizeBuffer' => 'tf_attr_value_proto_buffer');
+
+		$ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeScalar'
+			=> 'tf_text_buffer');
+
+		$ffi->load_custom_type( PackableArrayRef( 'DimsBuffer', pack_type => 'q' )
+			=> 'tf_dims_buffer'
+		);
 
 =head2 C<tensorflow/c/c_api.h>
 =cut
@@ -68,6 +77,8 @@ typedef struct TF_OperationDescription TF_OperationDescription;
 
 =head3 TF_Operation
 
+L<AI::TensorFlow::Libtensorflow::Operation>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_Operation TF_Operation;
@@ -98,6 +109,8 @@ typedef struct TF_FunctionOptions TF_FunctionOptions;
 
 =head3 TF_ImportGraphDefOptions
 
+L<AI::TensorFlow::Libtensorflow::ImportGraphDefOptions>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_ImportGraphDefOptions TF_ImportGraphDefOptions;
@@ -117,6 +130,8 @@ typedef struct TF_ImportGraphDefResults TF_ImportGraphDefResults;
 		$ffi->type('opaque' => 'TF_ImportGraphDefResults');
 
 =head3 TF_Session
+
+L<AI::TensorFlow::Libtensorflow::Session>
 
 =begin TF_CAPI_DEF
 
@@ -158,13 +173,15 @@ typedef struct TF_Library TF_Library;
 
 =head3 TF_ApiDefMap
 
+L<AI::TensorFlow::Libtensorflow::ApiDefMap>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_ApiDefMap TF_ApiDefMap;
 
 =end TF_CAPI_DEF
 =cut
-		$ffi->type('opaque' => 'TF_ApiDefMap');
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::ApiDefMap)' => 'TF_ApiDefMap');
 
 =head3 TF_Server
 

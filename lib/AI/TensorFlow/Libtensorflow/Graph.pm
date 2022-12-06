@@ -1,11 +1,24 @@
 package AI::TensorFlow::Libtensorflow::Graph;
+# ABSTRACT: A TensorFlow computation, represented as a dataflow graph
 
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
+use AI::TensorFlow::Libtensorflow::Buffer;
+use AI::TensorFlow::Libtensorflow::Output;
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 
 =construct New
+
+=for :signature
+New()
+
+  my $graph = Graph->New;
+  ok $graph, 'created graph';
+
+=for :returns
+= TFGraph
+An empty graph.
 
 =tf_capi TF_NewGraph
 
@@ -77,3 +90,14 @@ $ffi->attach( [ 'GraphGetTensorNumDims' => 'GetTensorNumDims' ] => [
 ] => 'int');
 
 1;
+__END__
+
+=head1 SYNOPSIS
+
+  use aliased 'AI::TensorFlow::Libtensorflow::Graph' => 'Graph';
+
+=head1 DESCRIPTION
+
+
+
+=cut

@@ -13,9 +13,6 @@ $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeScalarRef'
 	=> 'tf_tensor_buffer'
 );
-$ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFDimsBuffer'
-	=> 'tf_dims_buffer'
-);
 
 =head1 SYNOPSIS
 
@@ -27,7 +24,7 @@ $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFDimsBuffe
 
   # Allocate a 3 by 3 ndarray of type FLOAT
   my $t = Tensor->Allocate(FLOAT, $dims);
-  ok $t->TensorByteSize, product(FLOAT->Size, @$dims);
+  is $t->ByteSize, product(FLOAT->Size, @$dims), 'correct size';
 
 =head1 DESCRIPTION
 
@@ -63,9 +60,6 @@ Provides ndarrays for access from Perl.
 =cut
 
 
-# C: TF_NewTensor
-#
-# Constructor
 =construct New
 
 =for :signature
@@ -176,7 +170,7 @@ See L</Data> for how to write to the data buffer.
 
   # Allocate a 2-by-2 ndarray of type DOUBLE
   $dims = [2,2];
-  $t = Tensor->Allocate(DOUBLE, $dims, product(DOUBLE->Size, @$dims));
+  my $t = Tensor->Allocate(DOUBLE, $dims, product(DOUBLE->Size, @$dims));
 
 =for :param
 = TFDataType $dtype
@@ -206,7 +200,7 @@ $ffi->attach( [ 'AllocateTensor', 'Allocate' ],
 		if( ! defined $len ) {
 			$len = product($dtype->Size, @$dims);
 		}
-		my $obj = $xs->(@rest);
+		my $obj = $xs->($dtype, $dims, $len);
 	}
 );
 
@@ -240,7 +234,7 @@ data (do not write to memory outside the size of the buffer).
   use FFI::Platypus::Buffer qw(scalar_to_pointer);
   use FFI::Platypus::Memory qw(memcpy);
 
-  $t = Tensor->Allocate(DOUBLE, [2,2]);
+  my $t = Tensor->Allocate(DOUBLE, [2,2]);
 
   # [2,2] identity matrix
   my $eye_data = pack 'd*', (1, 0, 0, 1);
@@ -394,6 +388,7 @@ $ffi->attach(  [ 'SetShape' => 'SetShape' ] =>
 
 #### Array helpers ####
 use FFI::C::ArrayDef;
+use FFI::C::StructDef;
 my $adef = FFI::C::ArrayDef->new(
 	$ffi,
 	name => 'TF_Tensor_array',

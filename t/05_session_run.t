@@ -3,6 +3,7 @@
 use Test::Most tests => 1;
 
 use lib 't/lib';
+use TF_TestQuiet;
 use TF_Utils;
 use PDL::Primitive qw(random);
 use PDL::Core;

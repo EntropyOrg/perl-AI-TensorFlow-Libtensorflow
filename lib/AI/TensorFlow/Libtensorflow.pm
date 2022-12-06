@@ -9,12 +9,13 @@ use AI::TensorFlow::Libtensorflow::Lib;
 use AI::TensorFlow::Libtensorflow::DataType;
 use AI::TensorFlow::Libtensorflow::Status;
 
-
 use AI::TensorFlow::Libtensorflow::Buffer;
 use AI::TensorFlow::Libtensorflow::Tensor;
 
 use AI::TensorFlow::Libtensorflow::Operation;
 use AI::TensorFlow::Libtensorflow::Output;
+
+use AI::TensorFlow::Libtensorflow::ApiDefMap;
 
 use AI::TensorFlow::Libtensorflow::ImportGraphDefOptions;
 use AI::TensorFlow::Libtensorflow::Graph;
@@ -38,7 +39,8 @@ sub new {
 
 =classmethod Version
 
-  my $version = $class->Version();
+  my $version = Libtensorflow->Version();
+  like $version, qr/(\d|\.)+/, 'Got version';
 
 =for :returns
 = Str
@@ -49,7 +51,28 @@ Version number for the C<libtensorflow> library.
 =cut
 $ffi->attach( 'Version' => [], 'string' );#}}}
 
+=classmethod GetAllOpList
+
+=for :signature
+GetAllOpList()
+
+  my $buf = Libtensorflow->GetAllOpList();
+  cmp_ok $buf->length, '>', 0, 'Got OpList buffer';
+
+=for :returns
+= TFBuffer
+Contains a serialized C<OpList> proto for ops registered in this address space.
+
+=tf_capi TF_GetAllOpList
+
+=cut
+$ffi->attach( 'GetAllOpList' => [], 'TF_Buffer' );
+
 1;
+
+=head1 SYNOPSIS
+
+  use aliased 'AI::TensorFlow::Libtensorflow' => 'Libtensorflow';
 
 =head1 DESCRIPTION
 
