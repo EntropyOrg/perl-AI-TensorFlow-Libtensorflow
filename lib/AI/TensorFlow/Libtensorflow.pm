@@ -9,12 +9,13 @@ use AI::TensorFlow::Libtensorflow::Lib;
 use AI::TensorFlow::Libtensorflow::DataType;
 use AI::TensorFlow::Libtensorflow::Status;
 
-
 use AI::TensorFlow::Libtensorflow::Buffer;
 use AI::TensorFlow::Libtensorflow::Tensor;
 
 use AI::TensorFlow::Libtensorflow::Operation;
 use AI::TensorFlow::Libtensorflow::Output;
+
+use AI::TensorFlow::Libtensorflow::ApiDefMap;
 
 use AI::TensorFlow::Libtensorflow::ImportGraphDefOptions;
 use AI::TensorFlow::Libtensorflow::Graph;

@@ -9,6 +9,7 @@ use FFI::CheckLib 0.28 qw( find_lib_or_die );
 use Alien::Libtensorflow;
 use FFI::Platypus;
 use AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableArrayRef;
+use AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeScalar;
 
 use base 'Exporter::Tiny';
 our @EXPORT_OK = qw(arg);
@@ -30,6 +31,9 @@ sub ffi {
 		$ffi->load_custom_type('::PointerSizeBuffer' => 'tf_config_proto_buffer');
 		$ffi->load_custom_type('::PointerSizeBuffer' => 'tf_tensor_shape_proto_buffer');
 		$ffi->load_custom_type('::PointerSizeBuffer' => 'tf_attr_value_proto_buffer');
+
+		$ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeScalar'
+			=> 'tf_text_buffer');
 
 		$ffi->load_custom_type( PackableArrayRef( 'DimsBuffer', pack_type => 'q' )
 			=> 'tf_dims_buffer'
@@ -163,13 +167,15 @@ typedef struct TF_Library TF_Library;
 
 =head3 TF_ApiDefMap
 
+L<AI::TensorFlow::Libtensorflow::ApiDefMap>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_ApiDefMap TF_ApiDefMap;
 
 =end TF_CAPI_DEF
 =cut
-		$ffi->type('opaque' => 'TF_ApiDefMap');
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::ApiDefMap)' => 'TF_ApiDefMap');
 
 =head3 TF_Server
 
