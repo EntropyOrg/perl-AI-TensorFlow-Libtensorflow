@@ -10,11 +10,11 @@ $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 =construct New
 
   use AI::TensorFlow::Libtensorflow;
-  use aliased 'AI::TensorFlow::Libtensorflow::Status';
+  use AI::TensorFlow::Libtensorflow::Status;
 
   my $map = ApiDefMap->New(
     AI::TensorFlow::Libtensorflow->GetAllOpList,
-    my $status = Status->New
+    my $status = AI::TensorFlow::Libtensorflow::Status->New
   );
   ok $map, 'Created ApiDefMap';
 
@@ -40,8 +40,6 @@ $ffi->attach( ['DeleteApiDefMap' => 'DESTROY'] => [
 
 =method Put
 
-TODO
-
 =tf_capi TF_ApiDefMapPut
 
 =cut
@@ -52,6 +50,26 @@ $ffi->attach( [ 'ApiDefMapPut' => 'Put' ] => [
 ] => 'void' );
 
 =method Get
+
+=for :signature
+Get($name, $status)
+
+  my $api_def_buf = $map->Get(
+    'NoOp',
+    my $status = AI::TensorFlow::Libtensorflow::Status->New
+  );
+
+  cmp_ok $api_def_buf->length, '>', 0, 'Got ApiDef buffer for NoOp operation';
+
+=for :param
+= Str $name
+Name of the operation to retrieve.
+= TFStatus $status
+Status.
+
+=for :returns
+= Maybe[TFBuffer]
+Contains a serialized C<ApiDef> proto for the operation.
 
 =tf_capi TF_ApiDefMapGet
 

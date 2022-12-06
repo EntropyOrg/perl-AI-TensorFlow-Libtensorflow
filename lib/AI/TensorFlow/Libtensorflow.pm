@@ -61,7 +61,7 @@ GetAllOpList()
 
 =for :returns
 = TFBuffer
-Contains a serialized OpList proto for ops registered in this address space.
+Contains a serialized C<OpList> proto for ops registered in this address space.
 
 =tf_capi TF_GetAllOpList
 
