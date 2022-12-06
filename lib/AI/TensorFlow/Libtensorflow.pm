@@ -57,7 +57,7 @@ $ffi->attach( 'Version' => [], 'string' );#}}}
 GetAllOpList()
 
   my $buf = Libtensorflow->GetAllOpList();
-  cmp_ok $buf->length, '>', 0, 'Non-empty buffer';
+  cmp_ok $buf->length, '>', 0, 'Got OpList buffer';
 
 =for :returns
 = TFBuffer
