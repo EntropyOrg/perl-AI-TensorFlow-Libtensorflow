@@ -77,6 +77,8 @@ typedef struct TF_OperationDescription TF_OperationDescription;
 
 =head3 TF_Operation
 
+L<AI::TensorFlow::Libtensorflow::Operation>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_Operation TF_Operation;
@@ -107,6 +109,8 @@ typedef struct TF_FunctionOptions TF_FunctionOptions;
 
 =head3 TF_ImportGraphDefOptions
 
+L<AI::TensorFlow::Libtensorflow::ImportGraphDefOptions>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_ImportGraphDefOptions TF_ImportGraphDefOptions;
@@ -126,6 +130,8 @@ typedef struct TF_ImportGraphDefResults TF_ImportGraphDefResults;
 		$ffi->type('opaque' => 'TF_ImportGraphDefResults');
 
 =head3 TF_Session
+
+L<AI::TensorFlow::Libtensorflow::Session>
 
 =begin TF_CAPI_DEF
 
