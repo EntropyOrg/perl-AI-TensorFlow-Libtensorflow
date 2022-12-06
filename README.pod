@@ -45,7 +45,7 @@ GetAllOpList()
 =back
 
   my $buf = Libtensorflow->GetAllOpList();
-  cmp_ok $buf->length, '>', 0, 'Non-empty buffer';
+  cmp_ok $buf->length, '>', 0, 'Got OpList buffer';
 
 B<Returns>
 
@@ -53,7 +53,7 @@ B<Returns>
 
 =item L<TFBuffer|AI::TensorFlow::Libtensorflow::Lib::Types/TFBuffer>
 
-Contains a serialized OpList proto for ops registered in this address space.
+Contains a serialized C<OpList> proto for ops registered in this address space.
 
 =back
 
