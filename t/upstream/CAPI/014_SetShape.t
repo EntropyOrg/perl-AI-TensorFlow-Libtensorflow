@@ -86,7 +86,7 @@ subtest "(CAPI, SetShape)" => sub {
 	note 'Try to set an invalid shape (cannot change 2x3 to a 2x5).';
 	$dims->[1] = 5;
 	$graph->SetTensorShape( $feed_out_0, $dims, $s);
-	isnt $s->GetCode, 'OK', "Status: @{[ $s->Message ]}";
+	note TF_Utils::AssertStatusNotOK($s);
 
 	note 'Test for a scalar.';
 	my $three = TF_Utils::ScalarConst($graph, $s, 'scalar', INT32, 3);

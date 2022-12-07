@@ -113,4 +113,10 @@ sub AssertStatusOK {
 		unless $status->GetCode eq 'OK';
 }
 
+sub AssertStatusNotOK {
+	my ($status) = @_;
+	die "Status expected not OK" if $status->GetCode eq 'OK';
+	return "Status: @{[ $status->GetCode ]}:  @{[ $status->Message ]}";
+}
+
 1;
