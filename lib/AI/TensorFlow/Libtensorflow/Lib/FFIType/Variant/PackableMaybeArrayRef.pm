@@ -1,7 +1,7 @@
-package AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableArrayRef;
-# ABSTRACT: ArrayRef to pack()'ed scalar argument with size argument (as int)
+package AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableMaybeArrayRef;
+# ABSTRACT: Maybe[ArrayRef] to pack()'ed scalar argument with size argument (as int) (size is -1 if undef)
 
-use FFI::Platypus::Buffer qw(scalar_to_buffer);
+use FFI::Platypus::Buffer qw(scalar_to_buffer buffer_to_scalar);
 use FFI::Platypus::API qw( arguments_set_pointer arguments_set_sint32 );
 
 use Package::Variant;
@@ -17,19 +17,28 @@ sub make_variant {
 
 	my $perl_to_native = install perl_to_native => sub {
 		my ($value, $i) = @_;
-		die "Value must be an ArrayRef"
-			unless defined $value && ref $value eq 'ARRAY';
-		my $data = pack  $arguments{pack_type} . '*', @$value;
-		my $n    = scalar @$value;
-		my ($pointer, $size) = scalar_to_buffer($data);
+		if( defined $value ) {
+			my $data = pack  $arguments{pack_type} . '*', @$value;
+			my $n    = scalar @$value;
+			my ($pointer, $size) = scalar_to_buffer($data);
 
-		push @stack, [ \$data, $pointer, $size ];
-		arguments_set_pointer( $i  , $pointer);
-		arguments_set_sint32(  $i+1, $n);
+			push @stack, [ \$data, $pointer, $size ];
+			arguments_set_pointer( $i  , $pointer);
+			arguments_set_sint32(  $i+1, $n);
+		} else {
+			my $data = undef;
+			my $n    = -1;
+			my ($pointer, $size) = (0, 0);
+			push @stack, [ \$data, $pointer, $size ];
+			arguments_set_pointer( $i  , $pointer);
+			arguments_set_sint32(  $i+1, $n);
+		}
 	};
 
 	my $perl_to_native_post = install perl_to_native_post => sub {
-		pop @stack;
+		my ($data_ref, $pointer, $size) = @{ pop @stack };
+		$$data_ref = buffer_to_scalar($pointer, $size);
+		@{$_[0]} = unpack $arguments{pack_type} . '*', $$data_ref;
 		();
 	};
 	install ffi_custom_type_api_1 => sub {
