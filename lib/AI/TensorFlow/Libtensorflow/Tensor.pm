@@ -26,6 +26,11 @@ $ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeSc
   my $t = Tensor->Allocate(FLOAT, $dims);
   is $t->ByteSize, product(FLOAT->Size, @$dims), 'correct size';
 
+  my $scalar_dims = [];
+  my $scalar_t = Tensor->Allocate(FLOAT, $scalar_dims);
+  is $scalar_t->ElementCount, 1, 'single element';
+  is $scalar_t->ByteSize, FLOAT->Size, 'single FLOAT';
+
 =head1 DESCRIPTION
 
 A C<TFTensor> is an object that contains values of a
