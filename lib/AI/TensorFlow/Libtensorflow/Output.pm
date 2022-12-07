@@ -42,4 +42,29 @@ sub _as_array {
 	$output;
 }
 
+sub AS_RECORD {
+	my ($self) = @_;
+	AI::TensorFlow::Libtensorflow::Output::_Record->new(
+		oper => $self->_oper,
+		index => $self->_index,
+	);
+}
+
+package AI::TensorFlow::Libtensorflow::Output::_Record {
+	use namespace::autoclean;
+	use AI::TensorFlow::Libtensorflow::Lib;
+	my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
+
+	use FFI::Platypus::Record;
+
+	record_layout_1($ffi,
+		'opaque' => 'oper',
+		'int'    => 'index',
+	);
+
+	$ffi->type('record(AI::TensorFlow::Libtensorflow::Output::_Record)', 'TF_Output_record');
+
+	sub AS_RECORD { $_[0] }
+}
+
 1;
