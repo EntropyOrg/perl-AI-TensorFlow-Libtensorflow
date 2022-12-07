@@ -1,7 +1,7 @@
 package AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableArrayRef;
 # ABSTRACT: ArrayRef to pack()'ed scalar argument with size argument (as int)
 
-use FFI::Platypus::Buffer qw(scalar_to_buffer);
+use FFI::Platypus::Buffer qw(scalar_to_buffer buffer_to_scalar);
 use FFI::Platypus::API qw( arguments_set_pointer arguments_set_sint32 );
 
 use Package::Variant;
@@ -29,7 +29,9 @@ sub make_variant {
 	};
 
 	my $perl_to_native_post = install perl_to_native_post => sub {
-		pop @stack;
+		my ($data_ref, $pointer, $size) = @{ pop @stack };
+		$$data_ref = buffer_to_scalar($pointer, $size);
+		@{$_[0]} = unpack $arguments{pack_type} . '*', $$data_ref;
 		();
 	};
 	install ffi_custom_type_api_1 => sub {
