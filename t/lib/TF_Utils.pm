@@ -2,7 +2,7 @@ package TF_Utils;
 
 use AI::TensorFlow::Libtensorflow;
 use AI::TensorFlow::Libtensorflow::Lib;
-use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
+use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT INT32);
 use Path::Tiny;
 
 use PDL::Core ':Internal';
@@ -62,6 +62,49 @@ sub FloatPDLToTFTensor {
 	);
 
 	$tensor;
+}
+
+sub Placeholder {
+	my ($graph, $status, $name, $dtype) = @_;
+	$name ||= 'feed';
+	$dtype ||= INT32;
+	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New($graph, 'Placeholder', $name);
+	$desc->SetAttrType('dtype', $dtype);
+	my $op = $desc->FinishOperation($status);
+	die "Could not create operation: @{[ $status->Message ]}" unless $status->GetCode eq 'OK' && $op;
+	$op;
+}
+
+sub Const {
+	my ($graph, $status, $name, $dtype, $t) = @_;
+	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New($graph, 'Const', $name);
+	$desc->SetAttrTensor('value', $t, $status);
+	$desc->SetAttrType('dtype', $t->Type);
+	my $op = $desc->FinishOperation($status);
+	die "Could not create operation: @{[ $status->Message ]}" unless $status->GetCode eq 'OK' && $op;
+	$op;
+}
+
+my %dtype_to_pack = (
+	FLOAT => 'f',
+	DOUBLE => 'd',
+	INT32  => 'l',
+	BOOL => 'c',
+);
+
+use FFI::Platypus::Buffer qw(scalar_to_pointer);
+use FFI::Platypus::Memory qw(memcpy);
+
+sub ScalarConst {
+	my ($graph, $status, $name, $dtype, $value) = @_;
+	$name ||= 'scalar';
+	my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate($dtype, []);
+	die unless exists $dtype_to_pack{$dtype};
+	my $data = pack $dtype_to_pack{$dtype} . '*', $value;
+	memcpy scalar_to_pointer(${ $t->Data }),
+		 scalar_to_pointer($data),
+		 $t->ByteSize;
+	return Const($graph, $status, $name, $dtype, $t);
 }
 
 1;
