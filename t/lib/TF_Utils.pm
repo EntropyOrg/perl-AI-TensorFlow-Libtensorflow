@@ -107,4 +107,10 @@ sub ScalarConst {
 	return Const($graph, $status, $name, $dtype, $t);
 }
 
+sub AssertStatusOK {
+	my ($status) = @_;
+	die "Status not OK: @{[ $status->GetCode ]} : @{[ $status->Message ]}"
+		unless $status->GetCode eq 'OK';
+}
+
 1;
