@@ -32,7 +32,10 @@ $ffi->attach( [ 'NewOperation' => 'New' ] => [
 	arg 'TF_Graph' => 'graph',
 	arg 'string'   => 'op_type',
 	arg 'string'   => 'oper_name',
-] => 'TF_OperationDescription' );
+] => 'TF_OperationDescription' => sub {
+	my ($xs, $class, @rest) = @_;
+	$xs->(@rest);
+});
 
 =construct NewLocked
 

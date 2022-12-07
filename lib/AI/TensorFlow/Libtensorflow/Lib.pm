@@ -68,13 +68,16 @@ typedef struct TF_Graph TF_Graph;
 
 =head3 TF_OperationDescription
 
+L<AI::TensorFlow::Libtensorflow::OperationDescription>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_OperationDescription TF_OperationDescription;
 
 =end TF_CAPI_DEF
 =cut
-		$ffi->type('opaque' => 'TF_OperationDescription');
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::OperationDescription)'
+			=> 'TF_OperationDescription');
 
 =head3 TF_Operation
 
