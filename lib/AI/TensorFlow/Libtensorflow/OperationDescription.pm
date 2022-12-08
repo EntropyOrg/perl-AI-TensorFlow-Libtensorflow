@@ -79,8 +79,7 @@ $ffi->attach( AddInputList => [
 	arg 'int' => 'num_inputs'
 ] => 'void' => sub {
 	my ($xs, $self, $inputs) = @_;
-	my $inputs_a    = AI::TensorFlow::Libtensorflow::Output->_as_array(@$inputs);
-	$xs->( $self, $inputs_a, $inputs_a->count );
+	$xs->( $self, $inputs, 0+@$inputs );
 });
 
 =method AddControlInput

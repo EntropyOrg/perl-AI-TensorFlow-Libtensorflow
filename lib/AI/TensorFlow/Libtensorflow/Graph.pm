@@ -61,14 +61,10 @@ $ffi->attach( [ 'GraphOperationByName' => 'OperationByName' ] => [
 =cut
 $ffi->attach( [ 'GraphSetTensorShape' => 'SetTensorShape' ] => [
 	arg 'TF_Graph' => 'graph',
-	arg 'TF_Output_record' => 'output',
+	arg 'TF_Output' => 'output',
 	arg 'tf_dims_buffer' => [qw(dims num_dims)],
 	arg 'TF_Status' => 'status',
-] => 'void' => sub {
-	my ($xs, @rest) = @_;
-	$rest[1] = $rest[1]->AS_RECORD;
-	$xs->(@rest);
-} );
+] => 'void');
 
 =method GetTensorShape
 
@@ -77,12 +73,11 @@ $ffi->attach( [ 'GraphSetTensorShape' => 'SetTensorShape' ] => [
 =cut
 $ffi->attach( ['GraphGetTensorShape' => 'GetTensorShape'] => [
 	arg 'TF_Graph' => 'graph',
-	arg 'TF_Output_record' => 'output',
+	arg 'TF_Output' => 'output',
 	arg 'tf_dims_buffer' => [qw(dims num_dims)],
 	arg 'TF_Status' => 'status',
 ] => 'void' => sub {
 	my ($xs, @rest) = @_;
-	$rest[1] = $rest[1]->AS_RECORD;
 	my ($graph, $output, $status) = @rest;
 	my $dims = [ (0)x($graph->GetTensorNumDims($output, $status)) ];
 	$xs->($graph, $output, $dims, $status);
@@ -96,13 +91,9 @@ $ffi->attach( ['GraphGetTensorShape' => 'GetTensorShape'] => [
 =cut
 $ffi->attach( [ 'GraphGetTensorNumDims' => 'GetTensorNumDims' ] => [
 	arg 'TF_Graph' => 'graph',
-	arg 'TF_Output_record' => 'output',
+	arg 'TF_Output' => 'output',
 	arg 'TF_Status' => 'status',
-] => 'int' => sub {
-	my ($xs, @rest) = @_;
-	$rest[1] = $rest[1]->AS_RECORD;
-	$xs->(@rest);
-});
+] => 'int');
 
 1;
 __END__

@@ -3,6 +3,7 @@ package AI::TensorFlow::Libtensorflow::Operation;
 
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
+use AI::TensorFlow::Libtensorflow::Output;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
@@ -49,9 +50,12 @@ $ffi->attach( [ 'OperationNumOutputs' => 'NumOutputs' ], [
 
 =cut
 $ffi->attach( [ 'OperationOutputType' => 'OutputType' ] => [
-	# TODO (simplify API)
-	arg 'opaque' => 'TF_Output oper',
-] => 'TF_DataType' );
+	arg 'TF_Output' => 'oper_out',
+] => 'TF_DataType' => sub {
+	my ($xs, $self, $output) = @_;
+	# TODO coerce from LibtfPartialOutput here
+	$xs->($output);
+} );
 
 =attr NumInputs
 
@@ -131,9 +135,12 @@ $ffi->attach( [ 'OperationAllInputs' => 'AllInputs' ] => [
 
 =cut
 $ffi->attach( [ 'OperationOutputNumConsumers' => 'OutputNumConsumers' ] => [
-	# TODO
-	arg 'opaque' => 'TF_Output oper_out',
-], 'int');
+	arg 'TF_Output' => 'oper_out',
+], 'int' => sub {
+	my ($xs, $self, $output) = @_;
+	# TODO coerce from LibtfPartialOutput here
+	$xs->($output);
+});
 
 =method OutputConsumers
 
