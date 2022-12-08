@@ -85,6 +85,14 @@ $ffi->attach( [ 'OperationNumControlInputs' => 'NumControlInputs' ] => [
 	arg 'TF_Operation' => 'oper',
 ] => 'int' );
 
+=attr NumControlOutputs
+
+=tf_capi TF_OperationNumControlOutputs
+
+=cut
+$ffi->attach( [ 'OperationNumControlOutputs' => 'NumControlOutputs' ] => [
+	arg 'TF_Operation' => 'oper',
+] => 'int' );
 
 =method OutputListLength
 
