@@ -37,8 +37,10 @@ sub make_variant {
 
 	my $perl_to_native_post = install perl_to_native_post => sub {
 		my ($data_ref, $pointer, $size) = @{ pop @stack };
-		$$data_ref = buffer_to_scalar($pointer, $size);
-		@{$_[0]} = unpack $arguments{pack_type} . '*', $$data_ref;
+		if( ! Scalar::Util::readonly($_[0]) ) {
+			$$data_ref = buffer_to_scalar($pointer, $size);
+			@{$_[0]} = unpack $arguments{pack_type} . '*', $$data_ref;
+		}
 		();
 	};
 	install ffi_custom_type_api_1 => sub {
