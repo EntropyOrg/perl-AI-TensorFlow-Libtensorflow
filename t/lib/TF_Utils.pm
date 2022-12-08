@@ -107,6 +107,25 @@ sub ScalarConst {
 	return Const($graph, $status, $name, $dtype, $t);
 }
 
+sub Add {
+	my ($l, $r, $graph, $s, $name) = @_;
+	$name ||= 'add';
+	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New(
+		$graph, "AddN", $name);
+	my $add_inputs = [
+		map {
+			AI::TensorFlow::Libtensorflow::Output->New({
+				oper => $_,
+				index => 0,
+			})
+		} ($l, $r)
+	];
+	$desc->AddInputList($add_inputs);
+	my $op = $desc->FinishOperation($s);
+	AssertStatusOK($s);
+	$op;
+}
+
 sub AssertStatusOK {
 	my ($status) = @_;
 	die "Status not OK: @{[ $status->GetCode ]} : @{[ $status->Message ]}"
