@@ -71,7 +71,7 @@ sub Placeholder {
 	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New($graph, 'Placeholder', $name);
 	$desc->SetAttrType('dtype', $dtype);
 	my $op = $desc->FinishOperation($status);
-	die "Could not create operation: @{[ $status->Message ]}" unless $status->GetCode eq 'OK' && $op;
+	AssertStatusOK($status);
 	$op;
 }
 
@@ -81,7 +81,7 @@ sub Const {
 	$desc->SetAttrTensor('value', $t, $status);
 	$desc->SetAttrType('dtype', $t->Type);
 	my $op = $desc->FinishOperation($status);
-	die "Could not create operation: @{[ $status->Message ]}" unless $status->GetCode eq 'OK' && $op;
+	AssertStatusOK($status);
 	$op;
 }
 
