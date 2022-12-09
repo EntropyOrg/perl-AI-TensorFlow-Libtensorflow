@@ -10,7 +10,7 @@ use Type::Library 0.008 -base,
 		Dims
 	)];
 use Type::Utils -all;
-use Types::Standard qw(ArrayRef Int);
+use Types::Standard qw(ArrayRef Int Tuple InstanceOf);
 
 =type TFTensor
 
@@ -76,5 +76,21 @@ C<ArrayRef> of C<Int>
 =cut
 declare Dims => as ArrayRef[Int];
 
+=type TFOutput
+
+Type for class L<AI::TensorFlow::Libtensorflow::Output>
+
+=cut
+class_type TFOutput => { class => 'AI::TensorFlow::Libtensorflow::Output' };
+
+declare_coercion "TFOutputFromTuple",
+	to_type TFOutput,
+	from Tuple[InstanceOf['AI::TensorFlow::Libtensorflow::Operation'],Int],
+	q {
+		AI::TensorFlow::Libtensorflow::Output->New({
+			oper  => $_->[0],
+			index => $_->[1],
+		});
+	};
 
 1;
