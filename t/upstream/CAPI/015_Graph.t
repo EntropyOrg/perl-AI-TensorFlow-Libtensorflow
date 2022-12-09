@@ -6,9 +6,13 @@ use TF_TestQuiet;
 use TF_Utils;
 use aliased 'AI::TensorFlow::Libtensorflow';
 use AI::TensorFlow::Libtensorflow::DataType qw(INT32);
+use AI::TensorFlow::Libtensorflow::Lib::Types qw(TFOutput TFOutputFromTuple);
+use Types::Standard qw(HashRef);
 
+my $TFOutput = TFOutput->plus_constructors(
+		HashRef, 'New'
+	)->plus_coercions(TFOutputFromTuple);
 subtest "(CAPI, Graph)" => sub {
-	pass;
 	my $s = AI::TensorFlow::Libtensorflow::Status->New;
 	my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
 
@@ -22,13 +26,13 @@ subtest "(CAPI, Graph)" => sub {
 	is $feed->Device, '', 'device';
 	is $feed->NumOutputs, 1, 'num outputs';
 	cmp_ok $feed->OutputType(
-		AI::TensorFlow::Libtensorflow::Output->New({oper => $feed, index => 0})
+		$TFOutput->coerce({oper => $feed, index => 0})
 	), 'eq', INT32, 'output 0 type';
 	is $feed->OutputListLength("output", $s), 1, 'output list length';
 	TF_Utils::AssertStatusOK($s);
 	is $feed->NumInputs, 0, 'num inputs';
 	is $feed->OutputNumConsumers(
-		AI::TensorFlow::Libtensorflow::Output->New({oper => $feed, index => 0})
+		$TFOutput->coerce({oper => $feed, index => 0})
 	), 0, 'output 0 num consumers';
 	is $feed->NumControlInputs, 0, 'num control inputs';
 	is $feed->NumControlOutputs, 0, 'num control outputs';
