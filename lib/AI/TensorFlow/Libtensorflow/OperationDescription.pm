@@ -75,12 +75,8 @@ $ffi->attach( 'AddInput' => [
 =cut
 $ffi->attach( AddInputList => [
 	arg 'TF_OperationDescription' => 'desc',
-	arg 'TF_Output_array' => 'inputs',
-	arg 'int' => 'num_inputs'
-] => 'void' => sub {
-	my ($xs, $self, $inputs) = @_;
-	$xs->( $self, $inputs, 0+@$inputs );
-});
+	arg 'TF_Output_array_sz' => [ qw(inputs num_inputs) ],
+] => 'void');
 
 =method AddControlInput
 
