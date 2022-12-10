@@ -6,7 +6,6 @@ use FFI::Platypus::API qw( arguments_set_pointer arguments_set_sint32 );
 
 use Package::Variant;
 use Module::Runtime qw(module_notional_filename is_module_name);
-use Types::Standard qw(InstanceOf);
 
 sub make_variant {
 	my ($class, $target_package, $package, %arguments) = @_;
@@ -16,13 +15,12 @@ sub make_variant {
 
 	my $record_module = $arguments{record_module};
 	my $with_size     = exists $arguments{with_size} ? $arguments{with_size} : 1;
-	my $coerce        = $arguments{coerce} || InstanceOf[$record_module];
 
 	my @stack;
 
 	my $perl_to_native = install perl_to_native => sub {
 		my ($value, $i) = @_;
-		my $data = pack "(a*)*", map $$_, $coerce->map(@$value);
+		my $data = pack "(a*)*", map $$_, @$value;
 		my($pointer, $size) = scalar_to_buffer($data);
 		my $n = @$value;
 		my $sizeof = $size / $n;

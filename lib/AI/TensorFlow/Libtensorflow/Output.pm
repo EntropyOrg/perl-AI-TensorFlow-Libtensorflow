@@ -37,24 +37,14 @@ sub New {
 sub oper  { $ffi->cast('opaque', 'TF_Operation', $_[0]->_oper ) }
 sub index { $_[0]->_index }
 
-
-
-use AI::TensorFlow::Libtensorflow::Lib::Types qw(TFOutput TFOutputFromTuple);
-use Types::Standard qw(HashRef);
-
-my $TFOutput = TFOutput->plus_constructors(
-		HashRef, 'New'
-	)->plus_coercions(TFOutputFromTuple);
 $ffi->load_custom_type(
 	RecordArrayRef( 'OutputArrayPtr',
 		record_module => __PACKAGE__, with_size => 0,
-		coerce => $TFOutput,
 	),
 	=> 'TF_Output_array');
 $ffi->load_custom_type(
 	RecordArrayRef( 'OutputArrayPtrSz',
 		record_module => __PACKAGE__, with_size => 1,
-		coerce => $TFOutput,
 	),
 	=> 'TF_Output_array_sz');
 

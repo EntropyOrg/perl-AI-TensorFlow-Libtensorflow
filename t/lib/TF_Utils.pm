@@ -107,20 +107,21 @@ sub ScalarConst {
 	return Const($graph, $status, $name, $dtype, $t);
 }
 
+
+use AI::TensorFlow::Libtensorflow::Lib::Types qw(TFOutput TFOutputFromTuple);
+use Types::Standard qw(HashRef);
+
+my $TFOutput = TFOutput->plus_constructors(
+		HashRef, 'New'
+	)->plus_coercions(TFOutputFromTuple);
 sub Add {
 	my ($l, $r, $graph, $s, $name) = @_;
 	$name ||= 'add';
 	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New(
 		$graph, "AddN", $name);
-	my $add_inputs = [
-		map {
-			AI::TensorFlow::Libtensorflow::Output->New({
-				oper => $_,
-				index => 0,
-			})
-		} ($l, $r)
-	];
-	$desc->AddInputList($add_inputs);
+	$desc->AddInputList([
+		$TFOutput->map( [ $l => 0 ], [ $r => 0 ] )
+	]);
 	my $op = $desc->FinishOperation($s);
 	AssertStatusOK($s);
 	$op;
