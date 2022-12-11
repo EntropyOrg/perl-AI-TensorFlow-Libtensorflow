@@ -75,8 +75,14 @@ $ffi->attach( 'AddInput' => [
 =cut
 $ffi->attach( AddInputList => [
 	arg 'TF_OperationDescription' => 'desc',
-	arg 'TF_Output_array_sz' => [ qw(inputs num_inputs) ],
-] => 'void');
+	arg 'TF_Output_struct_array' => 'inputs',
+	arg 'int' => 'num_inputs',
+] => 'void' => sub {
+	my $xs = shift;
+	$_[1]  = AI::TensorFlow::Libtensorflow::Output->_as_array( @{ $_[1] } );
+	$_[2]  = $_[1]->count;
+	$xs->(@_);
+});
 
 =method AddControlInput
 
