@@ -35,6 +35,46 @@ sub New {
 sub oper  { $ffi->cast('opaque', 'TF_Operation', $_[0]->_oper ) }
 sub index { $_[0]->_index }
 
+use FFI::C::ArrayDef;
+use FFI::C::StructDef;
+my $sdef = FFI::C::StructDef->new($ffi,
+	name     => 'TF_Input_struct',
+	members  => [
+		_oper  => 'opaque',
+		_index => 'int',
+		__ignore => 'char[4]',
+	],
+);
+my $adef = FFI::C::ArrayDef->new($ffi,
+       name => 'TF_Input_struct_array',
+       members => [ 'TF_Input_struct' ]
+);
+sub _adef { $adef; }
+sub _as_array {
+	my $class = shift;
+	my $output = $class->_adef->create(0 + @_);
+	for my $idx (0..@_-1) {
+		next unless defined $_[$idx];
+		$class->_copy_to_other( $_[$idx], $output->[$idx] );
+	}
+	$output;
+}
+sub _from_array {
+	my ($class, $array) = @_;
+	[
+		map {
+			my $record = $class->new;
+			$class->_copy_to_other($array->[$_], $record);
+			$record;
+		} 0..$array->count-1
+	]
+}
+sub _copy_to_other {
+	my ($class, $this, $that) = @_;
+       $that->_oper ($this->_oper);
+       $that->_index($this->_index);
+}
+
 $ffi->load_custom_type(
 	RecordArrayRef( 'InputArrayPtr',
 		record_module => __PACKAGE__, with_size => 0,
