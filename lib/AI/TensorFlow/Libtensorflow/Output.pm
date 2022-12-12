@@ -57,14 +57,28 @@ my $adef = FFI::C::ArrayDef->new($ffi,
 );
 sub _adef { $adef; }
 sub _as_array {
-       my $class = shift;
-       my $output = $class->_adef->create(0 + @_);
-       for my $idx (0..@_-1) {
-               next unless defined $_[$idx];
-               $output->[$idx]->_oper ($_[$idx]->_oper);
-               $output->[$idx]->_index($_[$idx]->_index);
-       }
-       $output;
+	my $class = shift;
+	my $output = $class->_adef->create(0 + @_);
+	for my $idx (0..@_-1) {
+		next unless defined $_[$idx];
+		$class->_copy_to_other( $_[$idx], $output->[$idx] );
+	}
+	$output;
+}
+sub _from_array {
+	my ($class, $array) = @_;
+	[
+		map {
+			my $record = $class->new;
+			$class->_copy_to_other($array->[$_], $record);
+			$record;
+		} 0..$array->count-1
+	]
+}
+sub _copy_to_other {
+	my ($class, $this, $that) = @_;
+       $that->_oper ($this->_oper);
+       $that->_index($this->_index);
 }
 
 $ffi->load_custom_type(
