@@ -14,6 +14,7 @@ use AI::TensorFlow::Libtensorflow::Tensor;
 
 use AI::TensorFlow::Libtensorflow::Operation;
 use AI::TensorFlow::Libtensorflow::Output;
+use AI::TensorFlow::Libtensorflow::Input;
 
 use AI::TensorFlow::Libtensorflow::ApiDefMap;
 

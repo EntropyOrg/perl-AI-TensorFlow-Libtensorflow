@@ -93,4 +93,21 @@ declare_coercion "TFOutputFromTuple",
 		});
 	};
 
+=type TFInput
+
+Type for class L<AI::TensorFlow::Libtensorflow::Input>
+
+=cut
+class_type TFInput => { class => 'AI::TensorFlow::Libtensorflow::Input' };
+
+declare_coercion "TFInputFromTuple",
+	to_type TFInput,
+	from Tuple[InstanceOf['AI::TensorFlow::Libtensorflow::Operation'],Int],
+	q {
+		AI::TensorFlow::Libtensorflow::Input->New({
+			oper  => $_->[0],
+			index => $_->[1],
+		});
+	};
+
 1;

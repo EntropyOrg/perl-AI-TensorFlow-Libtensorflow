@@ -4,6 +4,7 @@ package AI::TensorFlow::Libtensorflow::Operation;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use AI::TensorFlow::Libtensorflow::Output;
+use AI::TensorFlow::Libtensorflow::Input;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
@@ -72,9 +73,12 @@ $ffi->attach( [ 'OperationNumInputs' => 'NumInputs' ] => [
 
 =cut
 $ffi->attach( [ 'OperationInputType'  => 'InputType' ] => [
-	# TODO (simplify API)
-	arg 'opaque' => 'TF_Input oper_in',
-] => 'TF_DataType');
+	arg 'TF_Input' => 'oper_in',
+] => 'TF_DataType' => sub {
+	my ($xs, $self, $input) = @_;
+	# TODO coerce from LibtfPartialInput here
+	$xs->($input);
+});
 
 =attr NumControlInputs
 
@@ -122,8 +126,12 @@ $ffi->attach( [ 'OperationInputListLength' => 'InputListLength' ] => [
 
 =cut
 $ffi->attach( [ 'OperationInput' => 'Input' ] => [
-	arg 'opaque' => 'TF_Input oper_in',
-] => ( 'opaque' , 'TF_Output' )[0] );
+	arg 'TF_Input' => 'oper_in',
+] => 'TF_Output' => sub {
+	my ($xs, $self, $input) = @_;
+	# TODO coerce from LibtfPartialInput here
+	$xs->($input);
+});
 
 =method AllInputs
 
