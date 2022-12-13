@@ -45,6 +45,8 @@ sub ffi {
 
 =head3 TF_SessionOptions
 
+L<AI::TensorFlow::Libtensorflow::SessionOptions>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_SessionOptions TF_SessionOptions;
@@ -52,7 +54,7 @@ typedef struct TF_SessionOptions TF_SessionOptions;
 =end TF_CAPI_DEF
 
 =cut
-		$ffi->type('opaque' => 'TF_SessionOptions');
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::SessionOptions)' => 'TF_SessionOptions');
 
 =head3 TF_Graph
 

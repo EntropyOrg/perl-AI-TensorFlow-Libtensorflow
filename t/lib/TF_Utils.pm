@@ -139,6 +139,15 @@ sub Neg {
 	$op;
 }
 
+
+sub Int32Tensor {
+	my ($v) = @_;
+	my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate( INT32, [] );
+	memcpy scalar_to_pointer( ${ $t->Data } ),
+		scalar_to_pointer(pack("l", $v)), INT32->Size;
+	return $t;
+}
+
 sub AssertStatusOK {
 	my ($status) = @_;
 	die "Status not OK: @{[ $status->GetCode ]} : @{[ $status->Message ]}"
@@ -149,6 +158,74 @@ sub AssertStatusNotOK {
 	my ($status) = @_;
 	die "Status expected not OK" if $status->GetCode eq 'OK';
 	return "Status: @{[ $status->GetCode ]}:  @{[ $status->Message ]}";
+}
+
+package # hide from PAUSE
+  TF_Utils::CSession {
+
+	use Class::Tiny qw(
+		session
+		graph use_XLA
+		_inputs _input_values
+		_outputs _output_values
+		_targets
+	), {
+		use_XLA => sub { 0 },
+	};
+
+  sub BUILD {
+	my ($self, $args) = @_;
+	my $s = delete $args->{status};
+	my $opts = AI::TensorFlow::Libtensorflow::SessionOptions->New;
+	$opts->EnableXLACompilation( $self->use_XLA );
+	$self->session( AI::TensorFlow::Libtensorflow::Session->New( $self->graph, $opts, $s ) );
+  }
+
+  sub SetInputs {
+	my ($self, @data) = @_;
+	my (@inputs, @input_values);
+	for my $pair (@data) {
+		my ($oper, $t) = @$pair;
+		push @inputs, AI::TensorFlow::Libtensorflow::Output->New({ oper => $oper, index => 0 });
+		push @input_values, $t;
+	}
+	$self->_inputs( \@inputs );
+	$self->_input_values( \@input_values );
+  }
+
+  sub SetOutputs {
+	my ($self, @data) = @_;
+	my @outputs;
+	my @output_values;
+	for my $oper (@data) {
+		push @outputs, AI::TensorFlow::Libtensorflow::Output->New({ oper => $oper, index => 0 });
+	}
+	$self->_outputs( \@outputs );
+	$self->_output_values( \@output_values );
+  }
+
+  sub SetTargets {
+	my ($self, @data) = @_;
+	$self->_targets( \@data );
+  }
+
+  sub Run {
+	my ($self, $s) = @_;
+	if( @{ $self->_inputs } != @{ $self->_input_values } ) {
+		die "Call SetInputs() before Run()";
+	}
+
+	$self->session->Run(
+		undef,
+		$self->_inputs, $self->_input_values,
+		$self->_outputs, $self->_output_values,
+		$self->_targets,
+		undef,
+		$s
+	);
+  }
+
+  sub output_tensor { my ($self, $i) = @_; $self->_output_values->[$i] }
 }
 
 1;

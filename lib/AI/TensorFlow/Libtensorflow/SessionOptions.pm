@@ -48,4 +48,14 @@ $ffi->attach( 'SetConfig' => [
 	arg 'TF_Status' => 'status',
 ] => 'void' );
 
+=method EnableXLACompilation
+
+=tf_capi TF_EnableXLACompilation
+
+=cut
+$ffi->attach( 'EnableXLACompilation' => [
+	arg TF_SessionOptions => options,
+	arg 'unsigned char'   => 'enable'
+] => 'void' );
+
 1;

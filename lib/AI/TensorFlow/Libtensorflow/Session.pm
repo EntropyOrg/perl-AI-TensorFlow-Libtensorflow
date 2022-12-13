@@ -158,4 +158,9 @@ $ffi->attach( [ 'CloseSession' => 'Close' ] =>
 	],
 	=> 'void' );
 
+sub DESTROY {
+	my ($self) = @_;
+	$self->CloseSession;
+}
+
 1;
