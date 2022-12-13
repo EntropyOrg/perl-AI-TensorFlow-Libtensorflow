@@ -4,6 +4,7 @@ package AI::TensorFlow::Libtensorflow::ImportGraphDefResults;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use FFI::Platypus::Buffer qw(buffer_to_scalar window);
+use List::Util ();
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
@@ -64,5 +65,31 @@ $ffi->attach( [ 'ImportGraphDefResultsReturnOperations' => 'ReturnOperations' ] 
 	} unpack "(@{[ AI::TensorFlow::Libtensorflow::Lib::_pointer_incantation ]})*", $opers_array_base_packed;
 	return \@opers;
 } );
+
+=method MissingUnusedInputMappings
+
+=tf_capi TF_ImportGraphDefResultsMissingUnusedInputMappings
+
+=cut
+$ffi->attach( [ 'ImportGraphDefResultsMissingUnusedInputMappings' => 'MissingUnusedInputMappings' ] => [
+    arg TF_ImportGraphDefResults => 'results',
+    arg 'int*' => 'num_missing_unused_input_mappings',
+    arg 'opaque*' => { id => 'src_names', ctype => 'const char***' },
+    arg 'opaque*' => { id => 'src_indexes', ctype => 'int**' },
+] => 'void' => sub {
+	my ($xs, $results) = @_;
+	my $num_missing_unused_input_mappings;
+	my $src_names;
+	my $src_indexes;
+	$xs->($results,
+		\$num_missing_unused_input_mappings,
+		\$src_names, \$src_indexes
+	);
+	my $src_names_str   = $ffi->cast('opaque',
+		"string[$num_missing_unused_input_mappings]", $src_names);
+	my $src_indexes_int = $ffi->cast('opaque',
+		"int[$num_missing_unused_input_mappings]", $src_indexes);
+	return [ List::Util::zip($src_names_str, $src_indexes_int) ];
+});
 
 1;
