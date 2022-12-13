@@ -127,6 +127,18 @@ sub Add {
 	$op;
 }
 
+sub Neg {
+	my ($n, $graph, $s, $name) = @_;
+	$name ||= 'neg';
+	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New(
+		$graph, "Neg", $name);
+	my $neg_input = $TFOutput->coerce([$n => 0]);
+	$desc->AddInput($neg_input);
+	my $op = $desc->FinishOperation($s);
+	AssertStatusOK($s);
+	$op;
+}
+
 sub AssertStatusOK {
 	my ($status) = @_;
 	die "Status not OK: @{[ $status->GetCode ]} : @{[ $status->Message ]}"

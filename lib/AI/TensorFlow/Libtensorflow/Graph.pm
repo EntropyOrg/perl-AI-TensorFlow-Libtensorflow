@@ -95,6 +95,16 @@ $ffi->attach( [ 'GraphGetTensorNumDims' => 'GetTensorNumDims' ] => [
 	arg 'TF_Status' => 'status',
 ] => 'int');
 
+=method NextOperation
+
+=tf_capi TF_GraphNextOperation
+
+=cut
+$ffi->attach( [ 'GraphNextOperation' => 'NextOperation' ] => [
+	arg 'TF_Graph' => 'graph',
+	arg 'size_t*'  => 'pos',
+] => 'TF_Operation');
+
 1;
 __END__
 
