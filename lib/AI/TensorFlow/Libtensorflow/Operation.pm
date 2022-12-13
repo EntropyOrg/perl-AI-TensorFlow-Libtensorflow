@@ -141,9 +141,15 @@ $ffi->attach( [ 'OperationInput' => 'Input' ] => [
 $ffi->attach( [ 'OperationAllInputs' => 'AllInputs' ] => [
 	arg 'TF_Operation' => 'oper',
 	# TODO make OutputArray
-	arg 'opaque' => 'TF_Output* inputs',
+	arg 'TF_Output_struct_array' => 'inputs',
 	arg 'int' => 'max_inputs',
-] => 'void' );
+] => 'void' => sub {
+	my ($xs, $oper) = @_;
+	my $max_inputs = $oper->NumInputs;
+	my $inputs = AI::TensorFlow::Libtensorflow::Output->_adef->create(0 + $max_inputs);
+	$xs->($oper, $inputs, $max_inputs);
+	return AI::TensorFlow::Libtensorflow::Output->_from_array($inputs);
+});
 
 =method OutputNumConsumers
 
@@ -165,10 +171,16 @@ $ffi->attach( [ 'OperationOutputNumConsumers' => 'OutputNumConsumers' ] => [
 =cut
 $ffi->attach( [ 'OperationOutputConsumers'  => 'OutputConsumers' ] => [
 	# TODO simplify API
-	arg 'opaque' => 'TF_Output oper_out',
-	arg 'opaque' => 'TF_Input* consumers',
-	arg 'int'    => 'max_consumers',
-] => 'int');
+	arg 'TF_Output' => 'oper_out',
+	arg 'TF_Input_struct_array' => 'consumers',
+	arg 'int'                   => 'max_consumers',
+] => 'int' => sub {
+	my ($xs, $self, $output) = @_;
+	my $max_consumers = $self->OutputNumConsumers( $output );
+	my $consumers = AI::TensorFlow::Libtensorflow::Input->_adef->create( $max_consumers );
+	my $count = $xs->($output, $consumers, $max_consumers);
+	return AI::TensorFlow::Libtensorflow::Input->_from_array( $consumers );
+});
 
 
 use FFI::C::ArrayDef;
