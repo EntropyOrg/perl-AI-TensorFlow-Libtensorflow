@@ -33,7 +33,7 @@ subtest "(CAPI, Session)" => sub {
 	$csession->Run($s);
 	TF_Utils::AssertStatusOK($s);
 	is $csession->output_tensor(0), object {
-		call sub { "" . shift->Type } => "" . INT32;
+		call Type => INT32;
 		call NumDims => 0; # scalar
 		call ByteSize => INT32->Size;
 		call sub {
@@ -51,7 +51,7 @@ subtest "(CAPI, Session)" => sub {
 	$csession->Run($s);
 	TF_Utils::AssertStatusOK($s);
 	is $csession->output_tensor(0), object {
-		call sub { "" . shift->Type } => "" . INT32;
+		call Type => INT32;
 		call NumDims => 0; # scalar
 		call ByteSize => INT32->Size;
 		call sub {
