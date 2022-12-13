@@ -44,6 +44,18 @@ $ffi->attach( [ 'GraphImportGraphDef'  => 'ImportGraphDef'  ] => [
 	arg 'TF_Status' => 'status',
 ] => 'void' );
 
+=method ImportGraphDefWithResults
+
+=tf_capi TF_GraphImportGraphDefWithResults
+
+=cut
+$ffi->attach( [ 'GraphImportGraphDefWithResults' => 'ImportGraphDefWithResults' ] => [
+    arg TF_Graph => 'graph',
+    arg TF_Buffer => 'graph_def',
+    arg TF_ImportGraphDefOptions => 'options',
+    arg TF_Status => 'status',
+] => 'TF_ImportGraphDefResults');
+
 =method OperationByName
 
 =tf_capi TF_GraphOperationByName
@@ -114,6 +126,17 @@ $ffi->attach( [ 'UpdateEdge' => 'UpdateEdge' ] => [
 	arg 'TF_Graph' => 'graph',
 	arg 'TF_Output' => 'new_src',
 	arg 'TF_Input'  => 'dst',
+	arg 'TF_Status' => 'status',
+] => 'void');
+
+=method ToGraphDef
+
+=tf_capi TF_GraphToGraphDef
+
+=cut
+$ffi->attach([ 'GraphToGraphDef' => 'ToGraphDef' ] => [
+	arg 'TF_Graph' => 'graph',
+	arg 'TF_Buffer' => 'output_graph_def',
 	arg 'TF_Status' => 'status',
 ] => 'void');
 

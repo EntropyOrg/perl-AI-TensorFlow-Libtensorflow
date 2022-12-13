@@ -19,6 +19,7 @@ use AI::TensorFlow::Libtensorflow::Input;
 use AI::TensorFlow::Libtensorflow::ApiDefMap;
 
 use AI::TensorFlow::Libtensorflow::ImportGraphDefOptions;
+use AI::TensorFlow::Libtensorflow::ImportGraphDefResults;
 use AI::TensorFlow::Libtensorflow::Graph;
 
 use AI::TensorFlow::Libtensorflow::OperationDescription;

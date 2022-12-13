@@ -125,13 +125,15 @@ typedef struct TF_ImportGraphDefOptions TF_ImportGraphDefOptions;
 
 =head3 TF_ImportGraphDefResults
 
+L<AI::TensorFlow::Libtensorflow::ImportGraphDefResults>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_ImportGraphDefResults TF_ImportGraphDefResults;
 
 =end TF_CAPI_DEF
 =cut
-		$ffi->type('opaque' => 'TF_ImportGraphDefResults');
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::ImportGraphDefResults)' => 'TF_ImportGraphDefResults');
 
 =head3 TF_Session
 
@@ -413,6 +415,14 @@ sub arg(@) {
 	);
 	return $arg, @_;
 }
+
+# from FFI::Platypus::Type::StringArray
+use constant _pointer_incantation =>
+  $^O eq 'MSWin32' && do { require Config; $Config::Config{archname} =~ /MSWin32-x64/ }
+  ? 'Q'
+  : 'L!';
+use constant _size_of_pointer => FFI::Platypus->new( api => 2 )->sizeof('opaque');
+use constant _pointer_buffer => "P" . _size_of_pointer;
 
 package # hide from PAUSE
   AI::TensorFlow::Libtensorflow::Lib::_Arg {
