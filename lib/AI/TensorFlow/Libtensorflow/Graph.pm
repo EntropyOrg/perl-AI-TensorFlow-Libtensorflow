@@ -105,6 +105,18 @@ $ffi->attach( [ 'GraphNextOperation' => 'NextOperation' ] => [
 	arg 'size_t*'  => 'pos',
 ] => 'TF_Operation');
 
+=method UpdateEdge
+
+=tf_capi TF_UpdateEdge
+
+=cut
+$ffi->attach( [ 'UpdateEdge' => 'UpdateEdge' ] => [
+	arg 'TF_Graph' => 'graph',
+	arg 'TF_Output' => 'new_src',
+	arg 'TF_Input'  => 'dst',
+	arg 'TF_Status' => 'status',
+] => 'void');
+
 1;
 __END__
 
