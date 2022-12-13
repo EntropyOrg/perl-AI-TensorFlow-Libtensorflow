@@ -160,7 +160,10 @@ $ffi->attach( [ 'CloseSession' => 'Close' ] =>
 
 sub DESTROY {
 	my ($self) = @_;
-	$self->CloseSession;
+	my $s = AI::TensorFlow::Libtensorflow::Status->New;
+	$self->Close($s);
+	# TODO this may not be needed with automatic Status handling
+	die "Could not close session" unless $s->GetCode eq 'OK';
 }
 
 1;
