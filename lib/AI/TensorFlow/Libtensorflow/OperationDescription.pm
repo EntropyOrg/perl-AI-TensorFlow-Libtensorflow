@@ -32,7 +32,10 @@ $ffi->attach( [ 'NewOperation' => 'New' ] => [
 	arg 'TF_Graph' => 'graph',
 	arg 'string'   => 'op_type',
 	arg 'string'   => 'oper_name',
-] => 'TF_OperationDescription' );
+] => 'TF_OperationDescription' => sub {
+	my ($xs, $class, @rest) = @_;
+	$xs->(@rest);
+});
 
 =construct NewLocked
 
@@ -72,12 +75,13 @@ $ffi->attach( 'AddInput' => [
 =cut
 $ffi->attach( AddInputList => [
 	arg 'TF_OperationDescription' => 'desc',
-	arg 'TF_Output_array' => 'inputs',
-	arg 'int' => 'num_inputs'
+	arg 'TF_Output_struct_array' => 'inputs',
+	arg 'int' => 'num_inputs',
 ] => 'void' => sub {
-	my ($xs, $self, $inputs) = @_;
-	my $inputs_a    = AI::TensorFlow::Libtensorflow::Output->_as_array(@$inputs);
-	$xs->( $self, $inputs_a, $inputs_a->count );
+	my $xs = shift;
+	$_[1]  = AI::TensorFlow::Libtensorflow::Output->_as_array( @{ $_[1] } );
+	$_[2]  = $_[1]->count;
+	$xs->(@_);
 });
 
 =method AddControlInput

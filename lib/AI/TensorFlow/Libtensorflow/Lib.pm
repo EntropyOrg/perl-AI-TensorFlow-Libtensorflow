@@ -9,6 +9,7 @@ use FFI::CheckLib 0.28 qw( find_lib_or_die );
 use Alien::Libtensorflow;
 use FFI::Platypus;
 use AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableArrayRef;
+use AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableMaybeArrayRef;
 use AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeScalar;
 
 use base 'Exporter::Tiny';
@@ -35,7 +36,7 @@ sub ffi {
 		$ffi->load_custom_type('AI::TensorFlow::Libtensorflow::Lib::FFIType::TFPtrSizeScalar'
 			=> 'tf_text_buffer');
 
-		$ffi->load_custom_type( PackableArrayRef( 'DimsBuffer', pack_type => 'q' )
+		$ffi->load_custom_type( PackableMaybeArrayRef( 'DimsBuffer', pack_type => 'q' )
 			=> 'tf_dims_buffer'
 		);
 
@@ -67,13 +68,16 @@ typedef struct TF_Graph TF_Graph;
 
 =head3 TF_OperationDescription
 
+L<AI::TensorFlow::Libtensorflow::OperationDescription>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_OperationDescription TF_OperationDescription;
 
 =end TF_CAPI_DEF
 =cut
-		$ffi->type('opaque' => 'TF_OperationDescription');
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::OperationDescription)'
+			=> 'TF_OperationDescription');
 
 =head3 TF_Operation
 

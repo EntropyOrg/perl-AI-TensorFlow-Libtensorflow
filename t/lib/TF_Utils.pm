@@ -2,7 +2,7 @@ package TF_Utils;
 
 use AI::TensorFlow::Libtensorflow;
 use AI::TensorFlow::Libtensorflow::Lib;
-use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT);
+use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT INT32);
 use Path::Tiny;
 
 use PDL::Core ':Internal';
@@ -40,11 +40,7 @@ sub LoadGraph {
 
 	$graph->ImportGraphDef( $buffer, $opts, $status );
 
-	#$opts->_Delete;
-	#$buffer->_Delete;
-
 	if( $status->GetCode ne 'OK' ) {
-		$graph->_Delete;
 		return undef;
 	}
 
@@ -66,6 +62,93 @@ sub FloatPDLToTFTensor {
 	);
 
 	$tensor;
+}
+
+sub Placeholder {
+	my ($graph, $status, $name, $dtype) = @_;
+	$name ||= 'feed';
+	$dtype ||= INT32;
+	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New($graph, 'Placeholder', $name);
+	$desc->SetAttrType('dtype', $dtype);
+	my $op = $desc->FinishOperation($status);
+	AssertStatusOK($status);
+	$op;
+}
+
+sub Const {
+	my ($graph, $status, $name, $dtype, $t) = @_;
+	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New($graph, 'Const', $name);
+	$desc->SetAttrTensor('value', $t, $status);
+	$desc->SetAttrType('dtype', $t->Type);
+	my $op = $desc->FinishOperation($status);
+	AssertStatusOK($status);
+	$op;
+}
+
+my %dtype_to_pack = (
+	FLOAT => 'f',
+	DOUBLE => 'd',
+	INT32  => 'l',
+	BOOL => 'c',
+);
+
+use FFI::Platypus::Buffer qw(scalar_to_pointer);
+use FFI::Platypus::Memory qw(memcpy);
+
+sub ScalarConst {
+	my ($graph, $status, $name, $dtype, $value) = @_;
+	$name ||= 'scalar';
+	my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate($dtype, []);
+	die unless exists $dtype_to_pack{$dtype};
+	my $data = pack $dtype_to_pack{$dtype} . '*', $value;
+	memcpy scalar_to_pointer(${ $t->Data }),
+		 scalar_to_pointer($data),
+		 $t->ByteSize;
+	return Const($graph, $status, $name, $dtype, $t);
+}
+
+
+use AI::TensorFlow::Libtensorflow::Lib::Types qw(TFOutput TFOutputFromTuple);
+use Types::Standard qw(HashRef);
+
+my $TFOutput = TFOutput->plus_constructors(
+		HashRef, 'New'
+	)->plus_coercions(TFOutputFromTuple);
+sub Add {
+	my ($l, $r, $graph, $s, $name) = @_;
+	$name ||= 'add';
+	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New(
+		$graph, "AddN", $name);
+	$desc->AddInputList([
+		$TFOutput->map( [ $l => 0 ], [ $r => 0 ] )
+	]);
+	my $op = $desc->FinishOperation($s);
+	AssertStatusOK($s);
+	$op;
+}
+
+sub Neg {
+	my ($n, $graph, $s, $name) = @_;
+	$name ||= 'neg';
+	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New(
+		$graph, "Neg", $name);
+	my $neg_input = $TFOutput->coerce([$n => 0]);
+	$desc->AddInput($neg_input);
+	my $op = $desc->FinishOperation($s);
+	AssertStatusOK($s);
+	$op;
+}
+
+sub AssertStatusOK {
+	my ($status) = @_;
+	die "Status not OK: @{[ $status->GetCode ]} : @{[ $status->Message ]}"
+		unless $status->GetCode eq 'OK';
+}
+
+sub AssertStatusNotOK {
+	my ($status) = @_;
+	die "Status expected not OK" if $status->GetCode eq 'OK';
+	return "Status: @{[ $status->GetCode ]}:  @{[ $status->Message ]}";
 }
 
 1;

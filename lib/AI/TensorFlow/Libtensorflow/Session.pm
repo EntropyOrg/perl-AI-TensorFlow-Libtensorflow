@@ -74,12 +74,12 @@ $ffi->attach( [ 'SessionRun' => 'Run' ] =>
 		arg 'opaque'  => 'run_options',
 
 		# Input TFTensors
-		arg 'TF_Output_array' => 'inputs',
+		arg 'TF_Output_struct_array' => 'inputs',
 		arg 'TF_Tensor_array' => 'input_values',
 		arg 'int'             => 'ninputs',
 
 		# Output TFTensors
-		arg 'TF_Output_array' => 'outputs',
+		arg 'TF_Output_struct_array' => 'outputs',
 		arg 'TF_Tensor_array' => 'output_values',
 		arg 'int'             => 'noutputs',
 
@@ -106,9 +106,7 @@ $ffi->attach( [ 'SessionRun' => 'Run' ] =>
 			$status ) = @_;
 
 		die "Mismatch in number of inputs and input values" unless $#$inputs == $#$input_values;
-		my $input_a    = AI::TensorFlow::Libtensorflow::Output->_as_array(@$inputs);
 		my $input_v_a  = AI::TensorFlow::Libtensorflow::Tensor->_as_array(@$input_values);
-		my $output_a   = AI::TensorFlow::Libtensorflow::Output->_as_array(@$outputs);
 		my $output_v_a = AI::TensorFlow::Libtensorflow::Tensor->_adef->create( 0+@$outputs );
 
 
@@ -119,14 +117,16 @@ $ffi->attach( [ 'SessionRun' => 'Run' ] =>
 			}
 			: ( undef, 0 );
 
+		$inputs  = AI::TensorFlow::Libtensorflow::Output->_as_array( @$inputs );
+		$outputs = AI::TensorFlow::Libtensorflow::Output->_as_array( @$outputs );
 		$xs->($self,
 			$run_options,
 
 			# Inputs
-			$input_a , $input_v_a , $input_a->count,
+			$inputs, $input_v_a , $input_v_a->count,
 
 			# Outputs
-			$output_a, $output_v_a, $output_a->count,
+			$outputs, $output_v_a, $output_v_a->count,
 
 			@target_opers_args,
 

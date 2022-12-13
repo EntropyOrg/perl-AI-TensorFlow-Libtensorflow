@@ -1,7 +1,7 @@
-package AI::TensorFlow::Libtensorflow::Output;
-# ABSTRACT: Output of operation as (operation, index) pair
+package AI::TensorFlow::Libtensorflow::Input;
+# ABSTRACT: Input of operation as (operation, index) pair
 
-# See L<AI::TensorFlow::Libtensorflow::Input> for similar.
+# See L<AI::TensorFlow::Libtensorflow::Output> for similar.
 # In fact, they are mostly the same, but keeping the classes separate for now
 # in case the upstream API changes.
 
@@ -17,17 +17,11 @@ record_layout_1($ffi,
 	'opaque' => '_oper',   # 8 (on 64-bit)
 	'int'    => '_index',  # 4
 
-	# padding to make sizeof(record) == 16
-	# but only on machines where sizeof(opaque) is 8 bytes
-	# See also:
-	#   Convert::Binary::C->new( Alignment => 8 )
-	#     ->parse( ... )
-	#     ->sizeof( ... )
 	$ffi->sizeof('opaque') == 8 ? (
 		'char[4]' => ':',
 	) : (),
 );
-$ffi->type('record(AI::TensorFlow::Libtensorflow::Output)', 'TF_Output');
+$ffi->type('record(AI::TensorFlow::Libtensorflow::Input)', 'TF_Input');
 
 sub New {
 	my ($class, $args) = @_;
@@ -44,7 +38,7 @@ sub index { $_[0]->_index }
 use FFI::C::ArrayDef;
 use FFI::C::StructDef;
 my $sdef = FFI::C::StructDef->new($ffi,
-	name     => 'TF_Output_struct',
+	name     => 'TF_Input_struct',
 	members  => [
 		_oper  => 'opaque',
 		_index => 'int',
@@ -52,8 +46,8 @@ my $sdef = FFI::C::StructDef->new($ffi,
 	],
 );
 my $adef = FFI::C::ArrayDef->new($ffi,
-       name => 'TF_Output_struct_array',
-       members => [ 'TF_Output_struct' ]
+       name => 'TF_Input_struct_array',
+       members => [ 'TF_Input_struct' ]
 );
 sub _adef { $adef; }
 sub _as_array {
@@ -82,14 +76,14 @@ sub _copy_to_other {
 }
 
 $ffi->load_custom_type(
-	RecordArrayRef( 'OutputArrayPtr',
+	RecordArrayRef( 'InputArrayPtr',
 		record_module => __PACKAGE__, with_size => 0,
 	),
-	=> 'TF_Output_array');
+	=> 'TF_Input_array');
 $ffi->load_custom_type(
-	RecordArrayRef( 'OutputArrayPtrSz',
+	RecordArrayRef( 'InputArrayPtrSz',
 		record_module => __PACKAGE__, with_size => 1,
 	),
-	=> 'TF_Output_array_sz');
+	=> 'TF_Input_array_sz');
 
 1;

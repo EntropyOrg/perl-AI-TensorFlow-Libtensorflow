@@ -3,6 +3,8 @@ package AI::TensorFlow::Libtensorflow::Operation;
 
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
+use AI::TensorFlow::Libtensorflow::Output;
+use AI::TensorFlow::Libtensorflow::Input;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
@@ -49,9 +51,12 @@ $ffi->attach( [ 'OperationNumOutputs' => 'NumOutputs' ], [
 
 =cut
 $ffi->attach( [ 'OperationOutputType' => 'OutputType' ] => [
-	# TODO (simplify API)
-	arg 'opaque' => 'TF_Output oper',
-] => 'TF_DataType' );
+	arg 'TF_Output' => 'oper_out',
+] => 'TF_DataType' => sub {
+	my ($xs, $self, $output) = @_;
+	# TODO coerce from LibtfPartialOutput here
+	$xs->($output);
+} );
 
 =attr NumInputs
 
@@ -68,9 +73,12 @@ $ffi->attach( [ 'OperationNumInputs' => 'NumInputs' ] => [
 
 =cut
 $ffi->attach( [ 'OperationInputType'  => 'InputType' ] => [
-	# TODO (simplify API)
-	arg 'opaque' => 'TF_Input oper_in',
-] => 'TF_DataType');
+	arg 'TF_Input' => 'oper_in',
+] => 'TF_DataType' => sub {
+	my ($xs, $self, $input) = @_;
+	# TODO coerce from LibtfPartialInput here
+	$xs->($input);
+});
 
 =attr NumControlInputs
 
@@ -81,6 +89,14 @@ $ffi->attach( [ 'OperationNumControlInputs' => 'NumControlInputs' ] => [
 	arg 'TF_Operation' => 'oper',
 ] => 'int' );
 
+=attr NumControlOutputs
+
+=tf_capi TF_OperationNumControlOutputs
+
+=cut
+$ffi->attach( [ 'OperationNumControlOutputs' => 'NumControlOutputs' ] => [
+	arg 'TF_Operation' => 'oper',
+] => 'int' );
 
 =method OutputListLength
 
@@ -110,8 +126,12 @@ $ffi->attach( [ 'OperationInputListLength' => 'InputListLength' ] => [
 
 =cut
 $ffi->attach( [ 'OperationInput' => 'Input' ] => [
-	arg 'opaque' => 'TF_Input oper_in',
-] => ( 'opaque' , 'TF_Output' )[0] );
+	arg 'TF_Input' => 'oper_in',
+] => 'TF_Output' => sub {
+	my ($xs, $self, $input) = @_;
+	# TODO coerce from LibtfPartialInput here
+	$xs->($input);
+});
 
 =method AllInputs
 
@@ -121,9 +141,15 @@ $ffi->attach( [ 'OperationInput' => 'Input' ] => [
 $ffi->attach( [ 'OperationAllInputs' => 'AllInputs' ] => [
 	arg 'TF_Operation' => 'oper',
 	# TODO make OutputArray
-	arg 'opaque' => 'TF_Output* inputs',
+	arg 'TF_Output_struct_array' => 'inputs',
 	arg 'int' => 'max_inputs',
-] => 'void' );
+] => 'void' => sub {
+	my ($xs, $oper) = @_;
+	my $max_inputs = $oper->NumInputs;
+	my $inputs = AI::TensorFlow::Libtensorflow::Output->_adef->create(0 + $max_inputs);
+	$xs->($oper, $inputs, $max_inputs);
+	return AI::TensorFlow::Libtensorflow::Output->_from_array($inputs);
+});
 
 =method OutputNumConsumers
 
@@ -131,9 +157,12 @@ $ffi->attach( [ 'OperationAllInputs' => 'AllInputs' ] => [
 
 =cut
 $ffi->attach( [ 'OperationOutputNumConsumers' => 'OutputNumConsumers' ] => [
-	# TODO
-	arg 'opaque' => 'TF_Output oper_out',
-], 'int');
+	arg 'TF_Output' => 'oper_out',
+], 'int' => sub {
+	my ($xs, $self, $output) = @_;
+	# TODO coerce from LibtfPartialOutput here
+	$xs->($output);
+});
 
 =method OutputConsumers
 
@@ -142,10 +171,16 @@ $ffi->attach( [ 'OperationOutputNumConsumers' => 'OutputNumConsumers' ] => [
 =cut
 $ffi->attach( [ 'OperationOutputConsumers'  => 'OutputConsumers' ] => [
 	# TODO simplify API
-	arg 'opaque' => 'TF_Output oper_out',
-	arg 'opaque' => 'TF_Input* consumers',
-	arg 'int'    => 'max_consumers',
-] => 'int');
+	arg 'TF_Output' => 'oper_out',
+	arg 'TF_Input_struct_array' => 'consumers',
+	arg 'int'                   => 'max_consumers',
+] => 'int' => sub {
+	my ($xs, $self, $output) = @_;
+	my $max_consumers = $self->OutputNumConsumers( $output );
+	my $consumers = AI::TensorFlow::Libtensorflow::Input->_adef->create( $max_consumers );
+	my $count = $xs->($output, $consumers, $max_consumers);
+	return AI::TensorFlow::Libtensorflow::Input->_from_array( $consumers );
+});
 
 
 use FFI::C::ArrayDef;

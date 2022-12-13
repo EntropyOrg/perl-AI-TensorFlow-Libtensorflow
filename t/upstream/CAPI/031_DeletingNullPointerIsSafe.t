@@ -6,7 +6,7 @@ use TF_TestQuiet;
 use aliased 'AI::TensorFlow::Libtensorflow';
 
 subtest "(CAPI, DeletingNullPointerIsSafe)" => sub {
-	pass;
+	pass 'Deleting null pointer not needed.';
 };
 
 done_testing;
