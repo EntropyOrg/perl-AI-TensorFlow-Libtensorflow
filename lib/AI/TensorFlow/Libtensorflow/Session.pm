@@ -145,6 +145,16 @@ $ffi->attach( [ 'SessionRun' => 'Run' ] =>
 	}
 );
 
+=method ListDevices
+
+=tf_capi TF_SessionListDevices
+
+=cut
+$ffi->attach( [ 'SessionListDevices' => 'ListDevices' ] => [
+	arg TF_Session => 'session',
+	arg TF_Status => 'status',
+] => 'TF_DeviceList');
+
 =method Close
 
 TODO

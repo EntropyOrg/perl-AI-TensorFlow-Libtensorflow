@@ -161,13 +161,15 @@ typedef struct TF_DeprecatedSession TF_DeprecatedSession;
 
 =head3 TF_DeviceList
 
+L<AI::TensorFlow::Libtensorflow::DeviceList>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_DeviceList TF_DeviceList;
 
 =end TF_CAPI_DEF
 =cut
-		$ffi->type('opaque' => 'TF_DeviceList');
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::DeviceList)' => 'TF_DeviceList');
 
 =head3 TF_Library
 

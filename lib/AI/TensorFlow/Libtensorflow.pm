@@ -26,6 +26,7 @@ use AI::TensorFlow::Libtensorflow::OperationDescription;
 
 use AI::TensorFlow::Libtensorflow::SessionOptions;
 use AI::TensorFlow::Libtensorflow::Session;
+use AI::TensorFlow::Libtensorflow::DeviceList;
 
 use FFI::C;
 

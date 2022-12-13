@@ -4,10 +4,12 @@ use AI::TensorFlow::Libtensorflow;
 use AI::TensorFlow::Libtensorflow::Lib;
 use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT INT32);
 use Path::Tiny;
+use List::Util qw(first);
 
 use PDL::Core ':Internal';
 
 use FFI::Platypus::Buffer;
+use Test2::V0;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 
@@ -142,10 +144,18 @@ sub Neg {
 
 sub Int32Tensor {
 	my ($v) = @_;
-	my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate( INT32, [] );
-	memcpy scalar_to_pointer( ${ $t->Data } ),
-		scalar_to_pointer(pack("l", $v)), INT32->Size;
-	return $t;
+	if( ! ref $v ) {
+		my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate( INT32, [] );
+		memcpy scalar_to_pointer( ${ $t->Data } ),
+			scalar_to_pointer(pack("l", $v)), INT32->Size;
+		return $t;
+	} elsif( ref $v eq 'ARRAY' ) {
+		my $n = @$v;
+		my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate( INT32, [$n] );
+		memcpy scalar_to_pointer( ${ $t->Data } ),
+			scalar_to_pointer(pack("l*", @$v)), $n * INT32->Size;
+		return $t;
+	}
 }
 
 sub AssertStatusOK {
@@ -226,6 +236,122 @@ package # hide from PAUSE
   }
 
   sub output_tensor { my ($self, $i) = @_; $self->_output_values->[$i] }
+}
+
+sub BinaryOpHelper {
+	my ($op_name, $l, $r,
+		$graph, $s, $name,
+		$device, $check) = @_;
+	$check ||= 1;
+
+	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription
+		->New( $graph, $op_name, $name );
+
+	$desc->SetDevice($device) if $device;
+
+	$desc->AddInput( $TFOutput->coerce([ $l => 0 ]) );
+	$desc->AddInput( $TFOutput->coerce([ $r => 0 ]) );
+
+	my $op = $desc->FinishOperation($s);
+
+	if( $check ) {
+		TF_Utils::AssertStatusOK($s);
+	}
+
+	return $op;
+}
+
+sub MinWithDevice {
+	my ($l, $r, $graph, $device, $s, $name) = @_;
+	$name ||= 'min';
+
+	return TF_Utils::BinaryOpHelper(
+		'Min', $l, $r, $graph, $s, $name, $device, 1
+	)
+}
+
+sub RunMinTest {
+	my (%args) = @_;
+	my $device  = delete $args{device} || "";
+	my $use_XLA = delete $args{use_XLA} || 0;
+
+	my $ctx = Test2::API::context();
+
+	my $s = AI::TensorFlow::Libtensorflow::Status->New;
+	my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
+
+	$ctx->note('Make a placeholder operation.');
+	my $feed = TF_Utils::Placeholder($graph, $s);
+	TF_Utils::AssertStatusOK($s);
+
+	$ctx->note('Make a constant operation with the scalar "0", for axis.');
+	my $one = TF_Utils::ScalarConst($graph, $s, 'scalar', INT32, 0);
+	TF_Utils::AssertStatusOK($s);
+
+	$ctx->note('Create a session for this graph.');
+	my $csession = TF_Utils::CSession->new( graph => $graph, status => $s, use_XLA => $use_XLA );
+	TF_Utils::AssertStatusOK($s);
+
+	if( $device ) {
+		$ctx->note("Setting op Min on device $device");
+	}
+	my $min = TF_Utils::MinWithDevice( $feed, $one, $graph, $device, $s );
+	TF_Utils::AssertStatusOK($s);
+
+	$ctx->note('Run the graph.');
+	$csession->SetInputs( [ $feed, TF_Utils::Int32Tensor([3, 2, 5]) ]);
+	$csession->SetOutputs($min);
+	$csession->Run($s);
+	TF_Utils::AssertStatusOK($s);
+	is($csession->output_tensor(0), object {
+		call Type => INT32;
+		call NumDims => 0; # scalar
+		call ByteSize => INT32->Size;
+		call sub {
+			[ unpack "l*", ${ shift->Data } ];
+		} => [ 2 ];
+	}, 'Min( Feed() = [3, 2, 5] )');
+
+	$ctx->release;
+}
+
+sub GPUDeviceName {
+	my ($session) = @_;
+
+	my $s = AI::TensorFlow::Libtensorflow::Status->New;
+	my $graph;
+	if( ! $session ) {
+		my $opts = AI::TensorFlow::Libtensorflow::SessionOptions->New;
+		$graph = AI::TensorFlow::Libtensorflow::Graph->New;
+		$session ||= AI::TensorFlow::Libtensorflow::Session->New($graph, $opts, $s);
+	}
+
+	my $device_list = $session->ListDevices($s);
+	my $device_idx = first { my $type = $device_list->Type( $_, $s ) eq 'GPU' } 0..$device_list->Count - 1;
+
+	return "" unless $device_idx;
+
+	return $device_list->Name( $device_idx, $s );
+}
+
+sub DumpDevices {
+	my ($session) = @_;
+
+	my $s = AI::TensorFlow::Libtensorflow::Status->New;
+	my $graph;
+	if( ! $session ) {
+		my $opts = AI::TensorFlow::Libtensorflow::SessionOptions->New;
+		$graph = AI::TensorFlow::Libtensorflow::Graph->New;
+		$session ||= AI::TensorFlow::Libtensorflow::Session->New($graph, $opts, $s);
+	}
+
+	my $device_list = $session->ListDevices($s);
+	my @devices = map {
+		my $idx = $_;
+		my %h = map { ( $_ => $device_list->$_( $idx, $s ) ) } qw(Name Type MemoryBytes Incarnation);
+		\%h;
+	} 0..$device_list->Count - 1;
+	use Data::Dumper; print Dumper(\@devices);
 }
 
 1;
