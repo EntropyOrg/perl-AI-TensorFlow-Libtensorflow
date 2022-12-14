@@ -42,7 +42,7 @@ sub LoadGraph {
 
 	$graph->ImportGraphDef( $buffer, $opts, $status );
 
-	if( $status->GetCode ne 'OK' ) {
+	if( $status->GetCode != AI::TensorFlow::Libtensorflow::Status::OK ) {
 		return undef;
 	}
 
@@ -176,12 +176,12 @@ sub Int32Tensor {
 sub AssertStatusOK {
 	my ($status) = @_;
 	die "Status not OK: @{[ $status->GetCode ]} : @{[ $status->Message ]}"
-		unless $status->GetCode eq 'OK';
+		unless $status->GetCode == AI::TensorFlow::Libtensorflow::Status::OK;
 }
 
 sub AssertStatusNotOK {
 	my ($status) = @_;
-	die "Status expected not OK" if $status->GetCode eq 'OK';
+	die "Status expected not OK" if $status->GetCode == AI::TensorFlow::Libtensorflow::Status::OK;
 	return "Status: @{[ $status->GetCode ]}:  @{[ $status->Message ]}";
 }
 

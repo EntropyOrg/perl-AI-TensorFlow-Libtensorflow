@@ -26,7 +26,7 @@ subtest "Load graph" => sub {
 
 	$graph->ImportGraphDef( $buf, $opts, $status );
 
-	if( $status->GetCode eq 'OK' ) {
+	if( $status->GetCode == AI::TensorFlow::Libtensorflow::Status::OK ) {
 		print "Load graph success\n";
 		pass;
 	} else {

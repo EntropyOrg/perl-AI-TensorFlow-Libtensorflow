@@ -280,7 +280,7 @@ sub DESTROY {
 	my $s = AI::TensorFlow::Libtensorflow::Status->New;
 	$self->Close($s);
 	# TODO this may not be needed with automatic Status handling
-	die "Could not close session" unless $s->GetCode eq 'OK';
+	die "Could not close session" unless $s->GetCode == AI::TensorFlow::Libtensorflow::Status::OK;
 }
 
 1;
