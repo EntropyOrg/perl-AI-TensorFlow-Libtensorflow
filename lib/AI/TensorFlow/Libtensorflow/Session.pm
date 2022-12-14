@@ -145,6 +145,16 @@ $ffi->attach( [ 'SessionRun' => 'Run' ] =>
 	}
 );
 
+=method ListDevices
+
+=tf_capi TF_SessionListDevices
+
+=cut
+$ffi->attach( [ 'SessionListDevices' => 'ListDevices' ] => [
+	arg TF_Session => 'session',
+	arg TF_Status => 'status',
+] => 'TF_DeviceList');
+
 =method Close
 
 TODO
@@ -157,5 +167,13 @@ $ffi->attach( [ 'CloseSession' => 'Close' ] =>
 	'TF_Status',
 	],
 	=> 'void' );
+
+sub DESTROY {
+	my ($self) = @_;
+	my $s = AI::TensorFlow::Libtensorflow::Status->New;
+	$self->Close($s);
+	# TODO this may not be needed with automatic Status handling
+	die "Could not close session" unless $s->GetCode eq 'OK';
+}
 
 1;

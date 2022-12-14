@@ -19,12 +19,14 @@ use AI::TensorFlow::Libtensorflow::Input;
 use AI::TensorFlow::Libtensorflow::ApiDefMap;
 
 use AI::TensorFlow::Libtensorflow::ImportGraphDefOptions;
+use AI::TensorFlow::Libtensorflow::ImportGraphDefResults;
 use AI::TensorFlow::Libtensorflow::Graph;
 
 use AI::TensorFlow::Libtensorflow::OperationDescription;
 
 use AI::TensorFlow::Libtensorflow::SessionOptions;
 use AI::TensorFlow::Libtensorflow::Session;
+use AI::TensorFlow::Libtensorflow::DeviceList;
 
 use FFI::C;
 

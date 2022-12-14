@@ -2,7 +2,6 @@ package AI::TensorFlow::Libtensorflow::DataType;
 # ABSTRACT: Datatype enum
 
 use AI::TensorFlow::Libtensorflow::Lib;
-use Scalar::Util qw(dualvar);
 use Const::Exporter;
 
 use Devel::StrictMode;
@@ -50,7 +49,7 @@ Const::Exporter->import(
 		do {
 			%_DTYPES = map {
 				$_ => bless \do {
-					my $value = dualvar( $_ENUM_DTYPE{$_}, $_ )
+					my $value = $_ENUM_DTYPE{$_};
 				}, __PACKAGE__;
 			} keys %_ENUM_DTYPE;
 		},

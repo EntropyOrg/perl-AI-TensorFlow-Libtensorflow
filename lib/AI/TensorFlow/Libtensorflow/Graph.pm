@@ -44,6 +44,42 @@ $ffi->attach( [ 'GraphImportGraphDef'  => 'ImportGraphDef'  ] => [
 	arg 'TF_Status' => 'status',
 ] => 'void' );
 
+=method ImportGraphDefWithResults
+
+=tf_capi TF_GraphImportGraphDefWithResults
+
+=cut
+$ffi->attach( [ 'GraphImportGraphDefWithResults' => 'ImportGraphDefWithResults' ] => [
+    arg TF_Graph => 'graph',
+    arg TF_Buffer => 'graph_def',
+    arg TF_ImportGraphDefOptions => 'options',
+    arg TF_Status => 'status',
+] => 'TF_ImportGraphDefResults');
+
+=method ImportGraphDefWithReturnOutputs
+
+=tf_capi TF_GraphImportGraphDefWithReturnOutputs
+
+=cut
+$ffi->attach( [ 'GraphImportGraphDefWithReturnOutputs' => 'ImportGraphDefWithReturnOutputs' ] => [
+    arg TF_Graph => 'graph',
+    arg TF_Buffer => 'graph_def',
+    arg TF_ImportGraphDefOptions => 'options',
+    arg TF_Output_struct_array => 'return_outputs',
+    arg int => 'num_return_outputs',
+    arg TF_Status => 'status',
+] => 'void' => sub {
+	my ($xs, $graph, $graph_def, $options, $status) = @_;
+	my $num_return_outputs = $options->NumReturnOutputs;
+	return [] if $num_return_outputs == 0;
+
+	my $return_outputs = AI::TensorFlow::Libtensorflow::Output->_adef->create( $num_return_outputs );
+	$xs->($graph, $graph_def, $options,
+		$return_outputs, $num_return_outputs,
+		$status);
+	return AI::TensorFlow::Libtensorflow::Output->_from_array( $return_outputs );
+});
+
 =method OperationByName
 
 =tf_capi TF_GraphOperationByName
@@ -114,6 +150,17 @@ $ffi->attach( [ 'UpdateEdge' => 'UpdateEdge' ] => [
 	arg 'TF_Graph' => 'graph',
 	arg 'TF_Output' => 'new_src',
 	arg 'TF_Input'  => 'dst',
+	arg 'TF_Status' => 'status',
+] => 'void');
+
+=method ToGraphDef
+
+=tf_capi TF_GraphToGraphDef
+
+=cut
+$ffi->attach([ 'GraphToGraphDef' => 'ToGraphDef' ] => [
+	arg 'TF_Graph' => 'graph',
+	arg 'TF_Buffer' => 'output_graph_def',
 	arg 'TF_Status' => 'status',
 ] => 'void');
 

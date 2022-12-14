@@ -9,6 +9,38 @@ use AI::TensorFlow::Libtensorflow::Input;
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 
+use FFI::C::ArrayDef;
+my $adef = FFI::C::ArrayDef->new(
+	$ffi,
+	name => 'TF_Operation_array',
+	members => [
+		FFI::C::StructDef->new(
+			$ffi,
+			members => [
+				p => 'opaque'
+			]
+		)
+	],
+);
+sub _adef { $adef; }
+sub _as_array {
+	my $class = shift;
+	my $array = $class->_adef->create(0 + @_);
+	for my $idx (0..@_-1) {
+		next unless defined $_[$idx];
+		$array->[$idx]->p($ffi->cast('TF_Operation', 'opaque', $_[$idx]));
+	}
+	$array;
+}
+sub _from_array {
+	my ($class, $array) = @_;
+	[
+		map {
+			$ffi->cast('opaque', 'TF_Operation', $array->[$_]->p);
+		} 0..$array->count-1
+	]
+}
+
 =attr Name
 
 =tf_capi TF_OperationName
@@ -151,6 +183,42 @@ $ffi->attach( [ 'OperationAllInputs' => 'AllInputs' ] => [
 	return AI::TensorFlow::Libtensorflow::Output->_from_array($inputs);
 });
 
+=method GetControlInputs
+
+=tf_capi TF_OperationGetControlInputs
+
+=cut
+$ffi->attach( [ 'OperationGetControlInputs' => 'GetControlInputs' ] => [
+	arg 'TF_Operation' => 'oper',
+	arg 'TF_Operation_array' => 'control_inputs',
+	arg 'int' => 'max_control_inputs',
+] => 'void' => sub {
+	my ($xs, $oper) = @_;
+	my $max_inputs = $oper->NumControlInputs;
+	return [] if $max_inputs == 0;
+	my $inputs = AI::TensorFlow::Libtensorflow::Operation->_adef->create(0 + $max_inputs);
+	$xs->($oper, $inputs, $max_inputs);
+	return AI::TensorFlow::Libtensorflow::Operation->_from_array($inputs);
+});
+
+=method GetControlOutputs
+
+=tf_capi TF_OperationGetControlOutputs
+
+=cut
+$ffi->attach( [ 'OperationGetControlOutputs' => 'GetControlOutputs' ] => [
+	arg 'TF_Operation' => 'oper',
+	arg 'TF_Operation_array' => 'control_outputs',
+	arg 'int' => 'max_control_outputs',
+] => 'void' => sub {
+	my ($xs, $oper) = @_;
+	my $max_outputs = $oper->NumControlOutputs;
+	return [] if $max_outputs == 0;
+	my $outputs = AI::TensorFlow::Libtensorflow::Operation->_adef->create(0 + $max_outputs);
+	$xs->($oper, $outputs, $max_outputs);
+	return AI::TensorFlow::Libtensorflow::Operation->_from_array($outputs);
+});
+
 =method OutputNumConsumers
 
 =tf_capi TF_OperationOutputNumConsumers
@@ -181,32 +249,5 @@ $ffi->attach( [ 'OperationOutputConsumers'  => 'OutputConsumers' ] => [
 	my $count = $xs->($output, $consumers, $max_consumers);
 	return AI::TensorFlow::Libtensorflow::Input->_from_array( $consumers );
 });
-
-
-use FFI::C::ArrayDef;
-my $adef = FFI::C::ArrayDef->new(
-	$ffi,
-	name => 'TF_Operation_array',
-	members => [
-		FFI::C::StructDef->new(
-			$ffi,
-			members => [
-				p => 'opaque'
-			]
-		)
-	],
-);
-sub _adef {
-	$adef;
-}
-sub _as_array {
-	my $class = shift;
-	my $array = $class->_adef->create(0 + @_);
-	for my $idx (0..@_-1) {
-		next unless defined $_[$idx];
-		$array->[$idx]->p($ffi->cast('TF_Operation', 'opaque', $_[$idx]));
-	}
-	$array;
-}
 
 1;
