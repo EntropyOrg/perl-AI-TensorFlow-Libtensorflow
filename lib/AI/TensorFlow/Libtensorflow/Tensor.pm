@@ -418,5 +418,16 @@ sub _as_array {
 	}
 	$array;
 }
+sub _from_array {
+	my ($class, $array) = @_;
+	return [
+		map {
+			$ffi->cast(
+				'opaque',
+				'TF_Tensor',
+				$array->[$_]->p)
+		} 0.. $array->count - 1
+	]
+}
 
 1;
