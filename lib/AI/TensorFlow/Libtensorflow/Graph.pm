@@ -164,6 +164,18 @@ $ffi->attach([ 'GraphToGraphDef' => 'ToGraphDef' ] => [
 	arg 'TF_Status' => 'status',
 ] => 'void');
 
+=method GetOpDef
+
+=tf_capi TF_GraphGetOpDef
+
+=cut
+$ffi->attach( [ 'GraphGetOpDef' => 'GetOpDef' ] => [
+	arg TF_Graph => 'graph',
+	arg string => 'op_name',
+	arg TF_Buffer => 'output_op_def',
+	arg TF_Status => 'status',
+] => 'void');
+
 1;
 __END__
 
