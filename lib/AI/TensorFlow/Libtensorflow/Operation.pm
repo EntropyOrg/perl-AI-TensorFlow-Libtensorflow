@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Operation;
 # ABSTRACT: An operation
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use AI::TensorFlow::Libtensorflow::Output;

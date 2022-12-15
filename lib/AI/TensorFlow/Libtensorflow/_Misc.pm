@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::_Misc;
 # ABSTRACT: Private API
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 

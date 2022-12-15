@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::DeviceList;
 # ABSTRACT: A list of devices available for the session to run on
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 

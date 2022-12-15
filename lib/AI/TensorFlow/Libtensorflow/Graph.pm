@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Graph;
 # ABSTRACT: A TensorFlow computation, represented as a dataflow graph
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use AI::TensorFlow::Libtensorflow::Buffer;

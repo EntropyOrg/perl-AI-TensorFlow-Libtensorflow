@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Lib::Types;
 # ABSTRACT: Type library
 
+use strict;
+use warnings;
 use Type::Library 0.008 -base,
 	-declare => [qw(
 		TFTensor
@@ -84,7 +86,7 @@ Type for class L<AI::TensorFlow::Libtensorflow::Output>
 class_type TFOutput => { class => 'AI::TensorFlow::Libtensorflow::Output' };
 
 declare_coercion "TFOutputFromTuple",
-	to_type TFOutput,
+	to_type 'TFOutput',
 	from Tuple[InstanceOf['AI::TensorFlow::Libtensorflow::Operation'],Int],
 	q {
 		AI::TensorFlow::Libtensorflow::Output->New({
@@ -101,7 +103,7 @@ Type for class L<AI::TensorFlow::Libtensorflow::Input>
 class_type TFInput => { class => 'AI::TensorFlow::Libtensorflow::Input' };
 
 declare_coercion "TFInputFromTuple",
-	to_type TFInput,
+	to_type 'TFInput',
 	from Tuple[InstanceOf['AI::TensorFlow::Libtensorflow::Operation'],Int],
 	q {
 		AI::TensorFlow::Libtensorflow::Input->New({

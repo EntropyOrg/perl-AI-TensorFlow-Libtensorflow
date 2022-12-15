@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::OperationDescription;
 # ABSTRACT: Operation being built
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableArrayRef;

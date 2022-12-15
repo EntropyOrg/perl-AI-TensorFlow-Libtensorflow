@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::PackableArrayRef;
 # ABSTRACT: ArrayRef to pack()'ed scalar argument with size argument (as int)
 
+use strict;
+use warnings;
 use FFI::Platypus::Buffer qw(scalar_to_buffer buffer_to_scalar);
 use FFI::Platypus::API qw( arguments_set_pointer arguments_set_sint32 );
 

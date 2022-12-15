@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::TString;
 # ABSTRACT: A variable-capacity string type
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use FFI::Platypus::Memory qw(malloc free);
@@ -39,7 +41,7 @@ $ffi->attach( [ 'StringInit' => 'Init' ] => [
 	arg 'TF_TString' => 'tstr'
 ] => 'void' => sub {
 	my ($xs, $invoc) = @_;
-	my $obj = ref $invoc ? $invoc : $class->_CREATE();
+	my $obj = ref $invoc ? $invoc : $invoc->_CREATE();
 	$xs->($obj);
 	$obj;
 });

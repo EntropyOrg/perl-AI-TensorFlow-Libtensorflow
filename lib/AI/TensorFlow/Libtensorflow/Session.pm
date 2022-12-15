@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Session;
 # ABSTRACT: Session for driving ::Graph execution
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);;

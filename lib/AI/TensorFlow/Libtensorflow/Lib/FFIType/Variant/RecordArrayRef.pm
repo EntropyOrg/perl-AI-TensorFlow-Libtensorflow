@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::RecordArrayRef;
 # ABSTRACT: Turn FFI::Platypus::Record into packed array (+ size)?
 
+use strict;
+use warnings;
 use FFI::Platypus::Buffer qw(scalar_to_buffer buffer_to_scalar);
 use FFI::Platypus::API qw( arguments_set_pointer arguments_set_sint32 );
 

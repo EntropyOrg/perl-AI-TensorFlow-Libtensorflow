@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Status;
 # ABSTRACT: Status used for error checking
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib;
 use FFI::C;
