@@ -391,6 +391,19 @@ $ffi->attach(  [ 'SetShape' => 'SetShape' ] =>
 );
 };
 
+=method BitcastFrom
+
+=tf_capi TF_TensorBitcastFrom
+
+=cut
+$ffi->attach( [  'TensorBitcastFrom' => 'BitcastFrom' ] => [
+	arg TF_Tensor => 'from',
+	arg TF_DataType => 'type',
+	arg TF_Tensor => 'to',
+	arg 'tf_dims_buffer'   => [ qw(new_dims num_new_dims,) ],
+	arg TF_Status => 'status',
+] => 'void' );
+
 #### Array helpers ####
 use FFI::C::ArrayDef;
 use FFI::C::StructDef;
