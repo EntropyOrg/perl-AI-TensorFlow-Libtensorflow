@@ -6,7 +6,7 @@ use TF_TestQuiet;
 use aliased 'AI::TensorFlow::Libtensorflow';
 
 subtest "(CAPI, TestFromProto)" => sub {
-	pass;
+	pass 'Skipping. Can not access C++ tensorflow::TensorProto';
 };
 
 done_testing;
