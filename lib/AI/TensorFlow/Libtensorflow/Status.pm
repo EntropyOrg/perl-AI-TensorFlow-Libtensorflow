@@ -1,5 +1,5 @@
 package AI::TensorFlow::Libtensorflow::Status;
-# ABSTRACT: Status
+# ABSTRACT: Status used for error checking
 
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib;
