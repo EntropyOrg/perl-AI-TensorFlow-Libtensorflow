@@ -41,6 +41,46 @@ $ffi->attach( [ 'NewSession' => 'New' ] =>
 		return $xs->(@rest);
 	});
 
+=construct LoadFromSavedModel
+
+=tf_capi TF_LoadSessionFromSavedModel
+
+=cut
+$ffi->attach( [ 'LoadSessionFromSavedModel' => 'LoadFromSavedModel' ] => [
+    arg TF_SessionOptions => 'session_options',
+    arg opaque => { id => 'run_options', ffi_type => 'TF_Buffer', maybe => 1 },
+    arg string => 'export_dir',
+    arg 'string[]' => 'tags',
+    arg int => 'tags_len',
+    arg TF_Graph => 'graph',
+    arg opaque => { id => 'meta_graph_def', ffi_type => 'TF_Buffer', maybe => 1 },
+    arg TF_Status => 'status',
+] => 'TF_Session' => sub {
+	my ($xs, $class, @rest) = @_;
+	my ( $session_options,
+		$run_options,
+		$export_dir, $tags,
+		$graph, $meta_graph_def,
+		$status) = @rest;
+
+
+	$run_options = $ffi->cast('TF_Buffer', 'opaque', $run_options)
+		if defined $run_options;
+	$meta_graph_def = $ffi->cast('TF_Buffer', 'opaque', $meta_graph_def)
+		if defined $meta_graph_def;
+
+	my $tags_len = @$tags;
+
+	$xs->(
+		$session_options,
+		$run_options,
+		$export_dir,
+		$tags, $tags_len,
+		$graph, $meta_graph_def,
+		$status
+	);
+} );
+
 =method Run
 
 TODO

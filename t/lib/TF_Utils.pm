@@ -203,7 +203,9 @@ package # hide from PAUSE
 	my $s = delete $args->{status};
 	my $opts = AI::TensorFlow::Libtensorflow::SessionOptions->New;
 	$opts->EnableXLACompilation( $self->use_XLA );
-	$self->session( AI::TensorFlow::Libtensorflow::Session->New( $self->graph, $opts, $s ) );
+	if( ! exists $args->{session} ) {
+		$self->session( AI::TensorFlow::Libtensorflow::Session->New( $self->graph, $opts, $s ) );
+	}
   }
 
   sub SetInputs {
