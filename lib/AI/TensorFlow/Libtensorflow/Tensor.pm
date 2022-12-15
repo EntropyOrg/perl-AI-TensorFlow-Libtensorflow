@@ -366,6 +366,15 @@ $ffi->attach(  [ 'TensorMaybeMove' => 'MaybeMove' ] =>
 	=> 'TF_Tensor',
 );
 
+=method IsAligned
+
+=tf_capi TF_TensorIsAligned
+
+=cut
+$ffi->attach( ['TensorIsAligned' => 'IsAligned'] => [
+	arg TF_Tensor => 't'
+] => 'bool' );
+
 =method SetShape
 
 =for :signature
