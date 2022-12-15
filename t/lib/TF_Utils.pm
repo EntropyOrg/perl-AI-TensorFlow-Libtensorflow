@@ -2,7 +2,7 @@ package TF_Utils;
 
 use AI::TensorFlow::Libtensorflow;
 use AI::TensorFlow::Libtensorflow::Lib;
-use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT INT32);
+use AI::TensorFlow::Libtensorflow::DataType qw(FLOAT INT32 INT8);
 use Path::Tiny;
 use List::Util qw(first);
 
@@ -42,7 +42,7 @@ sub LoadGraph {
 
 	$graph->ImportGraphDef( $buffer, $opts, $status );
 
-	if( $status->GetCode ne 'OK' ) {
+	if( $status->GetCode != AI::TensorFlow::Libtensorflow::Status::OK ) {
 		return undef;
 	}
 
@@ -78,7 +78,7 @@ sub Placeholder {
 }
 
 sub Const {
-	my ($graph, $status, $name, $dtype, $t) = @_;
+	my ($graph, $status, $name, $t) = @_;
 	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New($graph, 'Const', $name);
 	$desc->SetAttrTensor('value', $t, $status);
 	$desc->SetAttrType('dtype', $t->Type);
@@ -88,10 +88,11 @@ sub Const {
 }
 
 my %dtype_to_pack = (
-	FLOAT => 'f',
+	FLOAT  => 'f',
 	DOUBLE => 'd',
 	INT32  => 'l',
-	BOOL => 'c',
+	INT8   => 'c',
+	BOOL   => 'c',
 );
 
 use FFI::Platypus::Buffer qw(scalar_to_pointer);
@@ -101,12 +102,12 @@ sub ScalarConst {
 	my ($graph, $status, $name, $dtype, $value) = @_;
 	$name ||= 'scalar';
 	my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate($dtype, []);
-	die unless exists $dtype_to_pack{$dtype};
+	die "Pack format for $dtype is unknown" unless exists $dtype_to_pack{$dtype};
 	my $data = pack $dtype_to_pack{$dtype} . '*', $value;
 	memcpy scalar_to_pointer(${ $t->Data }),
 		 scalar_to_pointer($data),
 		 $t->ByteSize;
-	return Const($graph, $status, $name, $dtype, $t);
+	return Const($graph, $status, $name, $t);
 }
 
 
@@ -117,16 +118,22 @@ my $TFOutput = TFOutput->plus_constructors(
 		HashRef, 'New'
 	)->plus_coercions(TFOutputFromTuple);
 sub Add {
-	my ($l, $r, $graph, $s, $name) = @_;
+	my ($l, $r, $graph, $s, $name, $check) = @_;
 	$name ||= 'add';
+	$check = 1 if not defined $check;
 	my $desc = AI::TensorFlow::Libtensorflow::OperationDescription->New(
 		$graph, "AddN", $name);
 	$desc->AddInputList([
 		$TFOutput->map( [ $l => 0 ], [ $r => 0 ] )
 	]);
 	my $op = $desc->FinishOperation($s);
-	AssertStatusOK($s);
+	AssertStatusOK($s) if $check;
 	$op;
+}
+
+sub AddNoCheck {
+	my ($l, $r, $graph, $s, $name) = @_;
+	return Add( $l, $r, $graph, $s, $name, 0);
 }
 
 sub Neg {
@@ -141,32 +148,40 @@ sub Neg {
 	$op;
 }
 
-
-sub Int32Tensor {
-	my ($v) = @_;
+sub AnyTensor {
+	my ($dtype, $v) = @_;
+	die "Pack format for $dtype is unknown" unless exists $dtype_to_pack{$dtype};
 	if( ! ref $v ) {
-		my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate( INT32, [] );
+		my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate( $dtype, [] );
 		memcpy scalar_to_pointer( ${ $t->Data } ),
-			scalar_to_pointer(pack("l", $v)), INT32->Size;
+			scalar_to_pointer(pack($dtype_to_pack{$dtype}, $v)), $dtype->Size;
 		return $t;
 	} elsif( ref $v eq 'ARRAY' ) {
 		my $n = @$v;
-		my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate( INT32, [$n] );
+		my $t = AI::TensorFlow::Libtensorflow::Tensor->Allocate( $dtype, [$n] );
 		memcpy scalar_to_pointer( ${ $t->Data } ),
-			scalar_to_pointer(pack("l*", @$v)), $n * INT32->Size;
+			scalar_to_pointer(pack("$dtype_to_pack{$dtype}*", @$v)), $n * $dtype->Size;
 		return $t;
 	}
+}
+
+sub Int8Tensor {
+	return AnyTensor(INT8, @_);
+}
+
+sub Int32Tensor {
+	return AnyTensor(INT32, @_);
 }
 
 sub AssertStatusOK {
 	my ($status) = @_;
 	die "Status not OK: @{[ $status->GetCode ]} : @{[ $status->Message ]}"
-		unless $status->GetCode eq 'OK';
+		unless $status->GetCode == AI::TensorFlow::Libtensorflow::Status::OK;
 }
 
 sub AssertStatusNotOK {
 	my ($status) = @_;
-	die "Status expected not OK" if $status->GetCode eq 'OK';
+	die "Status expected not OK" if $status->GetCode == AI::TensorFlow::Libtensorflow::Status::OK;
 	return "Status: @{[ $status->GetCode ]}:  @{[ $status->Message ]}";
 }
 
@@ -188,7 +203,9 @@ package # hide from PAUSE
 	my $s = delete $args->{status};
 	my $opts = AI::TensorFlow::Libtensorflow::SessionOptions->New;
 	$opts->EnableXLACompilation( $self->use_XLA );
-	$self->session( AI::TensorFlow::Libtensorflow::Session->New( $self->graph, $opts, $s ) );
+	if( ! exists $args->{session} ) {
+		$self->session( AI::TensorFlow::Libtensorflow::Session->New( $self->graph, $opts, $s ) );
+	}
   }
 
   sub SetInputs {

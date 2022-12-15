@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::ImportGraphDefOptions;
 # ABSTRACT: Holds options that can be passed to ::Graph::ImportGraphDef
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 

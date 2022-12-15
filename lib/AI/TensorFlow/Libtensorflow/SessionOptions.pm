@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::SessionOptions;
 # ABSTRACT: Holds options that can be passed during session creation
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);;
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
@@ -54,7 +56,7 @@ $ffi->attach( 'SetConfig' => [
 
 =cut
 $ffi->attach( 'EnableXLACompilation' => [
-	arg TF_SessionOptions => options,
+	arg TF_SessionOptions => 'options',
 	arg 'unsigned char'   => 'enable'
 ] => 'void' );
 

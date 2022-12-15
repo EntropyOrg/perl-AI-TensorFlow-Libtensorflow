@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Tensor;
 # ABSTRACT: A multi-dimensional array of elements of a single data type
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use FFI::Platypus::Closure;
@@ -220,8 +222,8 @@ $ffi->attach( [ 'DeleteTensor' => 'DESTROY' ],
 	[ arg 'TF_Tensor' => 't' ]
 	=> 'void'
 	=> sub {
-		my ($xs, $t) = @_;
-		$xs->($t);
+		my ($xs, $self) = @_;
+		$xs->($self);
 		if( exists $self->{_deallocator_closure} ) {
 			$self->{_deallocator_closure}->unstick;
 		}
@@ -366,6 +368,15 @@ $ffi->attach(  [ 'TensorMaybeMove' => 'MaybeMove' ] =>
 	=> 'TF_Tensor',
 );
 
+=method IsAligned
+
+=tf_capi TF_TensorIsAligned
+
+=cut
+$ffi->attach( ['TensorIsAligned' => 'IsAligned'] => [
+	arg TF_Tensor => 't'
+] => 'bool' );
+
 =method SetShape
 
 =for :signature
@@ -390,6 +401,19 @@ $ffi->attach(  [ 'SetShape' => 'SetShape' ] =>
 	=> 'void'
 );
 };
+
+=method BitcastFrom
+
+=tf_capi TF_TensorBitcastFrom
+
+=cut
+$ffi->attach( [  'TensorBitcastFrom' => 'BitcastFrom' ] => [
+	arg TF_Tensor => 'from',
+	arg TF_DataType => 'type',
+	arg TF_Tensor => 'to',
+	arg 'tf_dims_buffer'   => [ qw(new_dims num_new_dims) ],
+	arg TF_Status => 'status',
+] => 'void' );
 
 #### Array helpers ####
 use FFI::C::ArrayDef;
@@ -417,6 +441,17 @@ sub _as_array {
 		$array->[$idx]->p($ffi->cast('TF_Tensor', 'opaque', $_[$idx]));
 	}
 	$array;
+}
+sub _from_array {
+	my ($class, $array) = @_;
+	return [
+		map {
+			$ffi->cast(
+				'opaque',
+				'TF_Tensor',
+				$array->[$_]->p)
+		} 0.. $array->count - 1
+	]
 }
 
 1;

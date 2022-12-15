@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::DataType;
 # ABSTRACT: Datatype enum
 
+use strict;
+use warnings;
 use AI::TensorFlow::Libtensorflow::Lib;
 use Const::Exporter;
 

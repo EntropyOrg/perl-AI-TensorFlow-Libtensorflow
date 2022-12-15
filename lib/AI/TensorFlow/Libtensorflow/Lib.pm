@@ -380,6 +380,16 @@ typedef struct TF_Tensor TF_Tensor;
 =cut
 		$ffi->load_custom_type('::PtrObject', 'TF_Tensor' => 'AI::TensorFlow::Libtensorflow::Tensor');
 
+=head2 C<tensorflow/tsl/platform/ctstring_internal.h>
+=cut
+
+=head3 TF_TString
+
+L<AI::TensorFlow::Libtensorflow::TString>
+
+=cut
+		$ffi->load_custom_type('::PtrObject', 'TF_TString' => 'AI::TensorFlow::Libtensorflow::TString');
+
 
 
 		## Callbacks for deallocation

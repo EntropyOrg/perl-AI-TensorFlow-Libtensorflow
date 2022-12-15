@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::ApiDefMap;
 # ABSTRACT: Maps Operation to API description
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 

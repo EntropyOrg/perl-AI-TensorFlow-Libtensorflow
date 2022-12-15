@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Status;
-# ABSTRACT: Status
+# ABSTRACT: Status used for error checking
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib;
 use FFI::C;
@@ -11,23 +13,24 @@ $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 # enum TF_Code {{{
 # From <tensorflow/c/tf_status.h>
 $ffi->load_custom_type('::Enum', 'TF_Code',
-	OK                  => 0,
-	CANCELLED           => 1,
-	UNKNOWN             => 2,
-	INVALID_ARGUMENT    => 3,
-	DEADLINE_EXCEEDED   => 4,
-	NOT_FOUND           => 5,
-	ALREADY_EXISTS      => 6,
-	PERMISSION_DENIED   => 7,
-	UNAUTHENTICATED     => 16,
-	RESOURCE_EXHAUSTED  => 8,
-	FAILED_PRECONDITION => 9,
-	ABORTED             => 10,
-	OUT_OF_RANGE        => 11,
-	UNIMPLEMENTED       => 12,
-	INTERNAL            => 13,
-	UNAVAILABLE         => 14,
-	DATA_LOSS           => 15,
+	{ rev => 'int', package => __PACKAGE__ },
+	[ OK                  => 0 ],
+	[ CANCELLED           => 1 ],
+	[ UNKNOWN             => 2 ],
+	[ INVALID_ARGUMENT    => 3 ],
+	[ DEADLINE_EXCEEDED   => 4 ],
+	[ NOT_FOUND           => 5 ],
+	[ ALREADY_EXISTS      => 6 ],
+	[ PERMISSION_DENIED   => 7 ],
+	[ UNAUTHENTICATED     => 16 ],
+	[ RESOURCE_EXHAUSTED  => 8 ],
+	[ FAILED_PRECONDITION => 9 ],
+	[ ABORTED             => 10 ],
+	[ OUT_OF_RANGE        => 11 ],
+	[ UNIMPLEMENTED       => 12 ],
+	[ INTERNAL            => 13 ],
+	[ UNAVAILABLE         => 14 ],
+	[ DATA_LOSS           => 15 ],
 );#}}}
 
 =begin TF_CAPI_EXPORT

@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Buffer;
 # ABSTRACT: Buffer that holds pointer to data with length
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 

@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::Graph;
 # ABSTRACT: A TensorFlow computation, represented as a dataflow graph
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use AI::TensorFlow::Libtensorflow::Buffer;
@@ -162,6 +164,18 @@ $ffi->attach([ 'GraphToGraphDef' => 'ToGraphDef' ] => [
 	arg 'TF_Graph' => 'graph',
 	arg 'TF_Buffer' => 'output_graph_def',
 	arg 'TF_Status' => 'status',
+] => 'void');
+
+=method GetOpDef
+
+=tf_capi TF_GraphGetOpDef
+
+=cut
+$ffi->attach( [ 'GraphGetOpDef' => 'GetOpDef' ] => [
+	arg TF_Graph => 'graph',
+	arg string => 'op_name',
+	arg TF_Buffer => 'output_op_def',
+	arg TF_Status => 'status',
 ] => 'void');
 
 1;

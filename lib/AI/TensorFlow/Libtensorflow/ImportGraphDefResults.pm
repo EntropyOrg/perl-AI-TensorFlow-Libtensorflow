@@ -1,6 +1,8 @@
 package AI::TensorFlow::Libtensorflow::ImportGraphDefResults;
 # ABSTRACT: Results from importing a graph definition
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use AI::TensorFlow::Libtensorflow::Lib qw(arg);
 use FFI::Platypus::Buffer qw(buffer_to_scalar window);

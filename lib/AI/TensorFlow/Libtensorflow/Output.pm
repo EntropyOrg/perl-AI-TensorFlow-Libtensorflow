@@ -5,6 +5,8 @@ package AI::TensorFlow::Libtensorflow::Output;
 # In fact, they are mostly the same, but keeping the classes separate for now
 # in case the upstream API changes.
 
+use strict;
+use warnings;
 use namespace::autoclean;
 use FFI::Platypus::Record;
 use AI::TensorFlow::Libtensorflow::Lib::FFIType::Variant::RecordArrayRef;
