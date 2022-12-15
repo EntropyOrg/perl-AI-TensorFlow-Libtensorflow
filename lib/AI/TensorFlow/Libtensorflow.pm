@@ -8,6 +8,7 @@ use AI::TensorFlow::Libtensorflow::Lib;
 
 use AI::TensorFlow::Libtensorflow::DataType;
 use AI::TensorFlow::Libtensorflow::Status;
+use AI::TensorFlow::Libtensorflow::TString;
 
 use AI::TensorFlow::Libtensorflow::Buffer;
 use AI::TensorFlow::Libtensorflow::Tensor;
