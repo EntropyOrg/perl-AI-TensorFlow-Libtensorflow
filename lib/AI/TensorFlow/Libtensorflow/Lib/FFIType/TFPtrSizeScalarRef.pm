@@ -23,7 +23,9 @@ sub perl_to_native {
 	my ($value, $i) = @_;
 	die "Value must be a ScalarRef" unless ref $value eq 'SCALAR';
 
-	my ($pointer, $size) = scalar_to_buffer($$value);
+	my ($pointer, $size) = defined $$value
+		? scalar_to_buffer($$value)
+		: (0, 0);
 
 	push @stack, [ $value, $pointer, $size ];
 	arguments_set_pointer( $i  , $pointer);
