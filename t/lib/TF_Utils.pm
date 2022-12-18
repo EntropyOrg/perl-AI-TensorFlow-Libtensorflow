@@ -43,7 +43,7 @@ sub LoadGraph {
 	$graph->ImportGraphDef( $buffer, $opts, $status );
 
 	if( $status->GetCode != AI::TensorFlow::Libtensorflow::Status::OK ) {
-		return undef;
+		return;
 	}
 
 	if( ! defined $checkpoint_prefix ) {

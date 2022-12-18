@@ -218,7 +218,7 @@ $ffi->attach([ 'SessionPRunSetup' => 'PRunSetup' ] => [
 		$status,
 	);
 
-	return undef unless defined $handle;
+	return unless defined $handle;
 
 	window( my $handle_window, $handle );
 
