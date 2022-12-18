@@ -392,6 +392,24 @@ L<AI::TensorFlow::Libtensorflow::TString>
 =cut
 		$ffi->load_custom_type('::PtrObject', 'TF_TString' => 'AI::TensorFlow::Libtensorflow::TString');
 
+=head2 C<tensorflow/c/eager/c_api.h>
+=cut
+
+=head3 TFE_ContextOptions
+
+L<AI::TensorFlow::Libtensorflow::Eager::ContextOptions>
+
+=cut
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::Eager::ContextOptions)', 'TFE_ContextOptions');
+
+=head3 TFE_Context
+
+
+L<AI::TensorFlow::Libtensorflow::Eager::Context>
+
+=cut
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::Eager::Context)', 'TFE_Context');
+
 
 
 		## Callbacks for deallocation
@@ -405,9 +423,14 @@ L<AI::TensorFlow::Libtensorflow::TString>
 }
 
 sub mangler_default {
+	my $target = (caller)[0];
+	my $prefix = 'TF';
+	if( $target =~ /::Eager::/ ) {
+		$prefix = 'TFE';
+	}
 	sub {
 		my ($name) = @_;
-		"TF_$name";
+		"${prefix}_$name";
 	}
 }
 

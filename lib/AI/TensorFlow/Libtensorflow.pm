@@ -30,6 +30,9 @@ use AI::TensorFlow::Libtensorflow::SessionOptions;
 use AI::TensorFlow::Libtensorflow::Session;
 use AI::TensorFlow::Libtensorflow::DeviceList;
 
+use AI::TensorFlow::Libtensorflow::Eager::ContextOptions;
+use AI::TensorFlow::Libtensorflow::Eager::Context;
+
 use FFI::C;
 
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
