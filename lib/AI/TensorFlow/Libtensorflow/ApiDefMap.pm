@@ -15,7 +15,7 @@ $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
   use AI::TensorFlow::Libtensorflow::Status;
 
   my $map = ApiDefMap->New(
-    AI::TensorFlow::Libtensorflow->GetAllOpList,
+    AI::TensorFlow::Libtensorflow::TFLibrary->GetAllOpList,
     my $status = AI::TensorFlow::Libtensorflow::Status->New
   );
   ok $map, 'Created ApiDefMap';

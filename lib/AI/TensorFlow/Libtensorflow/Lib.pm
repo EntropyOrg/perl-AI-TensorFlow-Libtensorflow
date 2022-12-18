@@ -173,13 +173,15 @@ typedef struct TF_DeviceList TF_DeviceList;
 
 =head3 TF_Library
 
+L<AI::TensorFlow::Libtensorflow::TFLibrary>
+
 =begin TF_CAPI_DEF
 
 typedef struct TF_Library TF_Library;
 
 =end TF_CAPI_DEF
 =cut
-		$ffi->type('opaque' => 'TF_Library');
+		$ffi->type('object(AI::TensorFlow::Libtensorflow::TFLibrary)' => 'TF_Library');
 
 =head3 TF_ApiDefMap
 
