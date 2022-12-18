@@ -26,8 +26,8 @@ sub ScalarStringTensor {
 sub ReadBufferFromFile {
 	my ($path) = @_;
 	my $data = path($path)->slurp_raw;
-	my $buffer = AI::TensorFlow::Libtensorflow::Buffer->NewFromData(
-		$data
+	my $buffer = AI::TensorFlow::Libtensorflow::Buffer->NewFromString(
+		\$data
 	);
 }
 

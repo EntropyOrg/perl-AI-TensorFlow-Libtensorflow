@@ -112,23 +112,6 @@ $ffi->attach( [ 'NewBufferFromString' => 'NewFromString' ] => [
 	$xs->(@rest);
 });
 
-sub NewFromData { # TODO look at Python high-level API
-	my ($class, $data) = @_;
-
-	my $buf = $class->New;
-
-	my ($pointer, $size) = scalar_to_buffer $data;
-
-	$buf->data( $pointer );
-	$buf->length( $size );
-	$buf->data_deallocator(sub {
-		my ($pointer, $size) = @_;
-		free $pointer;
-	});
-
-	$buf;
-}
-
 =destruct DESTROY
 
 =tf_capi TF_DeleteBuffer
