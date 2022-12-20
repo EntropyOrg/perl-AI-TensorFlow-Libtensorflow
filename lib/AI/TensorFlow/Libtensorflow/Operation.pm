@@ -180,6 +180,7 @@ $ffi->attach( [ 'OperationAllInputs' => 'AllInputs' ] => [
 ] => 'void' => sub {
 	my ($xs, $oper) = @_;
 	my $max_inputs = $oper->NumInputs;
+	return [] if $max_inputs == 0;
 	my $inputs = AI::TensorFlow::Libtensorflow::Output->_adef->create(0 + $max_inputs);
 	$xs->($oper, $inputs, $max_inputs);
 	return AI::TensorFlow::Libtensorflow::Output->_from_array($inputs);
