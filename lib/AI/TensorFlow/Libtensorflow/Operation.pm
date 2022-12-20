@@ -253,4 +253,19 @@ $ffi->attach( [ 'OperationOutputConsumers'  => 'OutputConsumers' ] => [
 	return AI::TensorFlow::Libtensorflow::Input->_from_array( $consumers );
 });
 
+sub _data_printer {
+	my ($self, $ddp) = @_;
+
+	my %data = (
+		Name       => $self->Name,
+		OpType     => $self->OpType,
+		NumInputs  => $self->NumInputs,
+		NumOutputs => $self->NumOutputs,
+	);
+
+	return sprintf('%s %s',
+		$ddp->maybe_colorize(ref $self, 'class' ),
+		$ddp->parse(\%data) );
+}
+
 1;

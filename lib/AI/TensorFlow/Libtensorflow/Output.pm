@@ -94,4 +94,27 @@ $ffi->load_custom_type(
 	),
 	=> 'TF_Output_array_sz');
 
+use overload
+	'""' => \&_op_stringify;
+
+sub _op_stringify {
+	join ":", (
+		( defined $_[0]->_oper ? $_[0]->oper->Name : '<undefined operation>' ),
+		( defined $_[0]->index ? $_[0]->index      : '<no index>'            )
+	);
+}
+
+sub _data_printer {
+	my ($self, $ddp) = @_;
+
+	my %data = (
+		oper  => $self->oper,
+		index => $self->index,
+	);
+
+	return sprintf('%s %s',
+		$ddp->maybe_colorize(ref $self, 'class' ),
+		$ddp->parse(\%data) );
+};
+
 1;
