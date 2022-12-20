@@ -10,10 +10,10 @@ use FFI::C;
 my $ffi = AI::TensorFlow::Libtensorflow::Lib->ffi;
 $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 
+
 # enum TF_Code {{{
 # From <tensorflow/c/tf_status.h>
-$ffi->load_custom_type('::Enum', 'TF_Code',
-	{ rev => 'int', package => __PACKAGE__ },
+my @_TF_CODE = (
 	[ OK                  => 0 ],
 	[ CANCELLED           => 1 ],
 	[ UNKNOWN             => 2 ],
@@ -31,7 +31,16 @@ $ffi->load_custom_type('::Enum', 'TF_Code',
 	[ INTERNAL            => 13 ],
 	[ UNAVAILABLE         => 14 ],
 	[ DATA_LOSS           => 15 ],
-);#}}}
+);
+
+$ffi->load_custom_type('::Enum', 'TF_Code',
+	{ rev => 'int', package => __PACKAGE__ },
+	@_TF_CODE
+);
+
+my %_TF_CODE_INT_TO_NAME = map { reverse @$_ } @_TF_CODE;
+
+#}}}
 
 =begin TF_CAPI_EXPORT
 
@@ -97,5 +106,34 @@ TF_CAPI_EXPORT extern const char* TF_Message(const TF_Status* s);
 
 =cut
 $ffi->attach( 'Message' => [ 'TF_Status' ], 'string' );
+
+use overload
+	'""' => \&_op_stringify;
+
+sub _op_stringify {
+	$_TF_CODE_INT_TO_NAME{$_[0]->GetCode};
+}
+
+sub _data_printer {
+	my ($self, $ddp) = @_;
+	if( $self->GetCode != AI::TensorFlow::Libtensorflow::Status::OK() ) {
+		return sprintf('%s %s %s %s%s%s %s',
+			$ddp->maybe_colorize( ref($self), 'class' ),
+			$ddp->maybe_colorize( '{', 'brackets' ),
+				$ddp->maybe_colorize( $_TF_CODE_INT_TO_NAME{$self->GetCode}, 'escaped' ),
+				$ddp->maybe_colorize( '(', 'brackets' ),
+					$ddp->maybe_colorize( $self->Message, 'string' ),
+				$ddp->maybe_colorize( ')', 'brackets' ),
+			$ddp->maybe_colorize( '}', 'brackets' ),
+		);
+	} else {
+		return sprintf('%s %s %s %s',
+			$ddp->maybe_colorize( ref($self), 'class' ),
+			$ddp->maybe_colorize( '{', 'brackets' ),
+				$ddp->maybe_colorize( $_TF_CODE_INT_TO_NAME{$self->GetCode}, 'escaped' ),
+			$ddp->maybe_colorize( '}', 'brackets' ),
+		);
+	}
+}
 
 1;
