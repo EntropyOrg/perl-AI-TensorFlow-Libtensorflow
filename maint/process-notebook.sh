@@ -44,7 +44,7 @@ jupyter nbconvert $SRC --to script --stdout | sponge -a $DST;
 ##
 ##   =pod
 ##
-perl -E 'say qq|__END__\n=pod\n\n|' | sponge -a $DST;
+perl -E 'say qq|__END__\n\n=pod\n\n|' | sponge -a $DST;
 
 ## Add POD
 iperl nbconvert.iperl $SRC  | sponge -a $DST;
