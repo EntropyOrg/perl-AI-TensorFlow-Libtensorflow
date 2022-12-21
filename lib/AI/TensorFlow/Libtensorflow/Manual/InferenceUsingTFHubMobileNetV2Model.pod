@@ -414,17 +414,17 @@ my @solid_channel_uris = (
     'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Solid_blue.svg/480px-Solid_blue.svg.png',
 );
 undef;
-
-
 __END__
+
 =pod
 
 
 =encoding UTF-8
 
+
 =head1 NAME
 
-InferenceUsingTFHubMobileNetV2Model - Using TensorFlow to do image classification using an pre-trained model
+InferenceUsingTFHubMobileNetV2Model - Using TensorFlow to do image classification using a pre-trained model
 
 
 
@@ -448,7 +448,7 @@ If you are running the code, you may optionally install the L<C<tensorflow> Pyth
 
 =head2 Load the library
 
-First we need to load the C<AI::TensorFlow::Libtensorflow> library and more helpers. We then create an C<AI::TensorFlow::Libtensorflow::Status> object and helper function to make sure that the calls to the C<libtensorflow> C library are working properly.
+First, we need to load the C<AI::TensorFlow::Libtensorflow> library and more helpers. We then create an C<AI::TensorFlow::Libtensorflow::Status> object and helper function to make sure that the calls to the C<libtensorflow> C library are working properly.
 
 
   use strict;
@@ -489,7 +489,7 @@ First we need to load the C<AI::TensorFlow::Libtensorflow> library and more help
 
 In this notebook, we will use C<PDL> to store and manipulate the ndarray data before converting it to a C<TFTensor>. The following functions help with copying the data back and forth between the two object types.
 
-An important thing to note about the dimensions used by TensorFlow's TFTensors when compared with PDL is that the dimension lists are reversed. Consider a binary raster image with width W and height H stored in L<row-major format|https://en.wikipedia.org/wiki/Row-_and_column-major_order> (meaning the pixels in the first row are stored next to each other followed by the second row and so on). With PDL, the dimension list for this will be C<[ W H ]> and for TFTensor the dimension list will be C<[ H W ]>. TensorFlow use the same convention for the dimension list as NumPy with the faster changing dimensions at the end of the dimension list while PDL is the opposite (see L<Dima Kogan's library and talk|https://github.com/dkogan/numpysane> for more on this).
+An important thing to note about the dimensions used by TensorFlow's TFTensors when compared with PDL is that the dimension lists are reversed. Consider a binary raster image with width W and height H stored in L<row-major format|https://en.wikipedia.org/wiki/Row-_and_column-major_order> (meaning the pixels in the first row are stored next to each other followed by the second row and so on). With PDL, the dimension list for this will be C<[ W H ]> and for TFTensor the dimension list will be C<[ H W ]>. TensorFlow uses the same convention for the dimension list as NumPy with the faster changing dimensions at the end of the dimension list while PDL is the opposite (see L<Dima Kogan's library and talk|https://github.com/dkogan/numpysane> for more on this).
 
 This difference will be explained more concretely further in the tutorial.
 
@@ -580,13 +580,14 @@ We are going to use an L<image classification model|https://tfhub.dev/google/ima
   
   say "Selected model: $model_name : $model_name_to_params{$model_name}{handle}";
 
-=begin html
 
-<tt><span style='font-family: fixedsys, lucida console, terminal, vga, monospace; line-height: 1; letter-spacing: 0; font-size: 12pt'><span style='color: gray; background: black; '>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style='color: black; background: black; '><br></span></span></tt>
+B<STREAM (STDOUT)>:
 
-=end html
+  Selected model: mobilenet_v2_100_224 : https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/5
 
+B<RESULT>:
 
+  1
 
 We download the model and labels to the current directory then extract the model to a folder with the name given in C<$model_base>.
 
@@ -622,13 +623,17 @@ We download the model and labels to the current directory then extract the model
       unless @labels == IMAGENET_LABEL_COUNT_WITH_BG;
   say "Got labels: ", join( ", ", List::Util::head(5, @labels) ), ", etc.";
 
-=begin html
 
-<tt><span style='font-family: fixedsys, lucida console, terminal, vga, monospace; line-height: 1; letter-spacing: 0; font-size: 12pt'><span style='color: gray; background: black; '>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style='color: black; background: black; '><br></span></span></tt>
+B<STREAM (STDOUT)>:
 
-=end html
+  Downloading https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/5?tf-hub-format=compressed to google_imagenet_mobilenet_v2_100_224_classification_5.tar.gz
+  Downloading https://storage.googleapis.com/download.tensorflow.org/data/ImageNetLabels.txt to ImageNetLabels.txt
+  Saved model is in google_imagenet_mobilenet_v2_100_224_classification_5/saved_model.pb
+  Got labels: background, tench, goldfish, great white shark, tiger shark, etc.
 
+B<RESULT>:
 
+  1
 
 
 =head2 Load the model and session
@@ -646,8 +651,20 @@ Now we can load the model from that folder with the tag set C<[ 'serve' ]> by us
   AssertOK($s);
 
 
+B<STREAM (STDERR)>:
 
-We can examine what computations are contained in the graph in terms of the names of the inputs and outputs to an operation found in the graph by running C<saved_model_cli>.
+  2022-12-21 14:14:28.779602: I tensorflow/cc/saved_model/reader.cc:45] Reading SavedModel from: google_imagenet_mobilenet_v2_100_224_classification_5
+  2022-12-21 14:14:28.789629: I tensorflow/cc/saved_model/reader.cc:89] Reading meta graph with tags { serve }
+  2022-12-21 14:14:28.789669: I tensorflow/cc/saved_model/reader.cc:130] Reading SavedModel debug info (if present) from: google_imagenet_mobilenet_v2_100_224_classification_5
+  2022-12-21 14:14:28.789737: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F AVX512_VNNI FMA
+  To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+  2022-12-21 14:14:28.814056: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:357] MLIR V1 optimization pass is not enabled
+  2022-12-21 14:14:28.825182: I tensorflow/cc/saved_model/loader.cc:229] Restoring SavedModel bundle.
+  2022-12-21 14:14:29.168542: I tensorflow/cc/saved_model/loader.cc:213] Running initialization op on SavedModel bundle at path: google_imagenet_mobilenet_v2_100_224_classification_5
+  2022-12-21 14:14:29.255519: I tensorflow/cc/saved_model/loader.cc:305] SavedModel load for tags { serve }; Status: success: OK. Took 475920 microseconds.
+
+
+We can examine what computations are contained in the graph in terms of the names of the inputs and outputs of an operation found in the graph by running C<saved_model_cli>.
 
 
   if( File::Which::which('saved_model_cli')) {
@@ -661,13 +678,24 @@ We can examine what computations are contained in the graph in terms of the name
       say "Install the tensorflow Python package to get the `saved_model_cli` command.";
   }
 
-=begin html
 
-<tt><span style='font-family: fixedsys, lucida console, terminal, vga, monospace; line-height: 1; letter-spacing: 0; font-size: 12pt'><span style='color: gray; background: black; '>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style='color: black; background: black; '><br></span></span></tt>
+B<STREAM (STDOUT)>:
 
-=end html
+  The given SavedModel SignatureDef contains the following input(s):
+    inputs['inputs'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1, 224, 224, 3)
+        name: serving_default_inputs:0
+  The given SavedModel SignatureDef contains the following output(s):
+    outputs['logits'] tensor_info:
+        dtype: DT_FLOAT
+        shape: (-1, 1001)
+        name: StatefulPartitionedCall:0
+  Method name is: tensorflow/serving/predict
 
+B<RESULT>:
 
+  1
 
 The above C<saved_model_cli> output shows that the model input is at C<serving_default_inputs:0> which means the operation named C<serving_default_inputs> at index C<0> and the output is at C<StatefulPartitionedCall:0> which means the operation named C<StatefulPartitionedCall> at index C<0>.
 
@@ -675,7 +703,7 @@ It also shows the type and shape of the C<TFTensor>s for those inputs and output
 
 For the C<input>, we have C<(-1, 224, 224, 3)> which is a L<common input image specification for TensorFlow Hub|https://www.tensorflow.org/hub/common_signatures/images#input>. This is known as C<channels_last> (or C<NHWC>) layout where the TensorFlow dimension list is C<[batch_size, height, width, 3]> where 3 represents the RGB channels where each element is normalised to the range C<[0, 1]>. The C<-1> in the C<batch_size> dimension represents an unknown dimension size so the model can accept any number of images. Note that the C<TFTensor> dimension list has the dimension that changes the fastest in memory at the end of the list, so the C<float32_t> channels for a single pixel as stored next to each other followed by the next pixel in the same row.
 
-For the C<output>, we have C<(-1, 1001)> which is C<[batch_size, num_classes]> where the elements are score that the image received for that ImageNet class.
+For the C<output>, we have C<(-1, 1001)> which is C<[batch_size, num_classes]> where the elements are scores that the image received for that ImageNet class.
 
 So let's use those names to create our C<::Output> C<ArrayRef>s.
 
@@ -695,13 +723,48 @@ So let's use those names to create our C<::Output> C<ArrayRef>s.
   say "Input: " , $outputs{in}[0];
   say "Output: ", $outputs{out}[0];
 
+
+B<STREAM (STDOUT)>:
+
+  Input: serving_default_inputs:0
+  Output: StatefulPartitionedCall:0
+
+B<STREAM (STDERR)>:
+
 =begin html
 
-<tt><span style='font-family: fixedsys, lucida console, terminal, vga, monospace; line-height: 1; letter-spacing: 0; font-size: 12pt'><span style='color: gray; background: black; '>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style='color: black; background: black; '><br></span></span></tt>
+<span style="display:inline-block;margin-left:1em;"><pre style="display: block"><code><span style="color: #33ccff;">{</span><span style="">
+    </span><span style="color: #6666cc;">in</span><span style=""> </span><span style="color: #33ccff;">   </span><span style="color: #33ccff;">[</span><span style="">
+        </span><span style="color: #9999cc;">[0] </span><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Output</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
+                </span><span style="color: #6666cc;">index</span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">0</span><span style="color: #33ccff;">,</span><span style="">
+                </span><span style="color: #6666cc;">oper</span><span style=""> </span><span style="color: #33ccff;">   </span><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Operation</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
+                    </span><span style="color: #6666cc;">Name</span><span style="">      </span><span style="color: #33ccff;">   </span><span style="color: #33ccff;">&quot;</span><span style="color: #669933;">serving_default_inputs</span><span style="color: #33ccff;">&quot;</span><span style="color: #33ccff;">,</span><span style="">
+                    </span><span style="color: #6666cc;">NumInputs</span><span style=""> </span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">0</span><span style="color: #33ccff;">,</span><span style="">
+                    </span><span style="color: #6666cc;">NumOutputs</span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">1</span><span style="color: #33ccff;">,</span><span style="">
+                    </span><span style="color: #6666cc;">OpType</span><span style="">    </span><span style="color: #33ccff;">   </span><span style="color: #33ccff;">&quot;</span><span style="color: #669933;">Placeholder</span><span style="color: #33ccff;">&quot;</span><span style="">
+                </span><span style="color: #33ccff;">}</span><span style="">
+            </span><span style="color: #33ccff;">}</span><span style="">
+    </span><span style="color: #33ccff;">]</span><span style="color: #33ccff;">,</span><span style="">
+    </span><span style="color: #6666cc;">out</span><span style="color: #33ccff;">   </span><span style="color: #33ccff;">[</span><span style="">
+        </span><span style="color: #9999cc;">[0] </span><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Output</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
+                </span><span style="color: #6666cc;">index</span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">0</span><span style="color: #33ccff;">,</span><span style="">
+                </span><span style="color: #6666cc;">oper</span><span style=""> </span><span style="color: #33ccff;">   </span><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Operation</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
+                    </span><span style="color: #6666cc;">Name</span><span style="">      </span><span style="color: #33ccff;">   </span><span style="color: #33ccff;">&quot;</span><span style="color: #669933;">StatefulPartitionedCall</span><span style="color: #33ccff;">&quot;</span><span style="color: #33ccff;">,</span><span style="">
+                    </span><span style="color: #6666cc;">NumInputs</span><span style=""> </span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">263</span><span style="color: #33ccff;">,</span><span style="">
+                    </span><span style="color: #6666cc;">NumOutputs</span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">1</span><span style="color: #33ccff;">,</span><span style="">
+                    </span><span style="color: #6666cc;">OpType</span><span style="">    </span><span style="color: #33ccff;">   </span><span style="color: #33ccff;">&quot;</span><span style="color: #669933;">StatefulPartitionedCall</span><span style="color: #33ccff;">&quot;</span><span style="">
+                </span><span style="color: #33ccff;">}</span><span style="">
+            </span><span style="color: #33ccff;">}</span><span style="">
+    </span><span style="color: #33ccff;">]</span><span style="">
+</span><span style="color: #33ccff;">}</span><span style="">
+</span></code></pre></span>
 
 =end html
 
 
+B<RESULT>:
+
+  1
 
 Now we can get the following testing images from Wikimedia.
 
@@ -754,9 +817,12 @@ Now we can get the following testing images from Wikimedia.
       );
   }
 
+
+B<DISPLAY>:
+
 =begin html
 
-<p><table style="width: 100%"><tr><td><tt>apple</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg"><img alt="apple" src="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" width="50%" /></a></td></tr><tr><td><tt>banana</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/1/1c/Bananas_white_background.jpg"><img alt="banana" src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Bananas_white_background.jpg" width="50%" /></a></td></tr><tr><td><tt>bus</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/6/63/LT_471_%28LTZ_1471%29_Arriva_London_New_Routemaster_%2819522859218%29.jpg"><img alt="bus" src="https://upload.wikimedia.org/wikipedia/commons/6/63/LT_471_%28LTZ_1471%29_Arriva_London_New_Routemaster_%2819522859218%29.jpg" width="50%" /></a></td></tr><tr><td><tt>car</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/49/2013-2016_Toyota_Corolla_%28ZRE172R%29_SX_sedan_%282018-09-17%29_01.jpg"><img alt="car" src="https://upload.wikimedia.org/wikipedia/commons/4/49/2013-2016_Toyota_Corolla_%28ZRE172R%29_SX_sedan_%282018-09-17%29_01.jpg" width="50%" /></a></td></tr><tr><td><tt>cat</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg"><img alt="cat" src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg" width="50%" /></a></td></tr><tr><td><tt>dog</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/archive/a/a9/20090914031557%21Saluki_dog_breed.jpg"><img alt="dog" src="https://upload.wikimedia.org/wikipedia/commons/archive/a/a9/20090914031557%21Saluki_dog_breed.jpg" width="50%" /></a></td></tr><tr><td><tt>flamingo</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg"><img alt="flamingo" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg" width="50%" /></a></td></tr><tr><td><tt>honeycomb</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg"><img alt="honeycomb" src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg" width="50%" /></a></td></tr><tr><td><tt>piano</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png"><img alt="piano" src="https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png" width="50%" /></a></td></tr><tr><td><tt>teapot</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg"><img alt="teapot" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg" width="50%" /></a></td></tr><tr><td><tt>tiger</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg"><img alt="tiger" src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg" width="50%" /></a></td></tr><tr><td><tt>turtle</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg"><img alt="turtle" src="https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg" width="50%" /></a></td></tr></table></p>
+<span style="display:inline-block;margin-left:1em;"><p><table style="width: 100%"><tr><td><tt>apple</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg"><img alt="apple" src="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" width="50%" /></a></td></tr><tr><td><tt>banana</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/1/1c/Bananas_white_background.jpg"><img alt="banana" src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Bananas_white_background.jpg" width="50%" /></a></td></tr><tr><td><tt>bus</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/6/63/LT_471_%28LTZ_1471%29_Arriva_London_New_Routemaster_%2819522859218%29.jpg"><img alt="bus" src="https://upload.wikimedia.org/wikipedia/commons/6/63/LT_471_%28LTZ_1471%29_Arriva_London_New_Routemaster_%2819522859218%29.jpg" width="50%" /></a></td></tr><tr><td><tt>car</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/49/2013-2016_Toyota_Corolla_%28ZRE172R%29_SX_sedan_%282018-09-17%29_01.jpg"><img alt="car" src="https://upload.wikimedia.org/wikipedia/commons/4/49/2013-2016_Toyota_Corolla_%28ZRE172R%29_SX_sedan_%282018-09-17%29_01.jpg" width="50%" /></a></td></tr><tr><td><tt>cat</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg"><img alt="cat" src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg" width="50%" /></a></td></tr><tr><td><tt>dog</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/archive/a/a9/20090914031557%21Saluki_dog_breed.jpg"><img alt="dog" src="https://upload.wikimedia.org/wikipedia/commons/archive/a/a9/20090914031557%21Saluki_dog_breed.jpg" width="50%" /></a></td></tr><tr><td><tt>flamingo</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg"><img alt="flamingo" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg" width="50%" /></a></td></tr><tr><td><tt>honeycomb</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg"><img alt="honeycomb" src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg" width="50%" /></a></td></tr><tr><td><tt>piano</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png"><img alt="piano" src="https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png" width="50%" /></a></td></tr><tr><td><tt>teapot</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg"><img alt="teapot" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg" width="50%" /></a></td></tr><tr><td><tt>tiger</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg"><img alt="tiger" src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg" width="50%" /></a></td></tr><tr><td><tt>turtle</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg"><img alt="turtle" src="https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg" width="50%" /></a></td></tr></table></p></span>
 
 =end html
 
@@ -863,13 +929,77 @@ We then take all the PDL ndarrays and concatenate them. Again, note that the dim
   p $t;
 
 
+B<STREAM (STDOUT)>:
+
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg
+  Rescaled image from [ 2418 x 2192 ] to [ 224 x 203 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/1/1c/Bananas_white_background.jpg
+  Rescaled image from [ 1600 x 1067 ] to [ 224 x 149 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/6/63/LT_471_%28LTZ_1471%29_Arriva_London_New_Routemaster_%2819522859218%29.jpg
+  Rescaled image from [ 3840 x 2560 ] to [ 224 x 149 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/4/49/2013-2016_Toyota_Corolla_%28ZRE172R%29_SX_sedan_%282018-09-17%29_01.jpg
+  Rescaled image from [ 4152 x 2252 ] to [ 224 x 121 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg
+  Rescaled image from [ 1795 x 2397 ] to [ 168 x 224 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/archive/a/a9/20090914031557%21Saluki_dog_breed.jpg
+  Rescaled image from [ 543 x 523 ] to [ 224 x 216 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg
+  Rescaled image from [ 3000 x 1999 ] to [ 224 x 149 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg
+  Rescaled image from [ 800 x 600 ] to [ 224 x 168 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png
+  Rescaled image from [ 2059 x 2080 ] to [ 222 x 224 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg
+  Rescaled image from [ 900 x 838 ] to [ 224 x 209 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg
+  Rescaled image from [ 4500 x 3000 ] to [ 224 x 149 ]
+  Padded to [ 224 x 224 ]
+  Downloaded https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg
+  Rescaled image from [ 2000 x 1329 ] to [ 224 x 149 ]
+  Padded to [ 224 x 224 ]
+
+B<STREAM (STDERR)>:
+
+=begin html
+
+<span style="display:inline-block;margin-left:1em;"><pre style="display: block"><code><span style="color: #cc66cc;">PDL</span><span style="color: #33ccff;"> {</span><span style="">
+    </span><span style="color: #6666cc;">Data    </span><span style=""> : </span><span style="color: #669933;">too long to print</span><span style="">
+    </span><span style="color: #6666cc;">Type    </span><span style=""> : </span><span style="color: #cc66cc;">float</span><span style="">
+    </span><span style="color: #6666cc;">Shape   </span><span style=""> : </span><span style="color: #33ccff;">[</span><span style="color: #9999cc;">3 224 224 12</span><span style="color: #33ccff;">]</span><span style="">
+    </span><span style="color: #6666cc;">Nelem   </span><span style=""> : </span><span style="color: #dd6;">1806336</span><span style="">
+    </span><span style="color: #6666cc;">Min     </span><span style=""> : </span><span style="color: #f66;">0</span><span style="">
+    </span><span style="color: #6666cc;">Max     </span><span style=""> : </span><span style="color: #99f;">1</span><span style="">
+    </span><span style="color: #6666cc;">Badflag </span><span style=""> : </span><span style="color: #2c2;">No</span><span style="">
+    </span><span style="color: #6666cc;">Has Bads</span><span style=""> : </span><span style="color: #2c2;">No</span><span style="">
+</span><span style="color: #33ccff;">}</span><span style="">
+</span><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Tensor</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
+    </span><span style="color: #6666cc;">Type           </span><span style=""> </span><span style="color: #cc66cc;">FLOAT</span><span style="">
+    </span><span style="color: #6666cc;">Dims           </span><span style=""> </span><span style="color: #33ccff;">[</span><span style=""> </span><span style="color: #ff6633;">12</span><span style=""> </span><span style="color: #ff6633;">224</span><span style=""> </span><span style="color: #ff6633;">224</span><span style=""> </span><span style="color: #ff6633;">3</span><span style=""> </span><span style="color: #33ccff;">]</span><span style="">
+    </span><span style="color: #6666cc;">NumDims        </span><span style=""> </span><span style="color: #ff6633;">4</span><span style="">
+    </span><span style="color: #6666cc;">ElementCount   </span><span style=""> </span><span style="color: #ff6633;">1806336</span><span style="">
+</span><span style="color: #33ccff;">}</span><span style="">
+</span></code></pre></span>
+
+=end html
+
+
 
 
 =head2 Run the model for inference
 
 We can use the C<Run> method to run the session and get the output C<TFTensor>.
 
-First we send a single random input in order to warm up the model.
+First, we send a single random input to warm up the model.
 
 
   my $RunSession = sub {
@@ -899,6 +1029,25 @@ First we send a single random input in order to warm up the model.
   p $RunSession->($session, FloatPDLTOTFTensor($warmup_input));
 
 
+B<STREAM (STDOUT)>:
+
+  Warming up the model
+
+B<STREAM (STDERR)>:
+
+=begin html
+
+<span style="display:inline-block;margin-left:1em;"><pre style="display: block"><code><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Tensor</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
+    </span><span style="color: #6666cc;">Type           </span><span style=""> </span><span style="color: #cc66cc;">FLOAT</span><span style="">
+    </span><span style="color: #6666cc;">Dims           </span><span style=""> </span><span style="color: #33ccff;">[</span><span style=""> </span><span style="color: #ff6633;">1</span><span style=""> </span><span style="color: #ff6633;">1001</span><span style=""> </span><span style="color: #33ccff;">]</span><span style="">
+    </span><span style="color: #6666cc;">NumDims        </span><span style=""> </span><span style="color: #ff6633;">2</span><span style="">
+    </span><span style="color: #6666cc;">ElementCount   </span><span style=""> </span><span style="color: #ff6633;">1001</span><span style="">
+</span><span style="color: #33ccff;">}</span><span style="">
+</span></code></pre></span>
+
+=end html
+
+
 
 Then we send the batched image data. The returned scores need to by normalised using the L<softmax function|https://en.wikipedia.org/wiki/Softmax_function> with the following formula (taken from Wikipedia):
 
@@ -909,6 +1058,25 @@ $$ {\displaystyle \sigma (\mathbf {z} )I<{i}={\frac {e^{z>{i}}}{\sum I<{j=1}^{K}
   my $softmax = sub { ( map $_/sumover($_)->dummy(0), exp($_[0]) )[0] };
   my $probabilities_batched = $softmax->($output_pdl_batched);
   p $probabilities_batched;
+
+
+B<STREAM (STDERR)>:
+
+=begin html
+
+<span style="display:inline-block;margin-left:1em;"><pre style="display: block"><code><span style="color: #cc66cc;">PDL</span><span style="color: #33ccff;"> {</span><span style="">
+    </span><span style="color: #6666cc;">Data    </span><span style=""> : </span><span style="color: #669933;">too long to print</span><span style="">
+    </span><span style="color: #6666cc;">Type    </span><span style=""> : </span><span style="color: #cc66cc;">float</span><span style="">
+    </span><span style="color: #6666cc;">Shape   </span><span style=""> : </span><span style="color: #33ccff;">[</span><span style="color: #9999cc;">1001 12</span><span style="color: #33ccff;">]</span><span style="">
+    </span><span style="color: #6666cc;">Nelem   </span><span style=""> : </span><span style="color: #dd6;">12012</span><span style="">
+    </span><span style="color: #6666cc;">Min     </span><span style=""> : </span><span style="color: #f66;">2.73727380317723e-07</span><span style="">
+    </span><span style="color: #6666cc;">Max     </span><span style=""> : </span><span style="color: #99f;">0.980696022510529</span><span style="">
+    </span><span style="color: #6666cc;">Badflag </span><span style=""> : </span><span style="color: #2c2;">No</span><span style="">
+    </span><span style="color: #6666cc;">Has Bads</span><span style=""> : </span><span style="color: #2c2;">No</span><span style="">
+</span><span style="color: #33ccff;">}</span><span style="">
+</span></code></pre></span>
+
+=end html
 
 
 
@@ -982,9 +1150,12 @@ Then select the top 5 of those and find their class labels.
       }
   }
 
+
+B<DISPLAY>:
+
 =begin html
 
-<p><table style="width: 100%"><tr><td><tt>apple</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg"><img alt="apple" src="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>958</td><td>pomegranate</td><td>0.764890849590302</td></tr><tr><td>2</td><td>949</td><td>Granny Smith</td><td>0.0557115897536278</td></tr><tr><td>3</td><td>951</td><td>orange</td><td>0.0294644851237535</td></tr><tr><td>4</td><td>955</td><td>banana</td><td>0.0140652684494853</td></tr><tr><td>5</td><td>952</td><td>lemon</td><td>0.0104219866916537</td></tr></table></td></tr><tr><td><tt>banana</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/1/1c/Bananas_white_background.jpg"><img alt="banana" src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Bananas_white_background.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>955</td><td>banana</td><td>0.980696022510529</td></tr><tr><td>2</td><td>941</td><td>spaghetti squash</td><td>0.00609391508623958</td></tr><tr><td>3</td><td>940</td><td>zucchini</td><td>0.000924494117498398</td></tr><tr><td>4</td><td>942</td><td>acorn squash</td><td>0.000428267841925845</td></tr><tr><td>5</td><td>988</td><td>corn</td><td>0.000371591129805893</td></tr></table></td></tr><tr><td><tt>bus</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/6/63/LT_471_%28LTZ_1471%29_Arriva_London_New_Routemaster_%2819522859218%29.jpg"><img alt="bus" src="https://upload.wikimedia.org/wikipedia/commons/6/63/LT_471_%28LTZ_1471%29_Arriva_London_New_Routemaster_%2819522859218%29.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>706</td><td>passenger car</td><td>0.503800392150879</td></tr><tr><td>2</td><td>875</td><td>trolleybus</td><td>0.334556519985199</td></tr><tr><td>3</td><td>655</td><td>minibus</td><td>0.0483399331569672</td></tr><tr><td>4</td><td>830</td><td>streetcar</td><td>0.0060268952511251</td></tr><tr><td>5</td><td>556</td><td>fire engine</td><td>0.00416999123990536</td></tr></table></td></tr><tr><td><tt>car</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/49/2013-2016_Toyota_Corolla_%28ZRE172R%29_SX_sedan_%282018-09-17%29_01.jpg"><img alt="car" src="https://upload.wikimedia.org/wikipedia/commons/4/49/2013-2016_Toyota_Corolla_%28ZRE172R%29_SX_sedan_%282018-09-17%29_01.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>437</td><td>beach wagon</td><td>0.653993427753448</td></tr><tr><td>2</td><td>480</td><td>car wheel</td><td>0.0596377961337566</td></tr><tr><td>3</td><td>582</td><td>grille</td><td>0.0583300851285458</td></tr><tr><td>4</td><td>512</td><td>convertible</td><td>0.0284444093704224</td></tr><tr><td>5</td><td>469</td><td>cab</td><td>0.0261545460671186</td></tr></table></td></tr><tr><td><tt>cat</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg"><img alt="cat" src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>283</td><td>tiger cat</td><td>0.406540781259537</td></tr><tr><td>2</td><td>286</td><td>Egyptian cat</td><td>0.217931881546974</td></tr><tr><td>3</td><td>282</td><td>tabby</td><td>0.162566006183624</td></tr><tr><td>4</td><td>288</td><td>lynx</td><td>0.0042705861851573</td></tr><tr><td>5</td><td>284</td><td>Persian cat</td><td>0.003710369579494</td></tr></table></td></tr><tr><td><tt>dog</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/archive/a/a9/20090914031557%21Saluki_dog_breed.jpg"><img alt="dog" src="https://upload.wikimedia.org/wikipedia/commons/archive/a/a9/20090914031557%21Saluki_dog_breed.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>177</td><td>Saluki</td><td>0.956575691699982</td></tr><tr><td>2</td><td>215</td><td>Gordon setter</td><td>0.0140251601114869</td></tr><tr><td>3</td><td>166</td><td>black-and-tan coonhound</td><td>0.0014705111971125</td></tr><tr><td>4</td><td>170</td><td>borzoi</td><td>0.00110328639857471</td></tr><tr><td>5</td><td>159</td><td>toy terrier</td><td>0.000861090025864542</td></tr></table></td></tr><tr><td><tt>flamingo</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg"><img alt="flamingo" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>131</td><td>flamingo</td><td>0.959895372390747</td></tr><tr><td>2</td><td>130</td><td>spoonbill</td><td>0.0161255765706301</td></tr><tr><td>3</td><td>128</td><td>white stork</td><td>0.00166661932598799</td></tr><tr><td>4</td><td>129</td><td>black stork</td><td>0.000550497847143561</td></tr><tr><td>5</td><td>773</td><td>safety pin</td><td>0.000548230716958642</td></tr></table></td></tr><tr><td><tt>honeycomb</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg"><img alt="honeycomb" src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>600</td><td>honeycomb</td><td>0.877344310283661</td></tr><tr><td>2</td><td>411</td><td>apiary</td><td>0.0387796945869923</td></tr><tr><td>3</td><td>62</td><td>boa constrictor</td><td>0.0105699924752116</td></tr><tr><td>4</td><td>63</td><td>rock python</td><td>0.00116742600221187</td></tr><tr><td>5</td><td>552</td><td>face powder</td><td>0.000891718140337616</td></tr></table></td></tr><tr><td><tt>piano</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png"><img alt="piano" src="https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>882</td><td>upright</td><td>0.935266852378845</td></tr><tr><td>2</td><td>852</td><td>television</td><td>0.0038805918302387</td></tr><tr><td>3</td><td>599</td><td>home theater</td><td>0.00317473593167961</td></tr><tr><td>4</td><td>652</td><td>microwave</td><td>0.00226501375436783</td></tr><tr><td>5</td><td>528</td><td>desktop computer</td><td>0.00212761503644288</td></tr></table></td></tr><tr><td><tt>teapot</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg"><img alt="teapot" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>850</td><td>teapot</td><td>0.934735298156738</td></tr><tr><td>2</td><td>506</td><td>coffeepot</td><td>0.0514399670064449</td></tr><tr><td>3</td><td>969</td><td>cup</td><td>0.000874492223374546</td></tr><tr><td>4</td><td>551</td><td>espresso maker</td><td>0.000661507365293801</td></tr><tr><td>5</td><td>726</td><td>pitcher</td><td>0.000382225960493088</td></tr></table></td></tr><tr><td><tt>tiger</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg"><img alt="tiger" src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>293</td><td>tiger</td><td>0.648495197296143</td></tr><tr><td>2</td><td>283</td><td>tiger cat</td><td>0.181235983967781</td></tr><tr><td>3</td><td>341</td><td>zebra</td><td>0.0170289929956198</td></tr><tr><td>4</td><td>291</td><td>jaguar</td><td>0.00196429016068578</td></tr><tr><td>5</td><td>353</td><td>impala</td><td>0.00144677574280649</td></tr></table></td></tr><tr><td><tt>turtle</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg"><img alt="turtle" src="https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>35</td><td>leatherback turtle</td><td>0.535791635513306</td></tr><tr><td>2</td><td>347</td><td>water buffalo</td><td>0.0588447786867619</td></tr><tr><td>3</td><td>148</td><td>grey whale</td><td>0.0354104563593864</td></tr><tr><td>4</td><td>345</td><td>hippopotamus</td><td>0.0267104711383581</td></tr><tr><td>5</td><td>34</td><td>loggerhead</td><td>0.0217578746378422</td></tr></table></td></tr></table></p>
+<span style="display:inline-block;margin-left:1em;"><p><table style="width: 100%"><tr><td><tt>apple</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg"><img alt="apple" src="https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>958</td><td>pomegranate</td><td>0.764890849590302</td></tr><tr><td>2</td><td>949</td><td>Granny Smith</td><td>0.0557115897536278</td></tr><tr><td>3</td><td>951</td><td>orange</td><td>0.0294644851237535</td></tr><tr><td>4</td><td>955</td><td>banana</td><td>0.0140652684494853</td></tr><tr><td>5</td><td>952</td><td>lemon</td><td>0.0104219866916537</td></tr></table></td></tr><tr><td><tt>banana</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/1/1c/Bananas_white_background.jpg"><img alt="banana" src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Bananas_white_background.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>955</td><td>banana</td><td>0.980696022510529</td></tr><tr><td>2</td><td>941</td><td>spaghetti squash</td><td>0.00609391508623958</td></tr><tr><td>3</td><td>940</td><td>zucchini</td><td>0.000924494117498398</td></tr><tr><td>4</td><td>942</td><td>acorn squash</td><td>0.000428267841925845</td></tr><tr><td>5</td><td>988</td><td>corn</td><td>0.000371591129805893</td></tr></table></td></tr><tr><td><tt>bus</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/6/63/LT_471_%28LTZ_1471%29_Arriva_London_New_Routemaster_%2819522859218%29.jpg"><img alt="bus" src="https://upload.wikimedia.org/wikipedia/commons/6/63/LT_471_%28LTZ_1471%29_Arriva_London_New_Routemaster_%2819522859218%29.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>706</td><td>passenger car</td><td>0.503800392150879</td></tr><tr><td>2</td><td>875</td><td>trolleybus</td><td>0.334556519985199</td></tr><tr><td>3</td><td>655</td><td>minibus</td><td>0.0483399331569672</td></tr><tr><td>4</td><td>830</td><td>streetcar</td><td>0.0060268952511251</td></tr><tr><td>5</td><td>556</td><td>fire engine</td><td>0.00416999123990536</td></tr></table></td></tr><tr><td><tt>car</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/49/2013-2016_Toyota_Corolla_%28ZRE172R%29_SX_sedan_%282018-09-17%29_01.jpg"><img alt="car" src="https://upload.wikimedia.org/wikipedia/commons/4/49/2013-2016_Toyota_Corolla_%28ZRE172R%29_SX_sedan_%282018-09-17%29_01.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>437</td><td>beach wagon</td><td>0.653993427753448</td></tr><tr><td>2</td><td>480</td><td>car wheel</td><td>0.0596377961337566</td></tr><tr><td>3</td><td>582</td><td>grille</td><td>0.0583300851285458</td></tr><tr><td>4</td><td>512</td><td>convertible</td><td>0.0284444093704224</td></tr><tr><td>5</td><td>469</td><td>cab</td><td>0.0261545460671186</td></tr></table></td></tr><tr><td><tt>cat</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg"><img alt="cat" src="https://upload.wikimedia.org/wikipedia/commons/4/4d/Cat_November_2010-1a.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>283</td><td>tiger cat</td><td>0.406540781259537</td></tr><tr><td>2</td><td>286</td><td>Egyptian cat</td><td>0.217931881546974</td></tr><tr><td>3</td><td>282</td><td>tabby</td><td>0.162566006183624</td></tr><tr><td>4</td><td>288</td><td>lynx</td><td>0.0042705861851573</td></tr><tr><td>5</td><td>284</td><td>Persian cat</td><td>0.003710369579494</td></tr></table></td></tr><tr><td><tt>dog</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/archive/a/a9/20090914031557%21Saluki_dog_breed.jpg"><img alt="dog" src="https://upload.wikimedia.org/wikipedia/commons/archive/a/a9/20090914031557%21Saluki_dog_breed.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>177</td><td>Saluki</td><td>0.956575691699982</td></tr><tr><td>2</td><td>215</td><td>Gordon setter</td><td>0.0140251601114869</td></tr><tr><td>3</td><td>166</td><td>black-and-tan coonhound</td><td>0.0014705111971125</td></tr><tr><td>4</td><td>170</td><td>borzoi</td><td>0.00110328639857471</td></tr><tr><td>5</td><td>159</td><td>toy terrier</td><td>0.000861090025864542</td></tr></table></td></tr><tr><td><tt>flamingo</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg"><img alt="flamingo" src="https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>131</td><td>flamingo</td><td>0.959895372390747</td></tr><tr><td>2</td><td>130</td><td>spoonbill</td><td>0.0161255765706301</td></tr><tr><td>3</td><td>128</td><td>white stork</td><td>0.00166661932598799</td></tr><tr><td>4</td><td>129</td><td>black stork</td><td>0.000550497847143561</td></tr><tr><td>5</td><td>773</td><td>safety pin</td><td>0.000548230716958642</td></tr></table></td></tr><tr><td><tt>honeycomb</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg"><img alt="honeycomb" src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>600</td><td>honeycomb</td><td>0.877344310283661</td></tr><tr><td>2</td><td>411</td><td>apiary</td><td>0.0387796945869923</td></tr><tr><td>3</td><td>62</td><td>boa constrictor</td><td>0.0105699924752116</td></tr><tr><td>4</td><td>63</td><td>rock python</td><td>0.00116742600221187</td></tr><tr><td>5</td><td>552</td><td>face powder</td><td>0.000891718140337616</td></tr></table></td></tr><tr><td><tt>piano</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png"><img alt="piano" src="https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>882</td><td>upright</td><td>0.935266852378845</td></tr><tr><td>2</td><td>852</td><td>television</td><td>0.0038805918302387</td></tr><tr><td>3</td><td>599</td><td>home theater</td><td>0.00317473593167961</td></tr><tr><td>4</td><td>652</td><td>microwave</td><td>0.00226501375436783</td></tr><tr><td>5</td><td>528</td><td>desktop computer</td><td>0.00212761503644288</td></tr></table></td></tr><tr><td><tt>teapot</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg"><img alt="teapot" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>850</td><td>teapot</td><td>0.934735298156738</td></tr><tr><td>2</td><td>506</td><td>coffeepot</td><td>0.0514399670064449</td></tr><tr><td>3</td><td>969</td><td>cup</td><td>0.000874492223374546</td></tr><tr><td>4</td><td>551</td><td>espresso maker</td><td>0.000661507365293801</td></tr><tr><td>5</td><td>726</td><td>pitcher</td><td>0.000382225960493088</td></tr></table></td></tr><tr><td><tt>tiger</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg"><img alt="tiger" src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Bengal_tiger_%28Panthera_tigris_tigris%29_female_3_crop.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>293</td><td>tiger</td><td>0.648495197296143</td></tr><tr><td>2</td><td>283</td><td>tiger cat</td><td>0.181235983967781</td></tr><tr><td>3</td><td>341</td><td>zebra</td><td>0.0170289929956198</td></tr><tr><td>4</td><td>291</td><td>jaguar</td><td>0.00196429016068578</td></tr><tr><td>5</td><td>353</td><td>impala</td><td>0.00144677574280649</td></tr></table></td></tr><tr><td><tt>turtle</tt></td><td><a href="https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg"><img alt="turtle" src="https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg" width="50%" /></a></td><td><table><tr><th>Rank</th><th>Label No</th><th>Label</th><th>Prob</th></tr><tr><td>1</td><td>35</td><td>leatherback turtle</td><td>0.535791635513306</td></tr><tr><td>2</td><td>347</td><td>water buffalo</td><td>0.0588447786867619</td></tr><tr><td>3</td><td>148</td><td>grey whale</td><td>0.0354104563593864</td></tr><tr><td>4</td><td>345</td><td>hippopotamus</td><td>0.0267104711383581</td></tr><tr><td>5</td><td>34</td><td>loggerhead</td><td>0.0217578746378422</td></tr></table></td></tr></table></p></span>
 
 =end html
 
@@ -994,13 +1165,33 @@ Then select the top 5 of those and find their class labels.
   p $p_approx_batched;
   say "All probabilities sum up to approximately 1" if $p_approx_batched->all->sclr;
 
+
+B<STREAM (STDOUT)>:
+
+  All probabilities sum up to approximately 1
+
+B<STREAM (STDERR)>:
+
 =begin html
 
-<tt><span style='font-family: fixedsys, lucida console, terminal, vga, monospace; line-height: 1; letter-spacing: 0; font-size: 12pt'><span style='color: gray; background: black; '>1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style='color: black; background: black; '><br></span></span></tt>
+<span style="display:inline-block;margin-left:1em;"><pre style="display: block"><code><span style="color: #cc66cc;">PDL</span><span style="color: #33ccff;"> {</span><span style="">
+    </span><span style="color: #6666cc;">Data    </span><span style=""> : </span><span style="color: #33ccff;">[</span><span style="color: #ff6633;">1 1 1 1 1 1 1 1 1 1 1 1</span><span style="color: #33ccff;">]</span><span style="">
+    </span><span style="color: #6666cc;">Type    </span><span style=""> : </span><span style="color: #cc66cc;">double</span><span style="">
+    </span><span style="color: #6666cc;">Shape   </span><span style=""> : </span><span style="color: #33ccff;">[</span><span style="color: #9999cc;">12</span><span style="color: #33ccff;">]</span><span style="">
+    </span><span style="color: #6666cc;">Nelem   </span><span style=""> : </span><span style="color: #dd6;">12</span><span style="">
+    </span><span style="color: #6666cc;">Min     </span><span style=""> : </span><span style="color: #f66;">1</span><span style="">
+    </span><span style="color: #6666cc;">Max     </span><span style=""> : </span><span style="color: #99f;">1</span><span style="">
+    </span><span style="color: #6666cc;">Badflag </span><span style=""> : </span><span style="color: #2c2;">No</span><span style="">
+    </span><span style="color: #6666cc;">Has Bads</span><span style=""> : </span><span style="color: #2c2;">No</span><span style="">
+</span><span style="color: #33ccff;">}</span><span style="">
+</span></code></pre></span>
 
 =end html
 
 
+B<RESULT>:
+
+  1
 
 
 =head1 DEBUGGING
@@ -1014,8 +1205,6 @@ The following images can be used to test the C<load_image_to_pdl> function.
       'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Solid_blue.svg/480px-Solid_blue.svg.png',
   );
   undef;
-
-
 
 
 
