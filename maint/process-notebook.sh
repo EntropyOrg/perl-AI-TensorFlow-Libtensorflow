@@ -57,7 +57,7 @@ perl -pi -E 's,\QL<CPANFILE|#CPANFILE>\E,L<CPANFILE|/CPANFILE>,g' $DST
 ##
 ##     requires '...';
 ##     requires '...';
-scan-perl-prereqs-nqlite --cpanfile $DST | perl -M5';print qq|=head1 CPANFILE\n\n\n|' -plE '$_ = q|  | . $_;' | sponge -a $DST ;
+scan-perl-prereqs-nqlite --cpanfile $DST | perl -M5';print qq|=head1 CPANFILE\n\n|' -plE '$_ = q|  | . $_;' | sponge -a $DST ;
 
 ## Check output (if on TTY)
 if [ -t 0 ]; then
