@@ -3,4 +3,4 @@ AI-TensorFlow-Libtensorflow-*
 .ipynb_checkpoints
 ImageNetLabels.txt
 *imagenet_mobilenet_*_classification*.tar.gz
-*imagenet_mobilenet_*_classification*/
+*imagenet_mobilenet_*_classification*
