@@ -2,7 +2,7 @@
 
 ## Requirements:
 ##
-## perl, python, sponge, grep
+## perl, python, sponge, grep, jq
 ##
 ## Perl deps:
 ##
@@ -21,15 +21,14 @@ if grep -C5 -P '\s+\\n' $SRC -m 2; then
 	exit 1
 fi
 
-### Run the notebook
+## Run the notebook
 jupyter nbconvert --execute --inplace $SRC
 
-
-jupyter nbconvert \
-	--ClearMetadataPreprocessor.enabled=True \
-	--ClearMetadataPreprocessor.preserve_cell_metadata_mask='[("tags","kernelspec","language_info","scrolled")]' \
-	--inplace --log-level=ERROR $SRC
-# --ClearOutputPreprocessor.enabled=True
+## Clean up metadata (changed by the previous nbconvert --execute)
+## See more at <https://timstaley.co.uk/posts/making-git-and-jupyter-notebooks-play-nice/>
+jq --indent 1     '
+    del(.cells[].metadata | .execution)
+    ' $SRC | sponge $SRC
 
 ### Notice about generated file
 echo "## DO NOT EDIT. Generated from $SRC using $0.\n" | sponge -a $DST
