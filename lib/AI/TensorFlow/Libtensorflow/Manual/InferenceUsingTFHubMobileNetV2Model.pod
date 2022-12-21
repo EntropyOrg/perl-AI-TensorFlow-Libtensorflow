@@ -1,7 +1,11 @@
+# PODNAME: InferenceUsingTFHubMobileNetV2Model
+
+
 ## DO NOT EDIT. Generated from notebook/InferenceUsingTFHubMobileNetV2Model.ipynb using ./maint/process-notebook.sh.
 
 use strict;
 use warnings;
+use utf8;
 use constant IN_IPERL => !! $ENV{PERL_IPERL_RUNNING};
 no if IN_IPERL, warnings => 'redefine'; # fewer messages when re-running cells
 
@@ -412,11 +416,11 @@ my @solid_channel_uris = (
 undef;
 
 
-__END__=pod
+__END__
+=pod
+
 
 =encoding UTF-8
-
-
 
 =head1 NAME
 
@@ -433,7 +437,7 @@ Please look at the L<SECURITY note|https://github.com/tensorflow/models/blob/mas
 
 =head1 COLOPHON
 
-The following document is either a POD file which can additionally be run as a Perl script or a Jupyter Notebook which can be run in L<IPerl|https://p3rl.org/Devel::IPerl> (viewable online at L<nbviewer|https://nbviewer.org/>). If you are reading this as POD, there should be a generated list of Perl dependencies in the L<CPANFILE|#CPANFILE> section.
+The following document is either a POD file which can additionally be run as a Perl script or a Jupyter Notebook which can be run in L<IPerl|https://p3rl.org/Devel::IPerl> (viewable online at L<nbviewer|https://nbviewer.org/>). If you are reading this as POD, there should be a generated list of Perl dependencies in the L<CPANFILE|/CPANFILE> section.
 
 If you are running the code, you may optionally install the L<C<tensorflow> Python package|https://www.tensorflow.org/install/pip> in order to access the C<saved_model_cli> command, but this is only used for informational purposes.
 
@@ -449,6 +453,7 @@ First we need to load the C<AI::TensorFlow::Libtensorflow> library and more help
 
   use strict;
   use warnings;
+  use utf8;
   use constant IN_IPERL => !! $ENV{PERL_IPERL_RUNNING};
   no if IN_IPERL, warnings => 'redefine'; # fewer messages when re-running cells
   
@@ -719,9 +724,9 @@ Now we can get the following testing images from Wikimedia.
       "turtle" => "https://upload.wikimedia.org/wikipedia/commons/8/80/Turtle_golfina_escobilla_oaxaca_mexico_claudio_giovenzana_2010.jpg",
       #by Claudio Giovenzana, CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0>, via Wikimedia Commons
       "flamingo" => "https://upload.wikimedia.org/wikipedia/commons/b/b8/James_Flamingos_MC.jpg",
-      #by Christian Mehlführer, User:Chmehl, CC BY 3.0 <https://creativecommons.org/licenses/by/3.0>, via Wikimedia Commons
+      #by Christian MehlfÃ¼hrer, User:Chmehl, CC BY 3.0 <https://creativecommons.org/licenses/by/3.0>, via Wikimedia Commons
       "piano" => "https://upload.wikimedia.org/wikipedia/commons/d/da/Steinway_%26_Sons_upright_piano%2C_model_K-132%2C_manufactured_at_Steinway%27s_factory_in_Hamburg%2C_Germany.png",
-      #by "Photo: © Copyright Steinway & Sons", CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0>, via Wikimedia Commons
+      #by "Photo: Â© Copyright Steinway & Sons", CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0>, via Wikimedia Commons
       "honeycomb" => "https://upload.wikimedia.org/wikipedia/commons/f/f7/Honey_comb.jpg",
       #by Merdal, CC BY-SA 3.0 <http://creativecommons.org/licenses/by-sa/3.0/>, via Wikimedia Commons
       "teapot" => "https://upload.wikimedia.org/wikipedia/commons/4/44/Black_tea_pot_cropped.jpg",
@@ -1019,7 +1024,6 @@ The following images can be used to test the C<load_image_to_pdl> function.
 =head1 CPANFILE
 
 
-
   requires 'AI::TensorFlow::Libtensorflow';
   requires 'AI::TensorFlow::Libtensorflow::DataType';
   requires 'Archive::Extract';
@@ -1042,5 +1046,6 @@ The following images can be used to test the C<load_image_to_pdl> function.
   requires 'feature';
   requires 'lib::projectroot';
   requires 'strict';
+  requires 'utf8';
   requires 'warnings';
   

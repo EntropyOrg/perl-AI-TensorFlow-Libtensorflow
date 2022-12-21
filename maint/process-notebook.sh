@@ -31,6 +31,7 @@ jq --indent 1     '
     ' $SRC | sponge $SRC
 
 ### Notice about generated file
+echo "# PODNAME: $(basename $SRC .ipynb)\n\n" | sponge -a $DST
 echo "## DO NOT EDIT. Generated from $SRC using $0.\n" | sponge -a $DST
 
 ## Add code to $DST
@@ -41,12 +42,13 @@ jupyter nbconvert $SRC --to script --stdout | sponge -a $DST;
 ##
 ##   =pod
 ##
-##   =encoding UTF-8
-##
-perl -E 'say qq|__END__=pod\n\n=encoding UTF-8\n\n|' | sponge -a $DST;
+perl -E 'say qq|__END__\n=pod\n\n|' | sponge -a $DST;
 
 ## Add POD
 iperl nbconvert.iperl $SRC  | sponge -a $DST;
+
+## Edit to local section link (Markdown::Pod does not yet recognise this).
+perl -pi -E 's,\QL<CPANFILE|#CPANFILE>\E,L<CPANFILE|/CPANFILE>,g' $DST
 
 ## Add
 ##   =head1 CPANFILE
