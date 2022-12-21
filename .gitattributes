@@ -1,0 +1,2 @@
+README.pod  -diff linguist-generated=true
+lib/AI/TensorFlow/Libtensorflow/Manual/InferenceUsingTFHubMobileNetV2Model.pod  -diff linguist-generated=true
