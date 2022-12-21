@@ -437,7 +437,7 @@ Please look at the L<SECURITY note|https://github.com/tensorflow/models/blob/mas
 
 =head1 COLOPHON
 
-The following document is either a POD file which can additionally be run as a Perl script or a Jupyter Notebook which can be run in L<IPerl|https://p3rl.org/Devel::IPerl> (viewable online at L<nbviewer|https://nbviewer.org/>). If you are reading this as POD, there should be a generated list of Perl dependencies in the L<CPANFILE|/CPANFILE> section.
+The following document is either a POD file which can additionally be run as a Perl script or a Jupyter Notebook which can be run in L<IPerl|https://p3rl.org/Devel::IPerl> (viewable online at L<nbviewer|https://nbviewer.org/github/EntropyOrg/perl-AI-TensorFlow-Libtensorflow/blob/master/notebook/InferenceUsingTFHubMobileNetV2Model.ipynb>). If you are reading this as POD, there should be a generated list of Perl dependencies in the L<CPANFILE|/CPANFILE> section.
 
 If you are running the code, you may optionally install the L<C<tensorflow> Python package|https://www.tensorflow.org/install/pip> in order to access the C<saved_model_cli> command, but this is only used for informational purposes.
 
@@ -653,15 +653,15 @@ Now we can load the model from that folder with the tag set C<[ 'serve' ]> by us
 
 B<STREAM (STDERR)>:
 
-  2022-12-21 14:14:28.779602: I tensorflow/cc/saved_model/reader.cc:45] Reading SavedModel from: google_imagenet_mobilenet_v2_100_224_classification_5
-  2022-12-21 14:14:28.789629: I tensorflow/cc/saved_model/reader.cc:89] Reading meta graph with tags { serve }
-  2022-12-21 14:14:28.789669: I tensorflow/cc/saved_model/reader.cc:130] Reading SavedModel debug info (if present) from: google_imagenet_mobilenet_v2_100_224_classification_5
-  2022-12-21 14:14:28.789737: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F AVX512_VNNI FMA
+  2022-12-21 15:44:50.158520: I tensorflow/cc/saved_model/reader.cc:45] Reading SavedModel from: google_imagenet_mobilenet_v2_100_224_classification_5
+  2022-12-21 15:44:50.165765: I tensorflow/cc/saved_model/reader.cc:89] Reading meta graph with tags { serve }
+  2022-12-21 15:44:50.165804: I tensorflow/cc/saved_model/reader.cc:130] Reading SavedModel debug info (if present) from: google_imagenet_mobilenet_v2_100_224_classification_5
+  2022-12-21 15:44:50.166232: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F AVX512_VNNI FMA
   To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-  2022-12-21 14:14:28.814056: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:357] MLIR V1 optimization pass is not enabled
-  2022-12-21 14:14:28.825182: I tensorflow/cc/saved_model/loader.cc:229] Restoring SavedModel bundle.
-  2022-12-21 14:14:29.168542: I tensorflow/cc/saved_model/loader.cc:213] Running initialization op on SavedModel bundle at path: google_imagenet_mobilenet_v2_100_224_classification_5
-  2022-12-21 14:14:29.255519: I tensorflow/cc/saved_model/loader.cc:305] SavedModel load for tags { serve }; Status: success: OK. Took 475920 microseconds.
+  2022-12-21 15:44:50.193676: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:357] MLIR V1 optimization pass is not enabled
+  2022-12-21 15:44:50.202488: I tensorflow/cc/saved_model/loader.cc:229] Restoring SavedModel bundle.
+  2022-12-21 15:44:50.523651: I tensorflow/cc/saved_model/loader.cc:213] Running initialization op on SavedModel bundle at path: google_imagenet_mobilenet_v2_100_224_classification_5
+  2022-12-21 15:44:50.593023: I tensorflow/cc/saved_model/loader.cc:305] SavedModel load for tags { serve }; Status: success: OK. Took 434509 microseconds.
 
 
 We can examine what computations are contained in the graph in terms of the names of the inputs and outputs of an operation found in the graph by running C<saved_model_cli>.
