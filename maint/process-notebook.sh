@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 ## Requirements:
 ##
 ## perl, python, sponge, grep, jq
@@ -14,7 +16,7 @@
 
 SRC="notebook/InferenceUsingTFHubMobileNetV2Model.ipynb";
 DST="lib/AI/TensorFlow/Libtensorflow/Manual/InferenceUsingTFHubMobileNetV2Model.pod";
-rm $DST;
+rm $DST || true;
 
 if grep -C5 -P '\s+\\n' $SRC -m 2; then
 	echo "Notebook $SRC has whitespace"
