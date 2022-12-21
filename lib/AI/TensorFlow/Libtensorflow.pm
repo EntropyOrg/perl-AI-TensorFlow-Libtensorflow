@@ -18,6 +18,7 @@ use AI::TensorFlow::Libtensorflow::Output;
 use AI::TensorFlow::Libtensorflow::Input;
 
 use AI::TensorFlow::Libtensorflow::ApiDefMap;
+use AI::TensorFlow::Libtensorflow::TFLibrary;
 
 use AI::TensorFlow::Libtensorflow::ImportGraphDefOptions;
 use AI::TensorFlow::Libtensorflow::ImportGraphDefResults;
@@ -28,6 +29,9 @@ use AI::TensorFlow::Libtensorflow::OperationDescription;
 use AI::TensorFlow::Libtensorflow::SessionOptions;
 use AI::TensorFlow::Libtensorflow::Session;
 use AI::TensorFlow::Libtensorflow::DeviceList;
+
+use AI::TensorFlow::Libtensorflow::Eager::ContextOptions;
+use AI::TensorFlow::Libtensorflow::Eager::Context;
 
 use FFI::C;
 
@@ -54,23 +58,6 @@ Version number for the C<libtensorflow> library.
 
 =cut
 $ffi->attach( 'Version' => [], 'string' );#}}}
-
-=classmethod GetAllOpList
-
-=for :signature
-GetAllOpList()
-
-  my $buf = Libtensorflow->GetAllOpList();
-  cmp_ok $buf->length, '>', 0, 'Got OpList buffer';
-
-=for :returns
-= TFBuffer
-Contains a serialized C<OpList> proto for ops registered in this address space.
-
-=tf_capi TF_GetAllOpList
-
-=cut
-$ffi->attach( 'GetAllOpList' => [], 'TF_Buffer' );
 
 1;
 

@@ -1,3 +1,4 @@
+      - Add `::TFLibrary` class. Move `GetAllOpList()` method there.
 0.0.3 2022-12-15 10:46:52-0500
 
   - Features

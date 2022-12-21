@@ -34,31 +34,6 @@ Version number for the C<libtensorflow> library.
 
 B<C API>: L<< C<TF_Version>|AI::TensorFlow::Libtensorflow::Manual::CAPI/TF_Version >>
 
-=head2 GetAllOpList
-
-=over 2
-
-C<<<
-GetAllOpList()
->>>
-
-=back
-
-  my $buf = Libtensorflow->GetAllOpList();
-  cmp_ok $buf->length, '>', 0, 'Got OpList buffer';
-
-B<Returns>
-
-=over 4
-
-=item L<TFBuffer|AI::TensorFlow::Libtensorflow::Lib::Types/TFBuffer>
-
-Contains a serialized C<OpList> proto for ops registered in this address space.
-
-=back
-
-B<C API>: L<< C<TF_GetAllOpList>|AI::TensorFlow::Libtensorflow::Manual::CAPI/TF_GetAllOpList >>
-
 =head1 AUTHOR
 
 Zakariyya Mughal <zmughal@cpan.org>
