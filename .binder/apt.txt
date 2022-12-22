@@ -1,0 +1,7 @@
+perl
+cpanminus
+libffi-dev
+libzmq5
+libjpeg-dev
+libpng-dev
+libgsl-dev
