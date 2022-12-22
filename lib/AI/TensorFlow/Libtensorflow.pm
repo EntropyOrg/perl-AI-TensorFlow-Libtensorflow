@@ -60,6 +60,9 @@ Version number for the C<libtensorflow> library.
 $ffi->attach( 'Version' => [], 'string' );#}}}
 
 1;
+__END__
+
+=pod
 
 =head1 SYNOPSIS
 
@@ -71,3 +74,11 @@ The C<libtensorflow> library provides low-level C bindings
 for TensorFlow with a stable ABI.
 
 =cut
+
+=begin :badges
+
+=for html
+<a href="https://mybinder.org/v2/gh/EntropyOrg/perl-AI-TensorFlow-Libtensorflow/master"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a>
+
+
+=end :badges

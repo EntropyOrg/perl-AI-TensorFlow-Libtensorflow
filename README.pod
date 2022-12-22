@@ -6,6 +6,8 @@
 
 AI::TensorFlow::Libtensorflow - Bindings for Libtensorflow deep learning library
 
+=for html <a href="https://mybinder.org/v2/gh/EntropyOrg/perl-AI-TensorFlow-Libtensorflow/master"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a>
+
 =head1 SYNOPSIS
 
   use aliased 'AI::TensorFlow::Libtensorflow' => 'Libtensorflow';
