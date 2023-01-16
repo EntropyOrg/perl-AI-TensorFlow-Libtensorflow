@@ -13,6 +13,8 @@ my @modules = qw/
 	AI::TensorFlow::Libtensorflow::DataType
 	AI::TensorFlow::Libtensorflow::Graph
 	AI::TensorFlow::Libtensorflow::Tensor
+
+	AI::TensorFlow::Libtensorflow::Manual::Quickstart
 /;
 
 plan tests => 0 + @modules;

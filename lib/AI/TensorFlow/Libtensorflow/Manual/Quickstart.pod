@@ -1,0 +1,57 @@
+# ABSTRACT: Start here for an overview
+# PODNAME: Quickstart
+=pod
+
+=head1 DESCRIPTION
+
+This provides a tour of C<libtensorflow> to help get started with using the
+library.
+
+=head1 CONVENTIONS
+
+The library uses UpperCamelCase naming convention for method names in order to
+match the underlying C library (for compatibility with future API changes) and
+to make translating code from C easier as this is a low-level API.
+
+As such, constructors for objects that correspond to C<libtensorflow> data
+structures are typically called C<New>. For example, a new
+L<AI::TensorFlow::Libtensorflow::Status> object can be created as follows
+
+  use AI::TensorFlow::Libtensorflow::Status;
+  my $status = AI::TensorFlow::Libtensorflow::Status->New;
+
+  ok defined $status, 'Created new Status';
+
+These C<libtensorflow> data structures use L<destructors|perlobj/Destructors> where necessary.
+
+=head1 TUTORIALS
+
+=begin :list
+
+* L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::InferenceUsingTFHubMobileNetV2Model>
+
+=end :list
+
+=head1 OBJECT TYPES
+
+=begin :list
+
+= L<AI::TensorFlow::Libtensorflow::Status>
+Used for error-handling. Many methods take this as the final argument which is
+then checked after the method call to ensure that it completed successfully.
+
+= L<AI::TensorFlow::Libtensorflow::Session>
+
+= L<AI::TensorFlow::Libtensorflow::SessionOptions>
+
+= L<AI::TensorFlow::Libtensorflow::Graph>
+
+= L<AI::TensorFlow::Libtensorflow::OperationDescription>
+
+= L<AI::TensorFlow::Libtensorflow::Operation>
+
+= L<AI::TensorFlow::Libtensorflow::Tensor>
+
+=end :list
+
+=cut
