@@ -1,4 +1,5 @@
 # ABSTRACT: Start here for an overview of the library
+# PODNAME: AI::TensorFlow::Libtensorflow::Manual::Quickstart
 =pod
 
 =head1 DESCRIPTION

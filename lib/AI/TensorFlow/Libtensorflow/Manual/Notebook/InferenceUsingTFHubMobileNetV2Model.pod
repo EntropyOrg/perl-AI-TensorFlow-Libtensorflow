@@ -1,3 +1,6 @@
+# PODNAME: AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model
+
+
 ## DO NOT EDIT. Generated from notebook/InferenceUsingTFHubMobileNetV2Model.ipynb using ./maint/process-notebook.sh.
 
 use strict;

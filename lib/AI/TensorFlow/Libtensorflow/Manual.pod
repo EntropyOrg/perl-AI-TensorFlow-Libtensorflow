@@ -1,4 +1,5 @@
 # ABSTRACT: Index of manual
+# PODNAME: AI::TensorFlow::Libtensorflow::Manual
 
 =head1 TABLE OF CONTENTS
 
