@@ -15,7 +15,7 @@ set -eu
 ## $ pip3 install jupyter
 
 SRC="notebook/InferenceUsingTFHubMobileNetV2Model.ipynb";
-DST="lib/AI/TensorFlow/Libtensorflow/Manual/InferenceUsingTFHubMobileNetV2Model.pod";
+DST="lib/AI/TensorFlow/Libtensorflow/Manual/Notebook/InferenceUsingTFHubMobileNetV2Model.pod";
 rm $DST || true;
 
 if grep -C5 -P '\s+\\n' $SRC -m 2; then

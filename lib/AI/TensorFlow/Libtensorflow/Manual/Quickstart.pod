@@ -27,7 +27,7 @@ These C<libtensorflow> data structures use L<destructors|perlobj/Destructors> wh
 
 =begin :list
 
-* L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::InferenceUsingTFHubMobileNetV2Model>
+* L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model>
 
 =end :list
 
