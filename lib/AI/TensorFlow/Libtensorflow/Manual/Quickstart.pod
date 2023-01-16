@@ -1,5 +1,4 @@
 # ABSTRACT: Start here for an overview
-# PODNAME: Quickstart
 =pod
 
 =head1 DESCRIPTION

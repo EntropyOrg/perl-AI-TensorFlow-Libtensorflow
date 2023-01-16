@@ -1,0 +1,16 @@
+# ABSTRACT: Index of manual
+
+=head1 TABLE OF CONTENTS
+
+=begin :list
+
+= L<AI::TensorFlow::Libtensorflow::Manual::Quickstart>
+Start here to get an overview of the library.
+
+= L<AI::TensorFlow::Libtensorflow::Manual::CAPI>
+Appendix of all C API functions with their signatures. These are linked from
+the documentation of individual methods.
+
+=end :list
+
+=cut

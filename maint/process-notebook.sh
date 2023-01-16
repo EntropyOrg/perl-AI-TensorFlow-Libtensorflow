@@ -33,7 +33,6 @@ jq --indent 1     '
     ' $SRC | sponge $SRC
 
 ### Notice about generated file
-echo "# PODNAME: $(basename $SRC .ipynb)\n\n" | sponge -a $DST
 echo "## DO NOT EDIT. Generated from $SRC using $0.\n" | sponge -a $DST
 
 ## Add code to $DST
