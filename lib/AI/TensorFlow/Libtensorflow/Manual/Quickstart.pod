@@ -1,4 +1,4 @@
-# ABSTRACT: Start here for an overview
+# ABSTRACT: Start here for an overview of the library
 =pod
 
 =head1 DESCRIPTION
@@ -23,14 +23,6 @@ L<AI::TensorFlow::Libtensorflow::Status> object can be created as follows
 
 These C<libtensorflow> data structures use L<destructors|perlobj/Destructors> where necessary.
 
-=head1 TUTORIALS
-
-=begin :list
-
-* L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model>
-
-=end :list
-
 =head1 OBJECT TYPES
 
 =begin :list
@@ -39,17 +31,40 @@ These C<libtensorflow> data structures use L<destructors|perlobj/Destructors> wh
 Used for error-handling. Many methods take this as the final argument which is
 then checked after the method call to ensure that it completed successfully.
 
-= L<AI::TensorFlow::Libtensorflow::Session>
+= L<AI::TensorFlow::Libtensorflow::Tensor>, L<AI::TensorFlow::Libtensorflow::DataType>
+A C<TFTensor> is a multi-dimensional data structure that stores the data for inputs and outputs.
+It has a single type which is defined by L<AI::TensorFlow::Libtensorflow::DataType>.
+See L<Introduction to Tensors|https://www.tensorflow.org/guide/tensor> for more.
 
-= L<AI::TensorFlow::Libtensorflow::SessionOptions>
+= L<AI::TensorFlow::Libtensorflow::OperationDescription>, L<AI::TensorFlow::Libtensorflow::Operation>
+An operation is a function that has inputs and outputs. It has a name (C<MyAdder>) and type (C<Add>).
+L<AI::TensorFlow::Libtensorflow::OperationDescription> is used to build an
+operation that will be added to a graph of other operations which can set the
+operations inputs and get the operations outputs. These inputs and outputs have
+types and dimension specifications so that the operations only accept/emit
+certain C<TFTensor>s.
 
 = L<AI::TensorFlow::Libtensorflow::Graph>
+A set of operations with inputs and outputs linked together. This computation
+can be serialized along with parameters as part of
+a L<SavedModel|https://www.tensorflow.org/guide/saved_model>.
 
-= L<AI::TensorFlow::Libtensorflow::OperationDescription>
+= L<AI::TensorFlow::Libtensorflow::Session>, L<AI::TensorFlow::Libtensorflow::SessionOptions>
+A session drives the execution of a L<AI::TensorFlow::Libtensorflow::Graph>.
+Specifics of how the session executes can be set via L<AI::TensorFlow::Libtensorflow::SessionOptions>.
 
-= L<AI::TensorFlow::Libtensorflow::Operation>
+=end :list
 
-= L<AI::TensorFlow::Libtensorflow::Tensor>
+=head1 TUTORIALS
+
+The object types in L</OBJECT TYPES> are used in the following tutorials:
+
+=begin :list
+
+= L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model>
+This tutorial demonstrates using a pre-trained SavedModel and creating a L<AI::TensorFlow::Libtensorflow::Session> with the
+L<LoadFromSavedModel|AI::TensorFlow::Libtensorflow::Session/LoadFromSavedModel>
+method. It also demonstrates how to prepare image data for use as an input C<TFTensor>.
 
 =end :list
 
