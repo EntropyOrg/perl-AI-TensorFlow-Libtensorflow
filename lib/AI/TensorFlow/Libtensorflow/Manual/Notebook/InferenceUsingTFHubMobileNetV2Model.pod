@@ -1,4 +1,4 @@
-# PODNAME: InferenceUsingTFHubMobileNetV2Model
+# PODNAME: AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model
 
 
 ## DO NOT EDIT. Generated from notebook/InferenceUsingTFHubMobileNetV2Model.ipynb using ./maint/process-notebook.sh.
@@ -653,15 +653,15 @@ Now we can load the model from that folder with the tag set C<[ 'serve' ]> by us
 
 B<STREAM (STDERR)>:
 
-  2022-12-21 15:44:50.158520: I tensorflow/cc/saved_model/reader.cc:45] Reading SavedModel from: google_imagenet_mobilenet_v2_100_224_classification_5
-  2022-12-21 15:44:50.165765: I tensorflow/cc/saved_model/reader.cc:89] Reading meta graph with tags { serve }
-  2022-12-21 15:44:50.165804: I tensorflow/cc/saved_model/reader.cc:130] Reading SavedModel debug info (if present) from: google_imagenet_mobilenet_v2_100_224_classification_5
-  2022-12-21 15:44:50.166232: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F AVX512_VNNI FMA
+  2023-01-16 11:53:54.360181: I tensorflow/cc/saved_model/reader.cc:45] Reading SavedModel from: google_imagenet_mobilenet_v2_100_224_classification_5
+  2023-01-16 11:53:54.367568: I tensorflow/cc/saved_model/reader.cc:89] Reading meta graph with tags { serve }
+  2023-01-16 11:53:54.367605: I tensorflow/cc/saved_model/reader.cc:130] Reading SavedModel debug info (if present) from: google_imagenet_mobilenet_v2_100_224_classification_5
+  2023-01-16 11:53:54.368638: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F AVX512_VNNI FMA
   To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-  2022-12-21 15:44:50.193676: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:357] MLIR V1 optimization pass is not enabled
-  2022-12-21 15:44:50.202488: I tensorflow/cc/saved_model/loader.cc:229] Restoring SavedModel bundle.
-  2022-12-21 15:44:50.523651: I tensorflow/cc/saved_model/loader.cc:213] Running initialization op on SavedModel bundle at path: google_imagenet_mobilenet_v2_100_224_classification_5
-  2022-12-21 15:44:50.593023: I tensorflow/cc/saved_model/loader.cc:305] SavedModel load for tags { serve }; Status: success: OK. Took 434509 microseconds.
+  2023-01-16 11:53:54.396502: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:357] MLIR V1 optimization pass is not enabled
+  2023-01-16 11:53:54.410322: I tensorflow/cc/saved_model/loader.cc:229] Restoring SavedModel bundle.
+  2023-01-16 11:53:54.765941: I tensorflow/cc/saved_model/loader.cc:213] Running initialization op on SavedModel bundle at path: google_imagenet_mobilenet_v2_100_224_classification_5
+  2023-01-16 11:53:54.846261: I tensorflow/cc/saved_model/loader.cc:305] SavedModel load for tags { serve }; Status: success: OK. Took 485725 microseconds.
 
 
 We can examine what computations are contained in the graph in terms of the names of the inputs and outputs of an operation found in the graph by running C<saved_model_cli>.

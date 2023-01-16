@@ -15,7 +15,8 @@ set -eu
 ## $ pip3 install jupyter
 
 SRC="notebook/InferenceUsingTFHubMobileNetV2Model.ipynb";
-DST="lib/AI/TensorFlow/Libtensorflow/Manual/InferenceUsingTFHubMobileNetV2Model.pod";
+DST="lib/AI/TensorFlow/Libtensorflow/Manual/Notebook/InferenceUsingTFHubMobileNetV2Model.pod";
+DOC_PREFIX="AI::TensorFlow::Libtensorflow::Manual::Notebook"
 rm $DST || true;
 
 if grep -C5 -P '\s+\\n' $SRC -m 2; then
@@ -33,7 +34,7 @@ jq --indent 1     '
     ' $SRC | sponge $SRC
 
 ### Notice about generated file
-echo "# PODNAME: $(basename $SRC .ipynb)\n\n" | sponge -a $DST
+echo "# PODNAME: $DOC_PREFIX::$(basename $SRC .ipynb)\n\n" | sponge -a $DST
 echo "## DO NOT EDIT. Generated from $SRC using $0.\n" | sponge -a $DST
 
 ## Add code to $DST
