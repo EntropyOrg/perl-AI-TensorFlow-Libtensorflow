@@ -16,7 +16,7 @@ cpm install -g -w $CPM_WORKERS $ALL_MODULES  \
 	|| cpanm -nq $ALL_MODULES
 
 cpm install -g -w $CPM_WORKERS --cpanfile=<( \
-	awk '/=head1 CPANFILE/,EOF {print}' < lib/AI/TensorFlow/Libtensorflow/Manual/InferenceUsingTFHubMobileNetV2Model.pod \
+	awk '/=head1 CPANFILE/,EOF {print}' < lib/AI/TensorFlow/Libtensorflow/Manual/Notebook/InferenceUsingTFHubMobileNetV2Model.pod \
 	| awk 'NR>1' \
 	)
 
