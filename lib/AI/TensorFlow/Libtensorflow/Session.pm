@@ -85,25 +85,30 @@ $ffi->attach( [ 'LoadSessionFromSavedModel' => 'LoadFromSavedModel' ] => [
 
 =method Run
 
-TODO
+Run the graph associated with the session starting with the supplied
+C<$inputs> with corresponding values in C<$input_values>.
+
+The values at the outputs given by C<$outputs> will be placed in
+C<$output_values>.
 
 =for :param
 = Maybe[TFBuffer] $run_options
-TODO
+Optional C<TFBuffer> containing serialized representation of a `RunOptions` protocol buffer.
 = ArrayRef[TFOutput] $inputs
-TODO
+Inputs to set.
 = ArrayRef[TFTensor] $input_values
-TODO
+Values to assign to the inputs given by C<$inputs>.
 = ArrayRef[TFOutput] $outputs
-TODO
-= ArrayRef[TFTensor] $output
-TODO
+Outputs to get.
+= ArrayRef[TFTensor] $output_values
+Reference to where the output values for C<$outputs> will be placed.
 = ArrayRef[TFOperation] $target_opers
 TODO
 = Maybe[TFBuffer] $run_metadata
-TODO
+Optional empty C<TFBuffer> which will be updated to contain a serialized
+representation of a `RunMetadata` protocol buffer.
 = TFStatus $status
-TODO
+Status
 
 =tf_capi TF_SessionRun
 
