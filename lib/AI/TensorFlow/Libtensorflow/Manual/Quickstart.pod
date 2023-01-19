@@ -34,16 +34,19 @@ then checked after the method call to ensure that it completed successfully.
 
 = L<AI::TensorFlow::Libtensorflow::Tensor>, L<AI::TensorFlow::Libtensorflow::DataType>
 A C<TFTensor> is a multi-dimensional data structure that stores the data for inputs and outputs.
-It has a single type which is defined by L<AI::TensorFlow::Libtensorflow::DataType>.
+Each element has the same data type
+which is defined by L<AI::TensorFlow::Libtensorflow::DataType>
+thus a C<TFTensor> is considered to be "homogeneous data structure".
 See L<Introduction to Tensors|https://www.tensorflow.org/guide/tensor> for more.
 
 = L<AI::TensorFlow::Libtensorflow::OperationDescription>, L<AI::TensorFlow::Libtensorflow::Operation>
-An operation is a function that has inputs and outputs. It has a name (C<MyAdder>) and type (C<Add>).
+An operation is a function that has inputs and outputs. It has a user-defined
+name (such as C<MyAdder>) and library-defined type (such as C<AddN>).
 L<AI::TensorFlow::Libtensorflow::OperationDescription> is used to build an
-operation that will be added to a graph of other operations which can set the
-operations inputs and get the operations outputs. These inputs and outputs have
-types and dimension specifications so that the operations only accept/emit
-certain C<TFTensor>s.
+operation that will be added to a graph of other operations where those other
+operations can set the operation's inputs and get the operation's outputs.
+These inputs and outputs have types and dimension specifications, so that the
+operations only accept and emit certain C<TFTensor>s.
 
 = L<AI::TensorFlow::Libtensorflow::Graph>
 A set of operations with inputs and outputs linked together. This computation
@@ -62,10 +65,18 @@ The object types in L</OBJECT TYPES> are used in the following tutorials:
 
 =begin :list
 
-= L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model>
+= L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model>: image classification tutorial
 This tutorial demonstrates using a pre-trained SavedModel and creating a L<AI::TensorFlow::Libtensorflow::Session> with the
 L<LoadFromSavedModel|AI::TensorFlow::Libtensorflow::Session/LoadFromSavedModel>
 method. It also demonstrates how to prepare image data for use as an input C<TFTensor>.
+
+=end :list
+
+=head1 SEE ALSO
+
+=begin :list
+
+= L<TensorFlow|https://www.tensorflow.org/> home page
 
 =end :list
 

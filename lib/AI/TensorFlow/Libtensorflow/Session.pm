@@ -16,18 +16,18 @@ $ffi->mangler(AI::TensorFlow::Libtensorflow::Lib->mangler_default);
 
 =construct New
 
-TODO
-
 =for :param
 = TFGraph $graph
-TODO
+Graph to associate with the session.
 = TFSessionOptions $opt
-TODO
+Session options.
 = TFStatus $status
+Status.
 
 =for :returns
-= TFSession
-TODO
+= Maybe[TFSession]
+A new execution session with the associated graph, or C<undef> on
+error.
 
 =tf_capi TF_NewSession
 
