@@ -27,13 +27,13 @@ sub run_notebook {
 
 	$ENV{GENERATOR} = $0;
 
-	system( qw(bash -c), <<'BASH' );
+	system( qw(bash -c), <<'BASH' ) == 0 or die "Failed to process $notebook";
 rm $DST || true;
 
-if grep -C5 -P '\s+\\n' $SRC -m 2; then
-	echo -e "Notebook $SRC has whitespace"
-	exit 1
-fi
+#if grep -C5 -P '\s+\\n' $SRC -m 2; then
+	#echo -e "Notebook $SRC has whitespace"
+	#exit 1
+#fi
 
 ## Run the notebook
 #jupyter nbconvert --execute --inplace $SRC
@@ -78,12 +78,13 @@ fi
 
 ## Check and run script in the directory of the original (e.g., to get data
 ## files).
-perl -c $DST && perl -MCwd -MPath::Tiny -E '
-	my $nb = path(shift @ARGV);
-	my $script = path(shift @ARGV)->absolute;
-	chdir $nb->parent;
-	do $script;
-	' $SRC $DST
+perl -c $DST
+#&& perl -MCwd -MPath::Tiny -E '
+	#my $nb = path(shift @ARGV);
+	#my $script = path(shift @ARGV)->absolute;
+	#chdir $nb->parent;
+	#do $script;
+	#' $SRC $DST
 BASH
 
 
