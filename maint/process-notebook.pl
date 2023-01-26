@@ -1,6 +1,4 @@
-#!/bin/sh
-
-set -eu
+#!/usr/bin/env perl
 
 ## Requirements:
 ##
@@ -14,18 +12,31 @@ set -eu
 ##
 ## $ pip3 install jupyter
 
-SRC="notebook/InferenceUsingTFHubMobileNetV2Model.ipynb";
-DST="lib/AI/TensorFlow/Libtensorflow/Manual/Notebook/InferenceUsingTFHubMobileNetV2Model.pod";
-DOC_PREFIX="AI::TensorFlow::Libtensorflow::Manual::Notebook"
+use Path::Tiny;
+
+sub run_notebook {
+	my ($notebook) = @_;
+
+	$ENV{SRC} = $notebook;
+
+	$ENV{DST} = path('lib/AI/TensorFlow/Libtensorflow/Manual/Notebook/')->child(
+		path($notebook)->basename('.ipynb') . '.pod'
+	);
+
+	$ENV{DOC_PREFIX} = "AI::TensorFlow::Libtensorflow::Manual::Notebook";
+
+	$ENV{GENERATOR} = $0;
+
+	system( qw(bash -c), <<'BASH' );
 rm $DST || true;
 
 if grep -C5 -P '\s+\\n' $SRC -m 2; then
-	echo "Notebook $SRC has whitespace"
+	echo -e "Notebook $SRC has whitespace"
 	exit 1
 fi
 
 ## Run the notebook
-jupyter nbconvert --execute --inplace $SRC
+#jupyter nbconvert --execute --inplace $SRC
 
 ## Clean up metadata (changed by the previous nbconvert --execute)
 ## See more at <https://timstaley.co.uk/posts/making-git-and-jupyter-notebooks-play-nice/>
@@ -34,8 +45,8 @@ jq --indent 1     '
     ' $SRC | sponge $SRC
 
 ### Notice about generated file
-echo "# PODNAME: $DOC_PREFIX::$(basename $SRC .ipynb)\n\n" | sponge -a $DST
-echo "## DO NOT EDIT. Generated from $SRC using $0.\n" | sponge -a $DST
+echo -e "# PODNAME: $DOC_PREFIX::$(basename $SRC .ipynb)\n\n" | sponge -a $DST
+echo -e "## DO NOT EDIT. Generated from $SRC using $GENERATOR.\n" | sponge -a $DST
 
 ## Add code to $DST
 jupyter nbconvert $SRC --to script --stdout | sponge -a $DST;
@@ -73,3 +84,13 @@ perl -c $DST && perl -MCwd -MPath::Tiny -E '
 	chdir $nb->parent;
 	do $script;
 	' $SRC $DST
+BASH
+
+
+}
+
+sub main {
+	run_notebook('notebook/InferenceUsingTFHubMobileNetV2Model.ipynb');
+}
+
+main;
