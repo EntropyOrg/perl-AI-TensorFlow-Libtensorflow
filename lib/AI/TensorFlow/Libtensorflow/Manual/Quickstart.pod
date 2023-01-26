@@ -70,6 +70,12 @@ This tutorial demonstrates using a pre-trained SavedModel and creating a L<AI::T
 L<LoadFromSavedModel|AI::TensorFlow::Libtensorflow::Session/LoadFromSavedModel>
 method. It also demonstrates how to prepare image data for use as an input C<TFTensor>.
 
+= L<InferenceUsingTFHubEnformerGeneExprPredModel|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubEnformerGeneExprPredModel>: gene expression prediction tutorial
+This tutorial builds on L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model>.
+It shows how to convert a pre-trained SavedModel from one that does not have a
+usable signature to a new model that does. It also demonstrates how to prepare
+genomic data for use as an input C<TFTensor>.
+
 =end :list
 
 =head1 SEE ALSO
