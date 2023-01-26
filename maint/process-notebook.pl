@@ -92,6 +92,7 @@ BASH
 
 sub main {
 	run_notebook('notebook/InferenceUsingTFHubMobileNetV2Model.ipynb');
+	run_notebook('notebook/InferenceUsingTFHubEnformerGeneExprPredModel.ipynb');
 }
 
 main;
