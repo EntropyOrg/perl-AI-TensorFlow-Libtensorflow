@@ -1,6 +1,15 @@
 AI-TensorFlow-Libtensorflow-*
 
 .ipynb_checkpoints
+
+# notebook/InferenceUsingTFHubMobileNetV2Model.ipynb
 ImageNetLabels.txt
 *imagenet_mobilenet_*_classification*.tar.gz
 *imagenet_mobilenet_*_classification*
+
+# notebook/InferenceUsingTFHubEnformerGeneExprPredModel.ipynb
+notebook/hg38.fa.*
+notebook/targets_human.txt
+notebook/clinvar.vcf.*
+notebook/deepmind_enformer_1*
+notebook/enformer-target-interval-tracks.png
