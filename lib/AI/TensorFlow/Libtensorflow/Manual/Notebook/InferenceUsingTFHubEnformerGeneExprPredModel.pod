@@ -100,6 +100,8 @@ for my $download ( [ $model_uri   => $model_archive_path ],
 }
 
 use Archive::Extract;
+$Archive::Extract::DEBUG      = 1;
+$Archive::Extract::PREFER_BIN = 1; # for the larger model, prefer bin
 if( ! -e $model_base ) {
     my $ae = Archive::Extract->new( archive => $model_archive_path );
     die "Could not extract archive" unless $ae->extract( to => $model_base );
@@ -561,6 +563,24 @@ Running the code requires an Internet connection to download the model (from Goo
 
 Some of this code is identical to that of C<InferenceUsingTFHubMobileNetV2Model> notebook. Please look there for explanation for that code. As stated there, this will later be wrapped up into a high-level library to hide the details behind an API.
 
+B<NOTE>: If running this model, please be aware that
+
+=over
+
+=item *
+
+the Docker image takes 3 GB or more of disk space;
+
+
+=item *
+
+the model and data takes 5 GB or more of disk space.
+
+
+=back
+
+meaning that you will need a total of B<8 GB> of disk space. You may need at least B<4 GB> of free memory to run the model.
+
 
 =head1 COLOPHON
 
@@ -764,6 +784,8 @@ check the MD5 sum of the reference genome to make sure it was downloaded correct
 
 
   use Archive::Extract;
+  $Archive::Extract::DEBUG      = 1;
+  $Archive::Extract::PREFER_BIN = 1; # for the larger model, prefer bin
   if( ! -e $model_base ) {
       my $ae = Archive::Extract->new( archive => $model_archive_path );
       die "Could not extract archive" unless $ae->extract( to => $model_base );
@@ -852,7 +874,7 @@ Now we create a helper to call C<saved_model_cli> and called C<saved_model_cli s
 B<STREAM (STDOUT)>:
 
   Checking with saved_model_cli scan:
-  MetaGraph with tag set ['serve'] does not contain the default denylisted ops: {'PrintV2', 'ReadFile', 'WriteFile'}
+  MetaGraph with tag set ['serve'] does not contain the default denylisted ops: {'ReadFile', 'WriteFile', 'PrintV2'}
 
 B<RESULT>:
 
@@ -1090,7 +1112,7 @@ B<STREAM (STDERR)>:
         </span><span style="color: #33ccff;">}</span><span style="">
     </span><span style="color: #33ccff;">}</span><span style="color: #33ccff;">,</span><span style="">
     </span><span style="color: #6666cc;">outputs_human</span><span style="color: #33ccff;">   </span><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Output</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
-        </span><span style="color: #6666cc;">index</span><span style="color: #33ccff;">   </span><span style="color: #ff3366;">var{inputs_args_0}{index}</span><span style="color: #33ccff;">,</span><span style="">
+        </span><span style="color: #6666cc;">index</span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">0</span><span style="color: #33ccff;">,</span><span style="">
         </span><span style="color: #6666cc;">oper</span><span style=""> </span><span style="color: #33ccff;">   </span><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Operation</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
             </span><span style="color: #6666cc;">Name</span><span style="">      </span><span style="color: #33ccff;">   </span><span style="color: #33ccff;">&quot;</span><span style="color: #669933;">StatefulPartitionedCall</span><span style="color: #33ccff;">&quot;</span><span style="color: #33ccff;">,</span><span style="">
             </span><span style="color: #6666cc;">NumInputs</span><span style=""> </span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">274</span><span style="color: #33ccff;">,</span><span style="">
@@ -1099,7 +1121,7 @@ B<STREAM (STDERR)>:
         </span><span style="color: #33ccff;">}</span><span style="">
     </span><span style="color: #33ccff;">}</span><span style="color: #33ccff;">,</span><span style="">
     </span><span style="color: #6666cc;">outputs_mouse</span><span style="color: #33ccff;">   </span><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Output</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
-        </span><span style="color: #6666cc;">index</span><span style="color: #33ccff;">   </span><span style="color: #ff3366;">var{inputs_args_0}{index}</span><span style="color: #33ccff;">,</span><span style="">
+        </span><span style="color: #6666cc;">index</span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">1</span><span style="color: #33ccff;">,</span><span style="">
         </span><span style="color: #6666cc;">oper</span><span style=""> </span><span style="color: #33ccff;">   </span><span style="color: #cc66cc;">AI::TensorFlow::Libtensorflow::Operation</span><span style=""> </span><span style="color: #33ccff;">{</span><span style="">
             </span><span style="color: #6666cc;">Name</span><span style="">      </span><span style="color: #33ccff;">   </span><span style="color: #33ccff;">&quot;</span><span style="color: #669933;">StatefulPartitionedCall</span><span style="color: #33ccff;">&quot;</span><span style="color: #33ccff;">,</span><span style="">
             </span><span style="color: #6666cc;">NumInputs</span><span style=""> </span><span style="color: #33ccff;">   </span><span style="color: #ff6633;">274</span><span style="color: #33ccff;">,</span><span style="">
