@@ -89,7 +89,10 @@ C<<
   docker run --rm -it -p 8888:8888 quay.io/entropyorg/perl-ai-tensorflow-libtensorflow:latest-nb-omnibus
 >>
 
-in order to connect to the Jupyter Notebook interface via the web browser.
+and when the links come up on the terminal, click the link to
+C<http://127.0.0.1:8888/> in order to connect to the Jupyter Notebook interface
+via the web browser. In the browser, click on the C<notebook> folder to access
+the notebooks.
 
 =begin :list
 
