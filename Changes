@@ -1,3 +1,13 @@
+  - Features
+
+      - Docker images with dependencies for notebooks.
+      - Support for running notebooks in Binder.
+
+  - Documentation
+
+      - Add manual index and quickstart guide.
+      - Add InferenceUsingTFHubEnformerGeneExprPredModel tutorial.
+
 0.0.4 2022-12-21 15:57:53-0500
 
   - Features
