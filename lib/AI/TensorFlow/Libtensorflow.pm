@@ -79,6 +79,7 @@ for TensorFlow with a stable ABI.
 
 =for html
 <a href="https://mybinder.org/v2/gh/EntropyOrg/perl-AI-TensorFlow-Libtensorflow/master"><img src="https://mybinder.org/badge_logo.svg" alt="Binder" /></a>
+<a href="https://quay.io/repository/entropyorg/perl-ai-tensorflow-libtensorflow"><img src="https://img.shields.io/badge/quay.io-images-red.svg" alt="quay.io images" /></a>
 
 
 =end :badges

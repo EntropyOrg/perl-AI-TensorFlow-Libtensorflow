@@ -78,6 +78,34 @@ genomic data for use as an input C<TFTensor>.
 
 =end :list
 
+=head1 DOCKER IMAGES
+
+Docker (or equivalent runtime) images for the library along with all the
+dependencies to run the above tutorials are available at
+L<Quay.io|https://quay.io/repository/entropyorg/perl-ai-tensorflow-libtensorflow>
+under various tags which can be run as
+
+C<<
+  docker run --rm -it -p 8888:8888 quay.io/entropyorg/perl-ai-tensorflow-libtensorflow:latest-nb-omnibus
+>>
+
+in order to connect to the Jupyter Notebook interface via the web browser.
+
+=begin :list
+
+= C<latest>: base image with only C<libtensorflow> installed.
+
+= C<latest-nb-image-class>: image containing dependencies needed to run
+L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model>.
+
+= C<latest-nb-gene-expr-pred>: image containing dependencies needed to run
+L<InferenceUsingTFHubEnformerGeneExprPredModel|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubEnformerGeneExprPredModel>.
+
+= C<latest-nb-omnibus>: image containing dependencies for both of the above
+notebooks.
+
+=end :list
+
 =head1 SEE ALSO
 
 =begin :list
