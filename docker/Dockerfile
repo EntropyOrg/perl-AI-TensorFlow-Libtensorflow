@@ -99,6 +99,11 @@ RUN groupadd \
 COPY --from=base-builder /perl5 /perl5
 COPY --from=base-builder /tf    /tf
 
+# Get rid of upstream tutorials.
+RUN rm -Rf /tf/tensorflow-tutorials
+
+COPY .    /tf
+
 RUN apt-get update && apt-get install -y --no-install-recommends $APT_PKGS_PERL $APT_PKGS_RUN
 
 RUN cpanm -nq App::plx App::cpm
