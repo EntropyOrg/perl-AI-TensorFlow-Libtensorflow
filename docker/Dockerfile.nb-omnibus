@@ -41,4 +41,12 @@ RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
 
 USER ${NB_USER}
 
+RUN bash -c ' \
+	for NB_POD in \
+		AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model \
+		AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubEnformerGeneExprPredModel \
+	; do \
+		plx perl -c $( plx perl -MPod::Simple::Search -e "print Pod::Simple::Search->new->find(shift @ARGV)" $NB_POD ); \
+	done;'
+
 # vim:ft=dockerfile
