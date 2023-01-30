@@ -29,21 +29,21 @@ target "nb-image-class" {
   tags = ["${REGISTRY}${IMAGE}:${TAG}-nb-image-class"]
 }
 
-target "nb-bioinfo" {
-  dockerfile = "docker/Dockerfile.nb-bioinfo"
-  target     = "bioinformatics"
+target "nb-gene-expr-pred" {
+  dockerfile = "docker/Dockerfile.nb-gene-expr-pred"
+  target     = "gene-expression-prediction"
   contexts = {
     base           = "target:base"
   }
-  tags = ["${REGISTRY}${IMAGE}:${TAG}-nb-bioinfo"]
+  tags = ["${REGISTRY}${IMAGE}:${TAG}-nb-gene-expr-pred"]
 }
 
 target "nb-omnibus" {
   dockerfile = "docker/Dockerfile.nb-omnibus"
   contexts = {
-    base           = "target:base"
-    nb-image-class = "target:nb-image-class"
-    nb-bioinfo     = "target:nb-bioinfo"
+    base               = "target:base"
+    nb-image-class     = "target:nb-image-class"
+    nb-gene-expr-pred  = "target:nb-gene-expr-pred"
   }
   tags = ["${REGISTRY}${IMAGE}:${TAG}-nb-omnibus"]
 }

@@ -34,7 +34,7 @@ RUN bash -c ' \
 RUN apt-get remove -y $NB_APT_PKGS_DEV && apt-get autoremove -y && apt-get clean
 RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
 
-FROM base AS bioinformatics
+FROM base AS gene-expression-prediction
 
 ARG NB_APT_PKGS_RUN
 ARG NB_POD

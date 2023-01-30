@@ -4,7 +4,7 @@
 
 # Builds on top of:
 #   - docker/Dockerfile.nb-image-class
-#   - docker/Dockerfile.nb-bioinfo
+#   - docker/Dockerfile.nb-gene-expr-pred
 #
 # The contents of `NB_APT_PKGS_RUN` come from those `Dockerfile`s.
 ARG NB_APT_PKGS_RUN=" \
@@ -16,15 +16,15 @@ FROM base as omnibus
 
 ARG NB_APT_PKGS_RUN
 
-COPY --from=nb-image-class /perl5-nb /perl5-nb-image-class
-COPY --from=nb-bioinfo     /perl5-nb /perl5-nb-bioinfo
+COPY --from=nb-image-class    /perl5-nb /perl5-nb-image-class
+COPY --from=nb-gene-expr-pred /perl5-nb /perl5-nb-gene-expr-pred
 
 RUN apt-get update && apt-get install -y --no-install-recommends $NB_APT_PKGS_RUN
 
 RUN \
 	   mkdir -p                                           /perl5-nb \
-	&& cp -pR /perl5-nb-image-class/. /perl5-nb-bioinfo/. /perl5-nb/ \
-	&& rm -Rf /perl5-nb-image-class   /perl5-nb-bioinfo
+	&& cp -pR /perl5-nb-image-class/. /perl5-nb-gene-expr-pred/. /perl5-nb/ \
+	&& rm -Rf /perl5-nb-image-class   /perl5-nb-gene-expr-pred
 
 RUN apt-get autoremove -y && apt-get clean
 RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
