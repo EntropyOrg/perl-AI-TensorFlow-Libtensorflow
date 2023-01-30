@@ -1,7 +1,7 @@
-# PODNAME: InferenceUsingTFHubMobileNetV2Model
+# PODNAME: AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model
 
 
-## DO NOT EDIT. Generated from notebook/InferenceUsingTFHubMobileNetV2Model.ipynb using ./maint/process-notebook.sh.
+## DO NOT EDIT. Generated from notebook/InferenceUsingTFHubMobileNetV2Model.ipynb using ./maint/process-notebook.pl.
 
 use strict;
 use warnings;
@@ -13,7 +13,13 @@ use feature qw(say state);
 use Syntax::Construct qw(each-array);
 
 use lib::projectroot qw(lib);
-use AI::TensorFlow::Libtensorflow;
+
+BEGIN {
+    if( IN_IPERL ) {
+        $ENV{TF_CPP_MIN_LOG_LEVEL} = 3;
+    }
+    require AI::TensorFlow::Libtensorflow;
+}
 
 use URI ();
 use HTTP::Tiny ();
@@ -134,14 +140,7 @@ die "Labels should have @{[ IMAGENET_LABEL_COUNT_WITH_BG ]} items"
     unless @labels == IMAGENET_LABEL_COUNT_WITH_BG;
 say "Got labels: ", join( ", ", List::Util::head(5, @labels) ), ", etc.";
 
-my $opt = AI::TensorFlow::Libtensorflow::SessionOptions->New;
-
 my @tags = ( 'serve' );
-my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
-my $session = AI::TensorFlow::Libtensorflow::Session->LoadFromSavedModel(
-    $opt, undef, $model_base, \@tags, $graph, undef, $s
-);
-AssertOK($s);
 
 if( File::Which::which('saved_model_cli')) {
     local $ENV{TF_CPP_MIN_LOG_LEVEL} = 3; # quiet the TensorFlow logger for the following command
@@ -153,6 +152,14 @@ if( File::Which::which('saved_model_cli')) {
 } else {
     say "Install the tensorflow Python package to get the `saved_model_cli` command.";
 }
+
+my $opt = AI::TensorFlow::Libtensorflow::SessionOptions->New;
+
+my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
+my $session = AI::TensorFlow::Libtensorflow::Session->LoadFromSavedModel(
+    $opt, undef, $model_base, \@tags, $graph, undef, $s
+);
+AssertOK($s);
 
 my %ops = (
     in  => $graph->OperationByName('serving_default_inputs'),
@@ -408,6 +415,13 @@ my $p_approx_batched = $probabilities_batched->sumover->approx(1, 1e-5);
 p $p_approx_batched;
 say "All probabilities sum up to approximately 1" if $p_approx_batched->all->sclr;
 
+use Filesys::DiskUsage qw/du/;
+
+my $total = du( { 'human-readable' => 1, dereference => 1 },
+    $model_archive_path, $model_base, $labels_path );
+
+say "Disk space usage: $total"; undef;
+
 my @solid_channel_uris = (
     'https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Solid_red.svg/480px-Solid_red.svg.png',
     'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Green_00FF00_9x9.svg/480px-Green_00FF00_9x9.svg.png',
@@ -429,7 +443,9 @@ InferenceUsingTFHubMobileNetV2Model - Using TensorFlow to do image classificatio
 
 The following tutorial is based on the L<Image Classification with TensorFlow Hub notebook|https://github.com/tensorflow/hub/blob/master/examples/colab/image_classification.ipynb>. It uses a pre-trained model based on the I<MobileNet V2> architecture trained on the I<Imagenet> dataset. Running the code requires an Internet connection to download the model (from Google servers) and testing data (from Wikimedia servers).
 
-Please look at the L<SECURITY note|https://github.com/tensorflow/models/blob/master/SECURITY.md> regarding running models as models are programs. If you would like to visualise a model, you can use L<Netron|https://github.com/lutzroeder/netron> on the C<.pb> file.
+Please look at the L<SECURITY note|https://github.com/tensorflow/tensorflow/blob/master/SECURITY.md> regarding running models as models are programs. You can also used C<saved_model_cli scan> to check for L<security-sensitive "denylisted ops"|https://github.com/tensorflow/tensorflow/pull/17529> which by default are operations that do I/O.
+
+If you would like to visualise a model, you can use L<Netron|https://github.com/lutzroeder/netron> on the C<.pb> file.
 
 =head1 COLOPHON
 
@@ -453,7 +469,13 @@ First, we need to load the C<AI::TensorFlow::Libtensorflow> library and more hel
   use Syntax::Construct qw(each-array);
   
   use lib::projectroot qw(lib);
-  use AI::TensorFlow::Libtensorflow;
+  
+  BEGIN {
+      if( IN_IPERL ) {
+          $ENV{TF_CPP_MIN_LOG_LEVEL} = 3;
+      }
+      require AI::TensorFlow::Libtensorflow;
+  }
   
   use URI ();
   use HTTP::Tiny ();
@@ -613,28 +635,13 @@ B<RESULT>:
 
 =head2 Load the model and session
 
-Now we can load the model from that folder with the tag set C<[ 'serve' ]> by using the C<LoadFromSavedModel> constructor to create a C<::Graph> and a C<::Session> for that graph.
+We define the tag set C<[ 'serve' ]> which we will use to load the model.
 
-  my $opt = AI::TensorFlow::Libtensorflow::SessionOptions->New;
-  
   my @tags = ( 'serve' );
-  my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
-  my $session = AI::TensorFlow::Libtensorflow::Session->LoadFromSavedModel(
-      $opt, undef, $model_base, \@tags, $graph, undef, $s
-  );
-  AssertOK($s);
 
-B<STREAM (STDERR)>:
+B<RESULT>:
 
-  2022-12-21 15:44:50.158520: I tensorflow/cc/saved_model/reader.cc:45] Reading SavedModel from: google_imagenet_mobilenet_v2_100_224_classification_5
-  2022-12-21 15:44:50.165765: I tensorflow/cc/saved_model/reader.cc:89] Reading meta graph with tags { serve }
-  2022-12-21 15:44:50.165804: I tensorflow/cc/saved_model/reader.cc:130] Reading SavedModel debug info (if present) from: google_imagenet_mobilenet_v2_100_224_classification_5
-  2022-12-21 15:44:50.166232: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 AVX512F AVX512_VNNI FMA
-  To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-  2022-12-21 15:44:50.193676: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:357] MLIR V1 optimization pass is not enabled
-  2022-12-21 15:44:50.202488: I tensorflow/cc/saved_model/loader.cc:229] Restoring SavedModel bundle.
-  2022-12-21 15:44:50.523651: I tensorflow/cc/saved_model/loader.cc:213] Running initialization op on SavedModel bundle at path: google_imagenet_mobilenet_v2_100_224_classification_5
-  2022-12-21 15:44:50.593023: I tensorflow/cc/saved_model/loader.cc:305] SavedModel load for tags { serve }; Status: success: OK. Took 434509 microseconds.
+  serve
 
 We can examine what computations are contained in the graph in terms of the names of the inputs and outputs of an operation found in the graph by running C<saved_model_cli>.
 
@@ -675,7 +682,17 @@ For the C<input>, we have C<(-1, 224, 224, 3)> which is a L<common input image s
 
 For the C<output>, we have C<(-1, 1001)> which is C<[batch_size, num_classes]> where the elements are scores that the image received for that ImageNet class.
 
-So let's use those names to create our C<::Output> C<ArrayRef>s.
+Now we can load the model from that folder with the tag set C<[ 'serve' ]> by using the C<LoadFromSavedModel> constructor to create a C<::Graph> and a C<::Session> for that graph.
+
+  my $opt = AI::TensorFlow::Libtensorflow::SessionOptions->New;
+  
+  my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
+  my $session = AI::TensorFlow::Libtensorflow::Session->LoadFromSavedModel(
+      $opt, undef, $model_base, \@tags, $graph, undef, $s
+  );
+  AssertOK($s);
+
+So let's use the names from the C<saved_model_cli> output to create our C<::Output> C<ArrayRef>s.
 
   my %ops = (
       in  => $graph->OperationByName('serving_default_inputs'),
@@ -1107,6 +1124,19 @@ B<RESULT>:
 
   1
 
+=head1 RESOURCE USAGE
+
+  use Filesys::DiskUsage qw/du/;
+  
+  my $total = du( { 'human-readable' => 1, dereference => 1 },
+      $model_archive_path, $model_base, $labels_path );
+  
+  say "Disk space usage: $total"; undef;
+
+B<STREAM (STDOUT)>:
+
+  Disk space usage: 27.45M
+
 =head1 DEBUGGING
 
 The following images can be used to test the C<load_image_to_pdl> function.
@@ -1128,6 +1158,7 @@ The following images can be used to test the C<load_image_to_pdl> function.
   requires 'FFI::Platypus::Buffer';
   requires 'FFI::Platypus::Memory';
   requires 'File::Which';
+  requires 'Filesys::DiskUsage';
   requires 'HTML::Tiny';
   requires 'HTTP::Tiny';
   requires 'Imager';
@@ -1151,7 +1182,7 @@ Zakariyya Mughal <zmughal@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is Copyright (c) 2022 by Auto-Parallel Technologies, Inc.
+This software is Copyright (c) 2022-2023 by Auto-Parallel Technologies, Inc.
 
 This is free software, licensed under:
 
