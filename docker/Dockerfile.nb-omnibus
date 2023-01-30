@@ -16,17 +16,29 @@ FROM base as omnibus
 
 ARG NB_APT_PKGS_RUN
 
+ARG NB_USER
+ARG NB_UID
+
+USER root
+
 COPY --from=nb-image-class    /perl5-nb /perl5-nb-image-class
 COPY --from=nb-gene-expr-pred /perl5-nb /perl5-nb-gene-expr-pred
 
 RUN apt-get update && apt-get install -y --no-install-recommends $NB_APT_PKGS_RUN
+
+RUN apt-get -qq purge \
+    && apt-get -qq clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN \
 	   mkdir -p                                           /perl5-nb \
 	&& cp -pR /perl5-nb-image-class/. /perl5-nb-gene-expr-pred/. /perl5-nb/ \
 	&& rm -Rf /perl5-nb-image-class   /perl5-nb-gene-expr-pred
 
-RUN apt-get autoremove -y && apt-get clean
+RUN chown -R ${NB_USER}:${NB_USER} /perl5-nb
+
 RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
+
+USER ${NB_USER}
 
 # vim:ft=dockerfile

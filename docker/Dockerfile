@@ -74,6 +74,28 @@ FROM tensorflow/tensorflow:${TF_VERSION}-jupyter AS base
 ARG APT_PKGS_PERL
 ARG APT_PKGS_RUN
 
+ARG NB_USER
+ARG NB_UID
+
+# Use bash as default shell, rather than sh
+ENV SHELL /bin/bash
+
+# Set up user
+ENV USER ${NB_USER}
+ENV HOME /home/${NB_USER}
+
+RUN groupadd \
+        --gid ${NB_UID} \
+        ${NB_USER} && \
+    useradd \
+        --comment "Default user" \
+        --create-home \
+        --gid ${NB_UID} \
+        --no-log-init \
+        --shell /bin/bash \
+        --uid ${NB_UID} \
+        ${NB_USER}
+
 COPY --from=base-builder /perl5 /perl5
 COPY --from=base-builder /tf    /tf
 
@@ -81,15 +103,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends $APT_PKGS_PERL 
 
 RUN cpanm -nq App::plx App::cpm
 
-RUN plx iperl --version # install kernel and exit
-
 RUN apt-get -qq purge \
     && apt-get -qq clean \
     && rm -rf /var/lib/apt/lists/*
 
 RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
 
+RUN chown -R ${NB_USER}:${NB_USER} /perl5 /tf
+
+USER ${NB_USER}
+
+RUN plx iperl --version # install kernel and exit
+
+EXPOSE 8888
+
 ENTRYPOINT [ "plx", "--base", "/tf", "--exec" ]
-CMD [ "jupyter", "notebook", "--notebook-dir=/tf", "--ip", "0.0.0.0", "--no-browser", "--allow-root" ]
+CMD [ "jupyter", "notebook", "--notebook-dir=/tf", "--ip", "0.0.0.0", "--no-browser" ]
 
 # vim:ft=dockerfile
