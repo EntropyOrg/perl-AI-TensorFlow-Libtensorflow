@@ -34,4 +34,8 @@ COPY --from=nb-builder /perl5-nb /perl5-nb
 RUN apt-get update && apt-get install -y --no-install-recommends $NB_APT_PKGS_RUN
 RUN bash -c 'plx perl -c $( plx perldoc -l $NB_POD );'
 
+RUN apt-get -qq purge \
+    && apt-get -qq clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # vim:ft=dockerfile

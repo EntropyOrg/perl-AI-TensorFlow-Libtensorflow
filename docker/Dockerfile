@@ -61,7 +61,12 @@ RUN cpm install -L /perl5 /build/dist \
 	&& rm -Rf /build/dist
 
 # Clean up
-RUN apt-get remove -y $NB_APT_PKGS_DEV && apt-get autoremove && apt-get clean
+RUN apt-get remove -y $NB_APT_PKGS_DEV && apt-get autoremove
+
+RUN apt-get -qq purge \
+    && apt-get -qq clean \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
 
 FROM tensorflow/tensorflow:${TF_VERSION}-jupyter AS base
@@ -77,6 +82,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends $APT_PKGS_PERL 
 RUN cpanm -nq App::plx App::cpm
 
 RUN plx iperl --version # install kernel and exit
+
+RUN apt-get -qq purge \
+    && apt-get -qq clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
 
