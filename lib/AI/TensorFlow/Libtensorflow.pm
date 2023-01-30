@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow;
 # ABSTRACT: Bindings for Libtensorflow deep learning library
-$AI::TensorFlow::Libtensorflow::VERSION = '0.0.5';
+$AI::TensorFlow::Libtensorflow::VERSION = '0.0.6';
 use strict;
 use warnings;
 

@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Graph;
 # ABSTRACT: A TensorFlow computation, represented as a dataflow graph
-$AI::TensorFlow::Libtensorflow::Graph::VERSION = '0.0.5';
+$AI::TensorFlow::Libtensorflow::Graph::VERSION = '0.0.6';
 use strict;
 use warnings;
 use namespace::autoclean;

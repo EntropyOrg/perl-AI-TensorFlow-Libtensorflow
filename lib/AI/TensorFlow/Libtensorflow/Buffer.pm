@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Buffer;
 # ABSTRACT: Buffer that holds pointer to data with length
-$AI::TensorFlow::Libtensorflow::Buffer::VERSION = '0.0.5';
+$AI::TensorFlow::Libtensorflow::Buffer::VERSION = '0.0.6';
 use strict;
 use warnings;
 use namespace::autoclean;

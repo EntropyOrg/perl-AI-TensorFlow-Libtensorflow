@@ -1,6 +1,6 @@
 package AI::TensorFlow::Libtensorflow::Lib::Types;
 # ABSTRACT: Type library
-$AI::TensorFlow::Libtensorflow::Lib::Types::VERSION = '0.0.5';
+$AI::TensorFlow::Libtensorflow::Lib::Types::VERSION = '0.0.6';
 use strict;
 use warnings;
 use Type::Library 0.008 -base,
