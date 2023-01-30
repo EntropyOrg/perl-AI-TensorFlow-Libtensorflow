@@ -23,7 +23,11 @@ sub run_notebook {
 		path($notebook)->basename('.ipynb') . '.pod'
 	);
 
+	$ENV{SRC_BASENAME} = path($notebook)->basename('.ipynb');
+
 	$ENV{DOC_PREFIX} = "AI::TensorFlow::Libtensorflow::Manual::Notebook";
+
+	$ENV{PODNAME} = $ENV{DOC_PREFIX} . '::' . $ENV{SRC_BASENAME};
 
 	$ENV{GENERATOR} = $0;
 
@@ -45,7 +49,7 @@ jq --indent 1     '
     ' $SRC | sponge $SRC
 
 ### Notice about generated file
-echo -e "# PODNAME: $DOC_PREFIX::$(basename $SRC .ipynb)\n\n" | sponge -a $DST
+echo -e "# PODNAME: $PODNAME\n\n" | sponge -a $DST
 echo -e "## DO NOT EDIT. Generated from $SRC using $GENERATOR.\n" | sponge -a $DST
 
 ## Add code to $DST
@@ -60,6 +64,9 @@ perl -E 'say qq|__END__\n\n=pod\n\n|' | sponge -a $DST;
 
 ## Add POD
 iperl nbconvert.iperl $SRC  | sponge -a $DST;
+
+## Edit to NAME
+perl -0777 -pi -e 's/(=head1 NAME\n+)$ENV{SRC_BASENAME}/\1$ENV{PODNAME}/' $DST
 
 ## Edit to local section link (Markdown::Pod does not yet recognise this).
 perl -pi -E 's,\QL<CPANFILE|#CPANFILE>\E,L<CPANFILE|/CPANFILE>,g' $DST
