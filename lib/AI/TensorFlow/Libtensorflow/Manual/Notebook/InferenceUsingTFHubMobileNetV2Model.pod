@@ -140,14 +140,7 @@ die "Labels should have @{[ IMAGENET_LABEL_COUNT_WITH_BG ]} items"
     unless @labels == IMAGENET_LABEL_COUNT_WITH_BG;
 say "Got labels: ", join( ", ", List::Util::head(5, @labels) ), ", etc.";
 
-my $opt = AI::TensorFlow::Libtensorflow::SessionOptions->New;
-
 my @tags = ( 'serve' );
-my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
-my $session = AI::TensorFlow::Libtensorflow::Session->LoadFromSavedModel(
-    $opt, undef, $model_base, \@tags, $graph, undef, $s
-);
-AssertOK($s);
 
 if( File::Which::which('saved_model_cli')) {
     local $ENV{TF_CPP_MIN_LOG_LEVEL} = 3; # quiet the TensorFlow logger for the following command
@@ -159,6 +152,14 @@ if( File::Which::which('saved_model_cli')) {
 } else {
     say "Install the tensorflow Python package to get the `saved_model_cli` command.";
 }
+
+my $opt = AI::TensorFlow::Libtensorflow::SessionOptions->New;
+
+my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
+my $session = AI::TensorFlow::Libtensorflow::Session->LoadFromSavedModel(
+    $opt, undef, $model_base, \@tags, $graph, undef, $s
+);
+AssertOK($s);
 
 my %ops = (
     in  => $graph->OperationByName('serving_default_inputs'),
@@ -416,7 +417,8 @@ say "All probabilities sum up to approximately 1" if $p_approx_batched->all->scl
 
 use Filesys::DiskUsage qw/du/;
 
-my $total = du( { 'human-readable' => 1 }, $model_archive_path, $model_base, $labels_path );
+my $total = du( { 'human-readable' => 1, dereference => 1 },
+    $model_archive_path, $model_base, $labels_path );
 
 say "Disk space usage: $total"; undef;
 
@@ -658,19 +660,15 @@ B<RESULT>:
 
 =head2 Load the model and session
 
-Now we can load the model from that folder with the tag set C<[ 'serve' ]> by using the C<LoadFromSavedModel> constructor to create a C<::Graph> and a C<::Session> for that graph.
+We define the tag set C<[ 'serve' ]> which we will use to load the model.
 
 
-  my $opt = AI::TensorFlow::Libtensorflow::SessionOptions->New;
-  
   my @tags = ( 'serve' );
-  my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
-  my $session = AI::TensorFlow::Libtensorflow::Session->LoadFromSavedModel(
-      $opt, undef, $model_base, \@tags, $graph, undef, $s
-  );
-  AssertOK($s);
 
 
+B<RESULT>:
+
+  serve
 
 We can examine what computations are contained in the graph in terms of the names of the inputs and outputs of an operation found in the graph by running C<saved_model_cli>.
 
@@ -713,7 +711,21 @@ For the C<input>, we have C<(-1, 224, 224, 3)> which is a L<common input image s
 
 For the C<output>, we have C<(-1, 1001)> which is C<[batch_size, num_classes]> where the elements are scores that the image received for that ImageNet class.
 
-So let's use those names to create our C<::Output> C<ArrayRef>s.
+
+Now we can load the model from that folder with the tag set C<[ 'serve' ]> by using the C<LoadFromSavedModel> constructor to create a C<::Graph> and a C<::Session> for that graph.
+
+
+  my $opt = AI::TensorFlow::Libtensorflow::SessionOptions->New;
+  
+  my $graph = AI::TensorFlow::Libtensorflow::Graph->New;
+  my $session = AI::TensorFlow::Libtensorflow::Session->LoadFromSavedModel(
+      $opt, undef, $model_base, \@tags, $graph, undef, $s
+  );
+  AssertOK($s);
+
+
+
+So let's use the names from the C<saved_model_cli> output to create our C<::Output> C<ArrayRef>s.
 
 
   my %ops = (
@@ -1207,7 +1219,8 @@ B<RESULT>:
 
   use Filesys::DiskUsage qw/du/;
   
-  my $total = du( { 'human-readable' => 1 }, $model_archive_path, $model_base, $labels_path );
+  my $total = du( { 'human-readable' => 1, dereference => 1 },
+      $model_archive_path, $model_base, $labels_path );
   
   say "Disk space usage: $total"; undef;
 
