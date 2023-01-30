@@ -1,0 +1,52 @@
+#syntax=docker/dockerfile-upstream:1.4.0-rc1
+
+# OMNIBUS
+
+# Builds on top of:
+#   - docker/Dockerfile.nb-image-class
+#   - docker/Dockerfile.nb-gene-expr-pred
+#
+# The contents of `NB_APT_PKGS_RUN` come from those `Dockerfile`s.
+ARG NB_APT_PKGS_RUN=" \
+libjpeg-turbo8     libpng16-16 libgsl23 \
+samtools libhts3 tabix libxml2 libexpat1 libdb5.3 netpbm gnuplot-nox \
+"
+
+FROM base as omnibus
+
+ARG NB_APT_PKGS_RUN
+
+ARG NB_USER
+ARG NB_UID
+
+USER root
+
+COPY --from=nb-image-class    /perl5-nb /perl5-nb-image-class
+COPY --from=nb-gene-expr-pred /perl5-nb /perl5-nb-gene-expr-pred
+
+RUN apt-get update && apt-get install -y --no-install-recommends $NB_APT_PKGS_RUN
+
+RUN apt-get -qq purge \
+    && apt-get -qq clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN \
+	   mkdir -p                                           /perl5-nb \
+	&& cp -pR /perl5-nb-image-class/. /perl5-nb-gene-expr-pred/. /perl5-nb/ \
+	&& rm -Rf /perl5-nb-image-class   /perl5-nb-gene-expr-pred
+
+RUN chown -R ${NB_USER}:${NB_USER} /perl5-nb
+
+RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
+
+USER ${NB_USER}
+
+RUN bash -c ' \
+	for NB_POD in \
+		AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubMobileNetV2Model \
+		AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubEnformerGeneExprPredModel \
+	; do \
+		plx perl -c $( plx perl -MPod::Simple::Search -e "print Pod::Simple::Search->new->find(shift @ARGV)" $NB_POD ); \
+	done;'
+
+# vim:ft=dockerfile
