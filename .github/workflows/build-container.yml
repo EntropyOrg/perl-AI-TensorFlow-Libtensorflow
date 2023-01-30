@@ -30,5 +30,6 @@ jobs:
       with:
         files: docker/docker-bake.hcl
         push: ${{ github.event_name != 'pull_request' }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        set: |
+          *.cache-from=type=gha
+          *.cache-to=type=gha,mode=max
