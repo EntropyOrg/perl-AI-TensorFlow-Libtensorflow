@@ -1,0 +1,47 @@
+#syntax=docker/dockerfile-upstream:1.4.0-rc1
+
+# notebook/InferenceUsingTFHubEnformerGeneExprPredModel.ipynb
+
+# Packages from Ubuntu focal base
+ARG NB_APT_PKGS_RUN="samtools libhts3 tabix libxml2 libexpat1 libdb5.3 netpbm gnuplot-nox"
+ARG NB_APT_PKGS_DEV="perl-doc libhts-dev libxml2-dev libexpat1-dev libdb5.3-dev pkg-config"
+ARG NB_POD="AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubEnformerGeneExprPredModel"
+
+FROM base AS nb-builder
+
+ARG NB_APT_PKGS_RUN
+ARG NB_APT_PKGS_DEV
+ARG NB_POD
+
+RUN apt-get update && apt-get install -y --no-install-recommends $NB_APT_PKGS_RUN $NB_APT_PKGS_DEV
+RUN bash -c ' \
+	export MAKEFLAGS=$(nproc); \
+	plx --cpanm -l /perl5-nb --no-man-pages -nq PDL'
+RUN bash -c ' \
+	eval $(perl -Mlocal::lib=/perl5-nb); \
+	plx cpm install -g BioPerl ExtUtils::PkgConfig'
+
+RUN bash -c ' \
+	plx --cpanm -l /perl5-nb --no-man-pages -nq https://github.com/Ensembl/Bio-DB-HTS.git@00147d049e40f92e4c132f5a131b32ea982d633b \
+	'
+RUN bash -c ' \
+	eval $(perl -Mlocal::lib=/perl5-nb); \
+	export MAKEFLAGS=$(nproc); \
+	plx cpm install -g --cpanfile=<( \
+		awk "/=head1 CPANFILE/,EOF {print}" < $( plx perldoc -l $NB_POD ) \
+		| awk "NR>1" \
+	)'
+RUN apt-get remove -y $NB_APT_PKGS_DEV && apt-get autoremove -y && apt-get clean
+RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
+
+FROM base AS bioinformatics
+
+ARG NB_APT_PKGS_RUN
+ARG NB_POD
+
+COPY --from=nb-builder /perl5-nb /perl5-nb
+
+RUN apt-get update && apt-get install -y --no-install-recommends $NB_APT_PKGS_RUN
+RUN bash -c 'plx perl -c $( plx perldoc -l $NB_POD );'
+
+# vim:ft=dockerfile
