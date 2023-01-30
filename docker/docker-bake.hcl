@@ -1,5 +1,10 @@
 group "default" {
-  targets = ["base", "nb-omnibus"]
+  targets = [
+    "base",
+    "nb-omnibus",
+    "nb-image-class",
+    "nb-gene-expr-pred",
+  ]
 }
 
 variable "REGISTRY" {
