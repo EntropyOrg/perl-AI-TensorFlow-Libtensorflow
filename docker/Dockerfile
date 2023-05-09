@@ -1,6 +1,8 @@
 #syntax=docker/dockerfile-upstream:1.4.0-rc1
 
-ARG TF_VERSION="2.11.0"
+ARG TF_VERSION
+ARG TF_DEVICE_TYPE
+ARG TF_DEVICE_TAG
 
 # Packages from Ubuntu focal base
 ARG APT_PKGS_PERL="perl cpanminus"
@@ -11,9 +13,8 @@ ARG APT_PKGS_DEV="libffi-dev libssl-dev pkg-config"
 
 FROM perldocker/perl-tester:5.36 AS builder
 
-ARG TF_VERSION
-
 ENV ALIEN_LIBTENSORFLOW_FROM_BINARY_VERSION=${TF_VERSION}
+ENV ALIEN_LIBTENSORFLOW_DEVICE_TYPE=${TF_DEVICE_TYPE}
 
 #COPY . /build
 RUN git clone https://github.com/EntropyOrg/perl-AI-TensorFlow-Libtensorflow.git /build
@@ -28,8 +29,6 @@ RUN dzil build --in dist
 
 FROM tensorflow/tensorflow:${TF_VERSION}-jupyter AS base-builder
 
-ARG TF_VERSION
-
 ARG APT_PKGS_PERL
 ARG APT_PKGS_RUN
 ARG APT_PKGS_DEV
@@ -37,6 +36,7 @@ ARG APT_PKGS_DEV
 COPY --from=builder /build/dist /build/dist
 
 ENV ALIEN_LIBTENSORFLOW_FROM_BINARY_VERSION=${TF_VERSION}
+ENV ALIEN_LIBTENSORFLOW_DEVICE_TYPE=${TF_DEVICE_TYPE}
 
 RUN rm -Rfv /tf
 RUN mkdir -p /tf
@@ -69,7 +69,7 @@ RUN apt-get -qq purge \
 
 RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
 
-FROM tensorflow/tensorflow:${TF_VERSION}-jupyter AS base
+FROM tensorflow/tensorflow:${TF_VERSION}${TF_DEVICE_TAG}-jupyter AS base
 
 ARG APT_PKGS_PERL
 ARG APT_PKGS_RUN
