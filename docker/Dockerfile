@@ -54,10 +54,10 @@ RUN bash -c 'cd /tf \
 	'
 
 # Install Jupyter kernel
-RUN cpm install -L /perl5 Devel::IPerl
+RUN plx cpm install -L /perl5 Devel::IPerl
 
 # Install the actual dist.
-RUN cpm install -L /perl5 /build/dist \
+RUN plx cpm install -L /perl5 /build/dist \
 	&& rm -Rf /build/dist
 
 # Clean up
