@@ -5,7 +5,11 @@ group "default" {
     "nb-omnibus",
     "nb-image-class",
     "nb-gene-expr-pred",
+  ]
+}
 
+group "gpu" {
+  targets = [
     # GPU
     "gpu-nb-omnibus",
   ]
