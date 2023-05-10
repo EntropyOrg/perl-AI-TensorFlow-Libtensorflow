@@ -7,7 +7,6 @@ group "default" {
     "nb-gene-expr-pred",
 
     # GPU
-    "gpu-base",
     "gpu-nb-omnibus",
   ]
 }
@@ -57,7 +56,7 @@ target "nb-gpu" {
 }
 
 target "base" {
-  inherits   = [ "nb-cpu" ]
+  inherits   = [ "nb-all" ]
   dockerfile = "docker/Dockerfile"
   target     = "base"
   tags = [
@@ -67,7 +66,7 @@ target "base" {
 }
 
 target "nb-image-class" {
-  inherits   = [ "nb-cpu" ]
+  inherits   = [ "nb-all" ]
   dockerfile = "docker/Dockerfile.nb-image-class"
   target     = "image-classification"
   contexts = {
@@ -80,7 +79,7 @@ target "nb-image-class" {
 }
 
 target "nb-gene-expr-pred" {
-  inherits   = [ "nb-cpu" ]
+  inherits   = [ "nb-all" ]
   dockerfile = "docker/Dockerfile.nb-gene-expr-pred"
   target     = "gene-expression-prediction"
   contexts = {
@@ -93,7 +92,7 @@ target "nb-gene-expr-pred" {
 }
 
 target "nb-omnibus" {
-  inherits   = [ "nb-cpu" ]
+  inherits   = [ "nb-all" ]
   dockerfile = "docker/Dockerfile.nb-omnibus"
   contexts = {
     base               = "target:base"
@@ -106,41 +105,18 @@ target "nb-omnibus" {
   ]
 }
 
-target "gpu-base" {
-  inherits   = [ "nb-gpu" ]
-  dockerfile = "docker/Dockerfile"
-  target     = "base"
-  tags = [
-    "${REGISTRY}${IMAGE}:latest-gpu",
-    "${REGISTRY}${IMAGE}:${TF_VERSION}-gpu",
-  ]
-}
-
-target "gpu-nb-image-class" {
-  inherits   = [ "nb-gpu" ]
-  dockerfile = "docker/Dockerfile.nb-image-class"
-  target     = "image-classification"
-  contexts = {
-    base           = "target:gpu-base"
-  }
-}
-
-target "gpu-nb-gene-expr-pred" {
-  inherits   = [ "nb-gpu" ]
-  dockerfile = "docker/Dockerfile.nb-gene-expr-pred"
-  target     = "gene-expression-prediction"
-  contexts = {
-    base           = "target:gpu-base"
-  }
-}
-
 target "gpu-nb-omnibus" {
   inherits   = [ "nb-gpu" ]
-  dockerfile = "docker/Dockerfile.nb-omnibus"
+  args = {
+    NB_APT_PKGS_RUN = <<EOF
+      libjpeg-turbo8     libpng16-16 libgsl23
+      samtools libhts3 tabix libxml2 libexpat1 libdb5.3 netpbm gnuplot-nox
+    EOF
+  }
+  dockerfile = "docker/Dockerfile.with-gpu-libtf"
+  target     = "nb"
   contexts = {
-    base               = "target:gpu-base"
-    nb-image-class     = "target:gpu-nb-image-class"
-    nb-gene-expr-pred  = "target:gpu-nb-gene-expr-pred"
+    nb-base            = "target:nb-omnibus"
   }
   tags = [
     "${REGISTRY}${IMAGE}:latest-gpu-nb-omnibus",
