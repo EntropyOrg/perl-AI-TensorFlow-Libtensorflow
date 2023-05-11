@@ -454,8 +454,19 @@ my $sequence_one_hot = one_hot_dna( $seq )->dummy(-1);
 
 say $sequence_one_hot->info; undef;
 
+use Devel::Timer;
+my $t = Devel::Timer->new;
+
+$t->mark('prediction of sequence');
+
 my $predictions = $predict_on_batch->( $session, FloatPDLTOTFTensor( $sequence_one_hot ) );
+
+$t->mark('End of prediction of sequence');
+
 p $predictions;
+
+$t->mark('END');
+$t->report();
 
 my $predictions_p = FloatTFTensorToPDL($predictions)->slice(',,(0)');
 say $predictions_p->info; undef;
@@ -507,7 +518,9 @@ $gp->end_multi;
 
 $gp->close;
 
-IPerl->png( bytestream => path($plot_output_path)->slurp_raw );
+if( IN_IPERL ) {
+    IPerl->png( bytestream => path($plot_output_path)->slurp_raw );
+}
 
 # Some code that could be used for working with variants.
 1 if <<'COMMENT';
@@ -874,7 +887,7 @@ Now we create a helper to call C<saved_model_cli> and called C<saved_model_cli s
 B<STREAM (STDOUT)>:
 
   Checking with saved_model_cli scan:
-  MetaGraph with tag set ['serve'] does not contain the default denylisted ops: {'ReadFile', 'WriteFile', 'PrintV2'}
+  MetaGraph with tag set ['serve'] does not contain the default denylisted ops: {'ReadFile', 'PrintV2', 'WriteFile'}
 
 B<RESULT>:
 
@@ -1519,8 +1532,19 @@ B<STREAM (STDOUT)>:
   PDL: Float D [4,393216,1]
 
 
+  use Devel::Timer;
+  my $t = Devel::Timer->new;
+  
+  $t->mark('prediction of sequence');
+  
   my $predictions = $predict_on_batch->( $session, FloatPDLTOTFTensor( $sequence_one_hot ) );
+  
+  $t->mark('End of prediction of sequence');
+  
   p $predictions;
+  
+  $t->mark('END');
+  $t->report();
 
 
 B<STREAM (STDERR)>:
@@ -1533,6 +1557,14 @@ B<STREAM (STDERR)>:
     </span><span style="color: #6666cc;">NumDims        </span><span style=""> </span><span style="color: #ff6633;">3</span><span style="">
     </span><span style="color: #6666cc;">ElementCount   </span><span style=""> </span><span style="color: #ff6633;">4760448</span><span style="">
 </span><span style="color: #33ccff;">}</span><span style="">
+
+
+Devel::Timer Report -- Total time: 14.5641 secs
+Interval  Time    Percent
+----------------------------------------------
+01 -&gt; 02  14.5634  100.00%  prediction of sequence -&gt; End of prediction of sequence
+02 -&gt; 03  0.0007   0.00%  End of prediction of sequence -&gt; END
+00 -&gt; 01  0.0000   0.00%  INIT -&gt; prediction of sequence
 </span></code></pre></span>
 
 =end html
@@ -1604,7 +1636,9 @@ These predictions can be plotted
   
   $gp->close;
   
-  IPerl->png( bytestream => path($plot_output_path)->slurp_raw );
+  if( IN_IPERL ) {
+      IPerl->png( bytestream => path($plot_output_path)->slurp_raw );
+  }
 
 
 B<DISPLAY>:
@@ -1700,6 +1734,7 @@ B<STREAM (STDOUT)>:
   requires 'Data::Frame';
   requires 'Data::Printer';
   requires 'Data::Printer::Filter::PDL';
+  requires 'Devel::Timer';
   requires 'Digest::file';
   requires 'FFI::Platypus::Buffer';
   requires 'FFI::Platypus::Memory';
