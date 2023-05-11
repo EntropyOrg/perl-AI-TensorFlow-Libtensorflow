@@ -19,6 +19,11 @@ variable "TF_VERSION" {
   default = "2.12.0"
 }
 
+function "TF_LATEST_VERSION" {
+  params = []
+  result = "2.12.0" # current upstream version
+}
+
 variable "REGISTRY" {
   default = "quay.io/entropyorg/"
 }
@@ -35,6 +40,21 @@ variable "NB_UID" {
   default = 1000
 }
 
+function "device2tag" {
+  params = [device]
+  result = equal(device,"cpu") ? "" : equal(device,"gpu") ? "-gpu" : ""
+}
+
+function "tag" {
+  params = [device, suffix]
+  result = [
+    "${REGISTRY}${IMAGE}:${TF_VERSION}${device2tag(device)}${suffix}",
+    equal(TF_VERSION, TF_LATEST_VERSION())
+      ? "${REGISTRY}${IMAGE}:latest${device2tag(device)}${suffix}"
+      : "",
+  ]
+}
+
 target "nb-all" {
   args = {
     NB_USER = NB_USER
@@ -47,7 +67,7 @@ target "nb-cpu" {
   inherits   = [ "nb-all" ]
   args = {
     TF_DEVICE_TYPE = "cpu"
-    TF_DEVICE_TAG  = ""
+    TF_DEVICE_TAG  = "${device2tag("cpu")}"
   }
 }
 
@@ -55,58 +75,46 @@ target "nb-gpu" {
   inherits   = [ "nb-all" ]
   args = {
     TF_DEVICE_TYPE = "gpu"
-    TF_DEVICE_TAG  = "-gpu"
+    TF_DEVICE_TAG  = "${device2tag("gpu")}"
   }
 }
 
 target "base" {
-  inherits   = [ "nb-all" ]
+  inherits   = [ "nb-cpu" ]
   dockerfile = "docker/Dockerfile"
   target     = "base"
-  tags = [
-    "${REGISTRY}${IMAGE}:latest",
-    "${REGISTRY}${IMAGE}:${TF_VERSION}",
-  ]
+  tags = tag("cpu", "")
 }
 
 target "nb-image-class" {
-  inherits   = [ "nb-all" ]
+  inherits   = [ "nb-cpu" ]
   dockerfile = "docker/Dockerfile.nb-image-class"
   target     = "image-classification"
   contexts = {
     base           = "target:base"
   }
-  tags = [
-    "${REGISTRY}${IMAGE}:latest-nb-image-class",
-    "${REGISTRY}${IMAGE}:${TF_VERSION}-nb-image-class",
-  ]
+  tags = tag("cpu", "-nb-image-class")
 }
 
 target "nb-gene-expr-pred" {
-  inherits   = [ "nb-all" ]
+  inherits   = [ "nb-cpu" ]
   dockerfile = "docker/Dockerfile.nb-gene-expr-pred"
   target     = "gene-expression-prediction"
   contexts = {
     base           = "target:base"
   }
-  tags = [
-    "${REGISTRY}${IMAGE}:latest-nb-gene-expr-pred",
-    "${REGISTRY}${IMAGE}:${TF_VERSION}-nb-gene-expr-pred",
-  ]
+  tags = tag("cpu", "-nb-gene-expr-pred")
 }
 
 target "nb-omnibus" {
-  inherits   = [ "nb-all" ]
+  inherits   = [ "nb-cpu" ]
   dockerfile = "docker/Dockerfile.nb-omnibus"
   contexts = {
     base               = "target:base"
     nb-image-class     = "target:nb-image-class"
     nb-gene-expr-pred  = "target:nb-gene-expr-pred"
   }
-  tags = [
-    "${REGISTRY}${IMAGE}:latest-nb-omnibus",
-    "${REGISTRY}${IMAGE}:${TF_VERSION}-nb-omnibus",
-  ]
+  tags = tag("cpu", "-nb-omnibus")
 }
 
 target "gpu-nb-omnibus" {
@@ -122,8 +130,5 @@ target "gpu-nb-omnibus" {
   contexts = {
     nb-base            = "target:nb-omnibus"
   }
-  tags = [
-    "${REGISTRY}${IMAGE}:latest-gpu-nb-omnibus",
-    "${REGISTRY}${IMAGE}:${TF_VERSION}-gpu-nb-omnibus",
-  ]
+  tags = tag("gpu", "-nb-omnibus")
 }
