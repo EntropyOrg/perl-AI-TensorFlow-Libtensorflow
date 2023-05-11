@@ -66,7 +66,7 @@ RUN plx --cpanm -l /perl5 -nq --no-man-pages /build/dist \
 	&& rm -Rf /build/dist
 
 # Clean up
-RUN apt-get remove -y $APT_PKGS_DEV && apt-get autoremove
+RUN apt-get remove -y $APT_PKGS_DEV && apt-get autoremove -y
 
 RUN apt-get -qq purge \
     && apt-get -qq clean \
