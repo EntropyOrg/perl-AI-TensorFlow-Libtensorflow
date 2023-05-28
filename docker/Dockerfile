@@ -1,6 +1,6 @@
 #syntax=docker/dockerfile-upstream:1.4.0-rc1
 
-ARG TF_VERSION="2.11.0"
+ARG TF_VERSION
 
 # Packages from Ubuntu focal base
 ARG APT_PKGS_PERL="perl cpanminus"
@@ -10,8 +10,6 @@ ARG APT_PKGS_DEV="libffi-dev libssl-dev pkg-config"
 # BUILDER
 
 FROM perldocker/perl-tester:5.36 AS builder
-
-ARG TF_VERSION
 
 ENV ALIEN_LIBTENSORFLOW_FROM_BINARY_VERSION=${TF_VERSION}
 
@@ -28,8 +26,6 @@ RUN dzil build --in dist
 
 FROM tensorflow/tensorflow:${TF_VERSION}-jupyter AS base-builder
 
-ARG TF_VERSION
-
 ARG APT_PKGS_PERL
 ARG APT_PKGS_RUN
 ARG APT_PKGS_DEV
@@ -37,6 +33,9 @@ ARG APT_PKGS_DEV
 COPY --from=builder /build/dist /build/dist
 
 ENV ALIEN_LIBTENSORFLOW_FROM_BINARY_VERSION=${TF_VERSION}
+
+# Build the base with CPU
+ENV ALIEN_LIBTENSORFLOW_DEVICE_TYPE="cpu"
 
 RUN rm -Rfv /tf
 RUN mkdir -p /tf
@@ -48,20 +47,26 @@ RUN cpanm -nq App::plx App::cpm
 # Init plx in /tf.
 RUN bash -c 'cd /tf \
 	&& plx --init \
-	&& plx --config libspec add 10perl5-nb.ll     /perl5-nb && perl -Mlocal::lib=/perl5-nb \
+	&& plx --config libspec add 20perl5-nb.ll     /perl5-nb    && perl -Mlocal::lib=/perl5-nb \
+	&& plx --config libspec add 10perl5-libtf.ll  /perl5-libtf && perl -Mlocal::lib=/perl5-libtf \
 	&& plx --config libspec add 00perl5-global.ll /perl5 \
 	&& plx --cpanm -l /perl5 -nq App::cpm \
 	'
 
 # Install Jupyter kernel
-RUN cpm install -L /perl5 Devel::IPerl
+RUN plx cpm install -L /perl5 Devel::IPerl IO::Async::Loop::Epoll
+
+# Install libtensorflow (with Alien deps to /perl5 and actual Alien dist to
+# /perl5-libtf)
+RUN plx --cpanm -l /perl5 --installdeps --no-man-pages -nq Alien::Libtensorflow \
+    && plx --cpanm -l /perl5-libtf --no-man-pages -nq Alien::Libtensorflow
 
 # Install the actual dist.
-RUN cpm install -L /perl5 /build/dist \
+RUN plx --cpanm -l /perl5 -nq --no-man-pages /build/dist \
 	&& rm -Rf /build/dist
 
 # Clean up
-RUN apt-get remove -y $NB_APT_PKGS_DEV && apt-get autoremove
+RUN apt-get remove -y $APT_PKGS_DEV && apt-get autoremove -y
 
 RUN apt-get -qq purge \
     && apt-get -qq clean \
@@ -96,8 +101,9 @@ RUN groupadd \
         --uid ${NB_UID} \
         ${NB_USER}
 
-COPY --from=base-builder /perl5 /perl5
-COPY --from=base-builder /tf    /tf
+COPY --from=base-builder /perl5       /perl5
+COPY --from=base-builder /perl5-libtf /perl5-libtf
+COPY --from=base-builder /tf          /tf
 
 # Get rid of upstream tutorials.
 RUN rm -Rf /tf/tensorflow-tutorials

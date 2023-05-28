@@ -1,0 +1,75 @@
+#syntax=docker/dockerfile-upstream:1.4.0-rc1
+
+ARG TF_VERSION
+ARG TF_DEVICE_TAG
+
+FROM nb-base AS nb-builder
+
+ARG TF_VERSION
+ARG TF_DEVICE_TYPE
+
+ENV ALIEN_LIBTENSORFLOW_FROM_BINARY_VERSION=${TF_VERSION}
+ENV ALIEN_LIBTENSORFLOW_DEVICE_TYPE=${TF_DEVICE_TYPE}
+
+USER root
+
+RUN rm -Rf /perl5-libtf \
+	&& plx --cpanm -l /perl5-libtf --no-man-pages -nq Alien::Libtensorflow
+
+FROM tensorflow/tensorflow:${TF_VERSION}${TF_DEVICE_TAG}-jupyter AS nb
+
+# Packages from Ubuntu focal base
+ARG APT_PKGS_PERL="perl cpanminus"
+ARG APT_PKGS_RUN="libffi7    libssl1.1  libzmq5"
+
+ARG NB_APT_PKGS_RUN
+
+ARG NB_USER
+ARG NB_UID
+
+# Use bash as default shell, rather than sh
+ENV SHELL /bin/bash
+
+# Set up user
+ENV USER ${NB_USER}
+ENV HOME /home/${NB_USER}
+
+USER root
+
+RUN groupadd \
+        --gid ${NB_UID} \
+        ${NB_USER} && \
+    useradd \
+        --comment "Default user" \
+        --create-home \
+        --gid ${NB_UID} \
+        --no-log-init \
+        --shell /bin/bash \
+        --uid ${NB_UID} \
+        ${NB_USER}
+
+COPY --from=nb-builder /perl5       /perl5
+COPY --from=nb-builder /perl5-nb    /perl5-nb
+COPY --from=nb-builder /perl5-libtf /perl5-libtf
+COPY --from=nb-builder /tf          /tf
+
+RUN apt-get update && apt-get install -y --no-install-recommends $APT_PKGS_PERL $APT_PKGS_RUN $NB_APT_PKGS_RUN
+
+RUN cpanm -nq App::plx App::cpm
+
+RUN apt-get -qq purge \
+    && apt-get -qq clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
+
+USER ${NB_USER}
+
+RUN plx iperl --version # install kernel and exit
+
+EXPOSE 8888
+
+ENTRYPOINT [ "plx", "--base", "/tf", "--exec" ]
+CMD [ "jupyter", "notebook", "--notebook-dir=/tf", "--ip", "0.0.0.0", "--no-browser" ]
+
+# vim:ft=dockerfile
