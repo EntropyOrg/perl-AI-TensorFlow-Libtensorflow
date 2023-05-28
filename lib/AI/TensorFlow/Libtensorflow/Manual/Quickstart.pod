@@ -94,6 +94,17 @@ C<http://127.0.0.1:8888/> in order to connect to the Jupyter Notebook interface
 via the web browser. In the browser, click on the C<notebook> folder to access
 the notebooks.
 
+If using the GPU Docker image for NVIDIA support, make sure that the
+L<TensorFlow Docker requirements|https://www.tensorflow.org/install/docker#tensorflow_docker_requirements>
+are met and that the correct flags are passed to C<docker run>, for example
+
+C<<
+  docker run --rm --gpus all [...]
+>>
+
+More information about NVIDIA Docker containers can be found in the user guide
+for the L<NVIDIA Container Toolkit|https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/user-guide.html>.
+
 =begin :list
 
 = C<latest>: base image with only C<libtensorflow> installed.
@@ -106,6 +117,8 @@ L<InferenceUsingTFHubEnformerGeneExprPredModel|AI::TensorFlow::Libtensorflow::Ma
 
 = C<latest-nb-omnibus>: image containing dependencies for both of the above
 notebooks.
+
+= C<latest-gpu-nb-omnibus>: same as C<latest-nb-omnibus> but with NVIDIA GPU support.
 
 =end :list
 
