@@ -54,7 +54,7 @@ RUN bash -c 'cd /tf \
 	'
 
 # Install Jupyter kernel
-RUN plx cpm install -L /perl5 Devel::IPerl
+RUN plx cpm install -L /perl5 Devel::IPerl IO::Async::Loop::Epoll
 
 # Install libtensorflow (with Alien deps to /perl5 and actual Alien dist to
 # /perl5-libtf)
