@@ -94,6 +94,8 @@ C<http://127.0.0.1:8888/> in order to connect to the Jupyter Notebook interface
 via the web browser. In the browser, click on the C<notebook> folder to access
 the notebooks.
 
+=head2 GPU Docker support
+
 If using the GPU Docker image for NVIDIA support, make sure that the
 L<TensorFlow Docker requirements|https://www.tensorflow.org/install/docker#tensorflow_docker_requirements>
 are met and that the correct flags are passed to C<docker run>, for example
@@ -102,8 +104,30 @@ C<<
   docker run --rm --gpus all [...]
 >>
 
-More information about NVIDIA Docker containers can be found in the user guide
-for the L<NVIDIA Container Toolkit|https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/user-guide.html>.
+More information about NVIDIA Docker containers can be found in the
+NVIDIA Container Toolkit
+L<Installation Guide|https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html>
+(specifically L<Setting up NVIDIA Container Toolkit|https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#setting-up-nvidia-container-toolkit>)
+and
+L<User Guide|https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/user-guide.html>.
+
+=head3 Diagnostics
+
+When using the Docker GPU image, you may come across the error
+
+C<<
+  nvidia-container-cli: initialization error: load library failed: libnvidia-ml.so.1: cannot open shared object file: no such file or directory: unknown.
+>>
+
+Make sure that you have installed the NVIDIA Container Toolkit correctly
+via the Installation Guide. Also make sure that you only have one Docker daemon
+installed.  The recommended approach is to install via the official Docker
+releases at L<https://docs.docker.com/engine/install/>. Note that in some
+cases, you may have other unofficial Docker installations such as the
+C<docker.io> package or the Snap C<docker> package, which may conflict with
+the official vendor-provided NVIDIA Container Runtime.
+
+=head2 Docker Tags
 
 =begin :list
 

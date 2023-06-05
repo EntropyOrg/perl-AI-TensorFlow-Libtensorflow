@@ -8,6 +8,9 @@
 = L<AI::TensorFlow::Libtensorflow::Manual::Quickstart>
 Start here to get an overview of the library.
 
+= L<AI::TensorFlow::Libtensorflow::Manual::GPU>
+GPU-specific installation and usage information.
+
 = L<AI::TensorFlow::Libtensorflow::Manual::CAPI>
 Appendix of all C API functions with their signatures. These are linked from
 the documentation of individual methods.

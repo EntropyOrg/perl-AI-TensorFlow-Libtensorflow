@@ -73,6 +73,9 @@ __END__
 The C<libtensorflow> library provides low-level C bindings
 for TensorFlow with a stable ABI.
 
+For more detailed information about this library including how to get started,
+see L<AI::TensorFlow::Libtensorflow::Manual>.
+
 =cut
 
 =begin :badges
