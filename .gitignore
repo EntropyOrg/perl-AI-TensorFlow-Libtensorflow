@@ -13,3 +13,7 @@ notebook/targets_human.txt
 notebook/clinvar.vcf.*
 notebook/deepmind_enformer_1*
 notebook/enformer-target-interval-tracks.png
+
+# notebook/InferenceUsingTFHubCenterNetObjDetect.ipynb
+notebook/tensorflow_centernet_hourglass_512x512_1*
+notebook/objects-detected.png
