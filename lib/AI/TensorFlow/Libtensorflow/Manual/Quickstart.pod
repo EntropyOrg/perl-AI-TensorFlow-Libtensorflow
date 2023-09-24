@@ -139,7 +139,10 @@ L<InferenceUsingTFHubMobileNetV2Model|AI::TensorFlow::Libtensorflow::Manual::Not
 = C<latest-nb-gene-expr-pred>: image containing dependencies needed to run
 L<InferenceUsingTFHubEnformerGeneExprPredModel|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubEnformerGeneExprPredModel>.
 
-= C<latest-nb-omnibus>: image containing dependencies for both of the above
+= C<latest-nb-obj-detect>: image containing dependencies needed to run
+L<InferenceUsingTFHubCenterNetObjDetect|AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubCenterNetObjDetect>.
+
+= C<latest-nb-omnibus>: image containing dependencies for all of the above
 notebooks.
 
 = C<latest-gpu-nb-omnibus>: same as C<latest-nb-omnibus> but with NVIDIA GPU support.
