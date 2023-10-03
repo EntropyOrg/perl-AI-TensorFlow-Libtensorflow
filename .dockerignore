@@ -3,3 +3,4 @@
 notebook/
 !notebook/InferenceUsingTFHubMobileNetV2Model.ipynb
 !notebook/InferenceUsingTFHubEnformerGeneExprPredModel.ipynb
+!notebook/InferenceUsingTFHubCenterNetObjDetect.ipynb

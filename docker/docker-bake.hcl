@@ -5,6 +5,7 @@ group "default" {
     "nb-omnibus",
     "nb-image-class",
     "nb-gene-expr-pred",
+    "nb-obj-detect",
   ]
 }
 
@@ -106,6 +107,16 @@ target "nb-gene-expr-pred" {
   tags = tag("cpu", "-nb-gene-expr-pred")
 }
 
+target "nb-obj-detect" {
+  inherits   = [ "nb-cpu" ]
+  dockerfile = "docker/Dockerfile.nb-obj-detect"
+  target     = "object-detection"
+  contexts = {
+    base           = "target:base"
+  }
+  tags = tag("cpu", "-nb-obj-detect")
+}
+
 target "nb-omnibus" {
   inherits   = [ "nb-cpu" ]
   dockerfile = "docker/Dockerfile.nb-omnibus"
@@ -113,6 +124,7 @@ target "nb-omnibus" {
     base               = "target:base"
     nb-image-class     = "target:nb-image-class"
     nb-gene-expr-pred  = "target:nb-gene-expr-pred"
+    nb-obj-detect      = "target:nb-obj-detect"
   }
   tags = tag("cpu", "-nb-omnibus")
 }
@@ -123,6 +135,7 @@ target "gpu-nb-omnibus" {
     NB_APT_PKGS_RUN = <<EOF
       libjpeg-turbo8     libpng16-16 libgsl23
       samtools libhts3 tabix libxml2 libexpat1 libdb5.3 netpbm gnuplot-nox
+      libjpeg-turbo8     libpng16-16 netpbm gnuplot-nox
     EOF
   }
   dockerfile = "docker/Dockerfile.with-gpu-libtf"

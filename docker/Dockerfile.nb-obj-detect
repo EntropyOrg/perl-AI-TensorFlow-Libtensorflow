@@ -1,0 +1,53 @@
+#syntax=docker/dockerfile-upstream:1.4.0-rc1
+
+# notebook/InferenceUsingTFHubCenterNetObjDetect.ipynb
+
+# Packages from Ubuntu focal base
+ARG NB_APT_PKGS_RUN="         libjpeg-turbo8     libpng16-16 netpbm gnuplot-nox"
+ARG NB_APT_PKGS_DEV="perl-doc libjpeg-turbo8-dev libpng-dev"
+ARG NB_POD="AI::TensorFlow::Libtensorflow::Manual::Notebook::InferenceUsingTFHubCenterNetObjDetect"
+
+FROM base AS nb-builder
+
+ARG NB_APT_PKGS_RUN
+ARG NB_APT_PKGS_DEV
+ARG NB_POD
+
+USER root
+
+RUN apt-get update && apt-get install -y --no-install-recommends $NB_APT_PKGS_RUN $NB_APT_PKGS_DEV
+RUN bash -c ' \
+	eval $(perl -Mlocal::lib=/perl5-nb); \
+	export MAKEFLAGS=$(nproc); \
+	plx cpm install -g --cpanfile=<( \
+		awk "/=head1 CPANFILE/,EOF {print}" $( plx perldoc -l $NB_POD ) \
+		| awk "NR>1" \
+	)'
+RUN apt-get remove -y $NB_APT_PKGS_DEV && apt-get autoremove -y && apt-get clean
+RUN rm -Rf $HOME/.perl-cpm/ $HOME/.cpanm
+
+FROM base AS object-detection
+
+ARG NB_APT_PKGS_RUN
+ARG NB_POD
+
+ARG NB_USER
+ARG NB_UID
+
+USER root
+
+COPY --from=nb-builder /perl5-nb /perl5-nb
+
+RUN apt-get update && apt-get install -y --no-install-recommends $NB_APT_PKGS_RUN
+
+RUN apt-get -qq purge \
+    && apt-get -qq clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN chown -R ${NB_USER}:${NB_USER} /perl5-nb
+
+USER ${NB_USER}
+
+RUN bash -c 'plx perl -c $( plx perldoc -l $NB_POD );'
+
+# vim:ft=dockerfile
